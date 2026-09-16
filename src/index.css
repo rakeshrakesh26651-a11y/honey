@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fontshare Fonts - Recia */
+@font-face {
+  font-family: 'Recia';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/4MYQ6SZYXY7R24PWTWBCGJ5AO2EDR3JN/ZYFYHBM6EBDRGCC2Z6U7KKNLHUBDN4BD/YNLBEMQ7XP3SU43UWNDZAIPS34435QDM.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Recia';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/PBY56LM5FFEBDIZDNUUO76YQXDZJGC42/2CTKRJA5DZMZ47NTYGQOXKSH3D32R4QS/GPQV7JYHDGWFCQ75A2JN2FRBNZESM3IN.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Recia';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/UCVFHWZFI6VWYBJNGRULXP6L77MDNSO7/JI5ONTUPXCI7TK6W6MKI47NHH5YP6XBV/OWV5NCA5735TAGOQ3FYUNIHLKYJVZ6LI.woff2') format('woff2');
+}
+
+/* Fontshare Fonts - General Sans */
+@font-face {
+  font-family: 'General Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/MFQT7HFGCR2L5ULQTW6YXYZXXHMPKLJ3/YWQ244D6TACUX5JBKATPOW5I5MGJ3G73/7YY3ZAAE3TRV2LANYOLXNHTPHLXVWTKH.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'General Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/3RZHWSNONLLWJK3RLPEKUZOMM56GO4LJ/BPDRY7AHVI3MCDXXVXTQQ76H3UXA63S3/SB2OEB6IKZPRR6JT4GFJ2TFT6HBB6AZN.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'General Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://framerusercontent.com/third-party-assets/fontshare/wf/KWXO5X3YW4X7OLUMPO4X24HQJGJU7E2Q/VOWUQZS3YLP66ZHPTXAFSH6YACY4WJHT/NIQ54PVBBIWVK3PFSOIOUJSXIJ5WTNDP.woff2') format('woff2');
+}
+
+:root {
+  --bg-cream: #f7f2e7;
+  --text-espresso: #1e1a16;
+  --accent-forest: #657044;
+  --accent-honey: #c88a2b;
+  --badge-butter: #f2c94c;
+  --white: #ffffff;
+  --token-1974469e-4601-4e12-a16e-16421811598c: #f7f2e7;
+  --token-cd62a7dd-ff16-4091-8c01-602c7bd35178: #1e1a16;
+  --token-6226a574-2110-4960-9a2f-d52a6002e23b: #657044;
+  --token-87abc887-083b-4c56-8642-c84aa1a13bdf: #c88a2b;
+  --token-86798048-8202-49ef-ae17-441f2eeeb0b1: #f2c94c;
+  --token-d782bb97-dc9e-44a3-a092-893cfc4a9fbf: #ffffff;
+}
+
+html,
+body {
+  background-color: var(--bg-cream);
+  color: var(--text-espresso);
+  font-family: 'General Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Marquee Ticker Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Custom transitions and scrollbar */
+::selection {
+  background: #c88a2b;
+  color: #ffffff;
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f7f2e7;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(30, 26, 22, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 26, 22, 0.4);
+}
