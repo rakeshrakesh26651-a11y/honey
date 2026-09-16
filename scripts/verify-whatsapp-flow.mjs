@@ -229,6 +229,10 @@ async function runTests() {
     const footerInsta = await desktopPage.locator('footer a[href="https://instagram.com/himalayanharvesthoney"]').first();
     assert(await footerInsta.isVisible(), 'Footer contains Instagram @himalayanharvesthoney');
 
+    // 13. Giant Footer Wordmark is strictly "HIMALAYAN"
+    const giantWordmark = await desktopPage.locator('#footer-giant-wordmark').textContent();
+    assert(giantWordmark.trim() === 'HIMALAYAN', `Giant footer wordmark is strictly "HIMALAYAN" (got "${giantWordmark.trim()}")`);
+
     await desktopContext.close();
 
     // -----------------------------------------------------------------

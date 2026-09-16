@@ -187,22 +187,24 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart }) => {
           </div>
         </div>
 
-        {/* Scroll-Linked Giant Brand Typography */}
+        {/* Scroll-Linked Giant Brand Typography: HIMALAYAN */}
         <div
           data-framer-name="Big Wordmark"
-          className="w-full overflow-hidden select-none py-4 sm:py-6 lg:py-8 flex items-center justify-center relative"
+          className="w-full overflow-hidden select-none py-2 sm:py-4 lg:py-6 flex items-center justify-center relative"
         >
           <motion.div
             style={{ y: wordmarkY }}
             className="w-full flex justify-center items-center will-change-transform"
           >
             <div
-              className="font-serif font-semibold text-white tracking-[-0.02em] whitespace-nowrap text-center text-[76px] xs:text-[96px] sm:text-[124px] md:text-[156px] lg:text-[190px] xl:text-[220px] leading-[0.92] select-none pointer-events-none"
+              id="footer-giant-wordmark"
+              className="font-serif font-semibold text-white tracking-[-0.01em] whitespace-nowrap text-center text-[70px] xs:text-[86px] sm:text-[116px] md:text-[150px] lg:text-[185px] xl:text-[210px] leading-[0.92] select-none pointer-events-none w-full"
               style={{
                 fontFamily: 'Recia, "Recia Placeholder", serif',
+                letterSpacing: 'clamp(-0.02em, -0.01em + 0.2vw, 0.02em)',
               }}
             >
-              HIMALAYAN HARVEST
+              HIMALAYAN
             </div>
           </motion.div>
         </div>
