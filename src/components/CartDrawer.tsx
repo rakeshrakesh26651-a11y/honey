@@ -5,7 +5,10 @@ import { Product } from '../data/content';
 import { openWhatsAppOrder } from '../utils/whatsapp';
 
 export interface CartItem {
+  id: string; // unique item id: e.g. `${product.id}-${size}`
   product: Product;
+  size: string;
+  unitPrice: number;
   quantity: number;
 }
 
@@ -13,8 +16,8 @@ interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   items: CartItem[];
-  onUpdateQuantity: (productId: string, quantity: number) => void;
-  onRemoveItem: (productId: string) => void;
+  onUpdateQuantity: (itemId: string, quantity: number) => void;
+  onRemoveItem: (itemId: string) => void;
   onCheckout?: () => void;
 }
 
@@ -26,7 +29,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onRemoveItem,
   onCheckout,
 }) => {
-  const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const freeShippingThreshold = 999;
   const freeShippingRemaining = Math.max(0, freeShippingThreshold - subtotal);
   const freeShippingPercent = Math.min(100, (subtotal / freeShippingThreshold) * 100);
@@ -42,7 +46,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#1e1a16]/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#1e1a16]/40 backdrop-blur-sm cursor-pointer"
           />
 
           {/* Drawer panel */}
@@ -51,21 +55,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            role="dialog"
+            aria-label="Your Cart"
             className="relative w-full max-w-[440px] h-full bg-[#f7f2e7] shadow-2xl flex flex-col z-10 border-l border-[#1e1a16]/10"
           >
             {/* Drawer Header */}
-            <div className="p-6 border-b border-[#1e1a16]/10 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <h3 className="font-serif text-[24px] font-semibold text-[#1e1a16]">
+            <div className="p-5 sm:p-6 border-b border-[#1e1a16]/10 flex items-center justify-between bg-white/60 backdrop-blur-xs">
+              <div className="flex items-center space-x-2.5">
+                <h3 className="font-serif text-[22px] sm:text-[24px] font-semibold text-[#1e1a16]">
                   Your Cart
                 </h3>
-                <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-[#1e1a16]/5 text-[#1e1a16]">
-                  {items.reduce((sum, i) => sum + i.quantity, 0)}
+                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-[#1e1a16] text-white font-medium">
+                  {totalItemCount}
                 </span>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-[#1e1a16] hover:opacity-60 transition-opacity rounded-full"
+                className="p-2 text-[#1e1a16] hover:bg-[#1e1a16]/5 rounded-full transition-colors cursor-pointer"
                 aria-label="Close cart"
               >
                 <CloseIcon size={20} />
@@ -94,7 +100,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
 
             {/* Cart Items or Empty State */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-16">
                   <div className="w-16 h-16 rounded-full bg-[#1e1a16]/5 flex items-center justify-center">
@@ -106,59 +112,67 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </p>
                   <button
                     onClick={onClose}
-                    className="mt-4 px-6 py-3 rounded-full bg-[#657044] text-white font-sans text-sm font-medium hover:bg-[#525b37] transition-colors"
+                    className="mt-4 px-6 py-3 rounded-full bg-[#657044] text-white font-sans text-sm font-medium hover:bg-[#525b37] transition-colors cursor-pointer"
                   >
                     Explore The Collection
                   </button>
                 </div>
               ) : (
-                items.map(({ product, quantity }) => (
+                items.map((item) => (
                   <div
-                    key={product.id}
-                    className="flex space-x-4 pb-6 border-b border-[#1e1a16]/10 last:border-b-0"
+                    key={item.id}
+                    className="flex space-x-3.5 p-3.5 rounded-[12px] bg-white border border-[#1e1a16]/[0.06] shadow-2xs"
                   >
                     <img
-                      src={product.image}
-                      alt={product.alt}
-                      className="w-20 h-24 object-cover rounded-xl bg-[#1e1a16]/5 flex-shrink-0"
+                      src={item.product.image}
+                      alt={item.product.alt}
+                      className="w-18 h-22 object-cover rounded-[8px] bg-[#1e1a16]/5 flex-shrink-0"
                     />
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
-                        <div className="flex justify-between items-start">
-                          <h4 className="font-serif text-lg font-medium text-[#1e1a16] leading-tight">
-                            {product.name}
+                        <div className="flex justify-between items-start gap-2">
+                          <h4 className="font-serif text-[16px] font-medium text-[#1e1a16] leading-tight">
+                            {item.product.name}
                           </h4>
                           <button
-                            onClick={() => onRemoveItem(product.id)}
-                            className="text-xs text-[#1e1a16]/40 hover:text-[#c88a2b] transition-colors ml-2"
+                            onClick={() => onRemoveItem(item.id)}
+                            className="text-xs text-[#1e1a16]/40 hover:text-[#c88a2b] transition-colors p-0.5 cursor-pointer"
+                            aria-label={`Remove ${item.product.name} (${item.size})`}
                           >
                             Remove
                           </button>
                         </div>
-                        <p className="font-sans text-sm text-[#1e1a16]/70 mt-1">
-                          ₹{product.price}
-                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-[#1e1a16]/5 text-[#1e1a16] font-semibold">
+                            {item.size}
+                          </span>
+                          <span className="font-sans text-xs text-[#1e1a16]/60">
+                            ₹{item.unitPrice} each
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Quantity Selector */}
-                      <div className="flex items-center space-x-3 mt-3">
-                        <div className="flex items-center border border-[#1e1a16]/20 rounded-full px-2 py-0.5 bg-white/50">
+                      {/* Quantity Selector & Line Total */}
+                      <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-[#1e1a16]/[0.05]">
+                        <div className="flex items-center border border-[#1e1a16]/20 rounded-full px-2 py-0.5 bg-[#f7f2e7]/70">
                           <button
-                            onClick={() => onUpdateQuantity(product.id, quantity - 1)}
-                            className="px-2 text-sm text-[#1e1a16] hover:opacity-60 font-mono"
+                            onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                            className="w-4 h-4 flex items-center justify-center text-xs text-[#1e1a16] hover:opacity-60 font-mono cursor-pointer"
+                            aria-label="Decrease quantity"
                           >
-                            -
+                            −
                           </button>
-                          <span className="px-2 text-xs font-mono font-medium">{quantity}</span>
+                          <span className="px-2 text-xs font-mono font-medium select-none">{item.quantity}</span>
                           <button
-                            onClick={() => onUpdateQuantity(product.id, quantity + 1)}
-                            className="px-2 text-sm text-[#1e1a16] hover:opacity-60 font-mono"
+                            onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                            className="w-4 h-4 flex items-center justify-center text-xs text-[#1e1a16] hover:opacity-60 font-mono cursor-pointer"
+                            aria-label="Increase quantity"
                           >
                             +
                           </button>
                         </div>
-                        <span className="font-sans text-sm font-medium text-[#1e1a16] ml-auto">
-                          ₹{product.price * quantity}
+                        <span className="font-sans text-[15px] font-bold text-[#1e1a16]">
+                          ₹{item.unitPrice * item.quantity}
                         </span>
                       </div>
                     </div>
@@ -169,7 +183,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
             {/* Drawer Footer */}
             {items.length > 0 && (
-              <div className="p-6 border-t border-[#1e1a16]/10 bg-[#f7f2e7] space-y-4">
+              <div className="p-5 sm:p-6 border-t border-[#1e1a16]/10 bg-white/70 backdrop-blur-xs space-y-3">
                 <div className="flex justify-between items-baseline">
                   <span className="font-sans text-sm text-[#1e1a16]/70">Subtotal</span>
                   <span className="font-serif text-2xl font-semibold text-[#1e1a16]">
@@ -181,9 +195,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </p>
                 <button
                   onClick={() => (onCheckout ? onCheckout() : openWhatsAppOrder(items))}
-                  className="w-full py-4 rounded-full bg-[#1e1a16] text-white font-sans text-base font-medium hover:bg-[#332c25] transition-colors"
+                  className="w-full py-3.5 rounded-full bg-[#1e1a16] hover:bg-[#332c25] text-white font-sans text-[15px] font-medium transition-all shadow-sm cursor-pointer"
                 >
-                  Proceed to Checkout
+                  Order via WhatsApp / Checkout
+                </button>
+                <button
+                  onClick={onClose}
+                  className="w-full py-2 text-center text-xs font-sans text-[#1e1a16]/60 hover:text-[#1e1a16] transition-colors cursor-pointer"
+                >
+                  Continue Shopping
                 </button>
               </div>
             )}

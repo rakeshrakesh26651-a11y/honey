@@ -16,7 +16,7 @@ export const WHATSAPP_NUMBER = BRAND_CONFIG.whatsappNumber; // "918124391725"
  *
  * Product: [PRODUCT NAME]
  * Quantity: [QUANTITY]
- * Weight: [WEIGHT]
+ * Weight/Size: [SIZE]
  * Price: ₹[PRICE]
  *
  * Please confirm availability and the total amount.
@@ -26,8 +26,8 @@ export const WHATSAPP_NUMBER = BRAND_CONFIG.whatsappNumber; // "918124391725"
  *
  * I would like to order:
  *
- * 1. [PRODUCT NAME] — [WEIGHT] — Qty: [QUANTITY] — ₹[PRICE]
- * 2. [PRODUCT NAME] — [WEIGHT] — Qty: [QUANTITY] — ₹[PRICE]
+ * 1. [PRODUCT NAME] — [SIZE] — Qty: [QUANTITY] — ₹[PRICE]
+ * 2. [PRODUCT NAME] — [SIZE] — Qty: [QUANTITY] — ₹[PRICE]
  *
  * Please confirm availability and the total amount.
  */
@@ -38,16 +38,18 @@ export function formatWhatsAppOrderMessage(items: CartItem[]): string {
 
   if (items.length === 1) {
     const item = items[0];
-    const weightText = item.product.weight || 'Standard';
-    const priceText = item.quantity > 1 ? `₹${item.product.price} each` : `₹${item.product.price}`;
-    return `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\nProduct: ${item.product.name}\nQuantity: ${item.quantity}\nWeight: ${weightText}\nPrice: ${priceText}\n\nPlease confirm availability and the total amount.`;
+    const sizeText = item.size || item.product.weight || '400g';
+    const unitPrice = item.unitPrice || item.product.price;
+    const priceText = item.quantity > 1 ? `₹${unitPrice * item.quantity} (₹${unitPrice} each)` : `₹${unitPrice}`;
+    return `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\nProduct: ${item.product.name}\nQuantity: ${item.quantity}\nWeight/Size: ${sizeText}\nPrice: ${priceText}\n\nPlease confirm availability and the total amount.`;
   }
 
   const productList = items
     .map((item, index) => {
-      const weightText = item.product.weight || 'Standard';
-      const priceText = item.quantity > 1 ? `₹${item.product.price * item.quantity}` : `₹${item.product.price}`;
-      return `${index + 1}. ${item.product.name} — ${weightText} — Qty: ${item.quantity} — ${priceText}`;
+      const sizeText = item.size || item.product.weight || '400g';
+      const unitPrice = item.unitPrice || item.product.price;
+      const priceText = `₹${unitPrice * item.quantity}`;
+      return `${index + 1}. ${item.product.name} — ${sizeText} — Qty: ${item.quantity} — ${priceText}`;
     })
     .join('\n');
 

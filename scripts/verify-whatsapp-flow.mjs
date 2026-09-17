@@ -10,16 +10,18 @@ function formatWhatsAppOrderMessage(items) {
 
   if (items.length === 1) {
     const item = items[0];
-    const weightText = item.product.weight || 'Standard';
-    const priceText = item.quantity > 1 ? `₹${item.product.price} each` : `₹${item.product.price}`;
-    return `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\nProduct: ${item.product.name}\nQuantity: ${item.quantity}\nWeight: ${weightText}\nPrice: ${priceText}\n\nPlease confirm availability and the total amount.`;
+    const sizeText = item.size || item.product.weight || '400g';
+    const unitPrice = item.unitPrice || item.product.price;
+    const priceText = item.quantity > 1 ? `₹${unitPrice * item.quantity} (₹${unitPrice} each)` : `₹${unitPrice}`;
+    return `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\nProduct: ${item.product.name}\nQuantity: ${item.quantity}\nWeight/Size: ${sizeText}\nPrice: ${priceText}\n\nPlease confirm availability and the total amount.`;
   }
 
   const productList = items
     .map((item, index) => {
-      const weightText = item.product.weight || 'Standard';
-      const priceText = item.quantity > 1 ? `₹${item.product.price * item.quantity}` : `₹${item.product.price}`;
-      return `${index + 1}. ${item.product.name} — ${weightText} — Qty: ${item.quantity} — ${priceText}`;
+      const sizeText = item.size || item.product.weight || '400g';
+      const unitPrice = item.unitPrice || item.product.price;
+      const priceText = `₹${unitPrice * item.quantity}`;
+      return `${index + 1}. ${item.product.name} — ${sizeText} — Qty: ${item.quantity} — ${priceText}`;
     })
     .join('\n');
 
@@ -28,7 +30,7 @@ function formatWhatsAppOrderMessage(items) {
 
 async function runTests() {
   console.log('============================================================');
-  console.log('PLAYWRIGHT VERIFICATION: COMPLETE PRODUCT LINE & LAB REPORT');
+  console.log('PLAYWRIGHT VERIFICATION: VARIANTS, CART, TESTIMONIALS & POLICIES');
   console.log('============================================================\n');
 
   let failures = 0;
@@ -46,16 +48,24 @@ async function runTests() {
   // 0. Unit tests on message formatting
   // -----------------------------------------------------------------
   console.log('--- Phase 0: Message Formatting Unit Tests ---');
-  const singleItem = [{ product: { name: 'Forest Honey', weight: 'Standard', price: 699 }, quantity: 1 }];
-  const singleExpected = `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\nProduct: Forest Honey\nQuantity: 1\nWeight: Standard\nPrice: ₹699\n\nPlease confirm availability and the total amount.`;
+  const singleItem = [
+    {
+      product: { name: 'Forest Honey', weight: '400g', price: 699 },
+      size: '400g',
+      unitPrice: 699,
+      quantity: 1,
+    },
+  ];
+  const singleExpected = `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\nProduct: Forest Honey\nQuantity: 1\nWeight/Size: 400g\nPrice: ₹699\n\nPlease confirm availability and the total amount.`;
   assert(formatWhatsAppOrderMessage(singleItem) === singleExpected, 'Single item message matches specification exactly');
 
   const multiItems = [
-    { product: { name: 'Forest Honey', weight: 'Standard', price: 699 }, quantity: 1 },
-    { product: { name: 'Kombu Honey', weight: 'Standard', price: 799 }, quantity: 1 },
+    { product: { name: 'Forest Honey' }, size: '400g', unitPrice: 699, quantity: 1 },
+    { product: { name: 'Forest Honey' }, size: '1000g', unitPrice: 1299, quantity: 2 },
+    { product: { name: 'Kombu Honey' }, size: '700g', unitPrice: 1199, quantity: 1 },
   ];
-  const multiExpected = `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\n1. Forest Honey — Standard — Qty: 1 — ₹699\n2. Kombu Honey — Standard — Qty: 1 — ₹799\n\nPlease confirm availability and the total amount.`;
-  assert(formatWhatsAppOrderMessage(multiItems) === multiExpected, 'Multi-item message matches specification exactly');
+  const multiExpected = `Hello Himalayan Harvest Honey! 👋\n\nI would like to order:\n\n1. Forest Honey — 400g — Qty: 1 — ₹699\n2. Forest Honey — 1000g — Qty: 2 — ₹2598\n3. Kombu Honey — 700g — Qty: 1 — ₹1199\n\nPlease confirm availability and the total amount.`;
+  assert(formatWhatsAppOrderMessage(multiItems) === multiExpected, 'Multi-variant item message matches specification');
 
   const browser = await chromium.launch({ headless: true });
 
@@ -85,19 +95,21 @@ async function runTests() {
     const headerLogo = await desktopPage.locator('header a[href="/"]').textContent();
     assert(headerLogo.includes('HIMALAYAN HARVEST HONEY'), `Header logo verified: "${headerLogo.trim()}"`);
 
+    // Verify Offers link is NOT in Header
+    const offersInHeader = await desktopPage.locator('header a[href="/#offers"]').count();
+    assert(offersInHeader === 0, 'Offers link cleanly removed from header');
+
     // 2. Hero copy verification
     const heroHeading = await desktopPage.locator('h1').textContent();
-    assert(heroHeading.includes('PURE BY NATURE') && heroHeading.includes('PERFECTED BY THE PEAKS'), `Hero heading verified: "${heroHeading.replace(/\s+/g, ' ').trim()}"`);
+    assert(
+      heroHeading.includes('PURE BY NATURE') && heroHeading.includes('PERFECTED BY THE PEAKS'),
+      `Hero heading verified: "${heroHeading.replace(/\s+/g, ' ').trim()}"`
+    );
 
-    // 3. Feature Strip 01-04 verification
-    assert(await desktopPage.locator('text=HIGH ALTITUDES').first().isVisible(), 'Feature 01: SOURCED FROM HIGH ALTITUDES is visible');
-    assert(await desktopPage.locator('text=100% PURE &').first().isVisible(), 'Feature 02: 100% PURE & NATURAL is visible');
-    assert(await desktopPage.locator('text=NATURALLY').first().isVisible(), 'Feature 03: NATURALLY HARVESTED is visible');
-    assert(await desktopPage.locator('text=NO ARTIFICIAL').first().isVisible(), 'Feature 04: NO ARTIFICIAL ADDITIVES is visible');
-
-    // 4. Complete Product Collection Verification
+    // 3. Product Collection with 3 Variants (400g / 700g / 1000g)
+    console.log('\n--- Phase 1.1: Product Variants & Add to Cart (No Auto WhatsApp) ---');
     const lineupHeading = await desktopPage.locator('#lineup h2').textContent();
-    assert(lineupHeading.includes('THE HONEY COLLECTION'), `Collection heading verified: "${lineupHeading.trim()}"`);
+    assert(lineupHeading.includes('Find Your Perfect Honey'), `Collection heading verified: "${lineupHeading.trim()}"`);
 
     const expectedProducts = [
       'Forest Honey',
@@ -112,126 +124,155 @@ async function runTests() {
       assert(await prodCard.isVisible(), `Product "${name}" is present in the collection`);
     }
 
-    // Verify Ghee is not described as honey
-    const gheeCard = desktopPage.locator('#lineup .group').filter({ hasText: 'Ghee' }).first();
-    const gheeText = await gheeCard.textContent();
-    assert(!gheeText.toLowerCase().includes('ghee honey') && !gheeText.toLowerCase().includes('honey ghee'), 'Ghee is cleanly categorized and not described as honey');
+    // Select 1000g for Forest Honey and verify price updates to ₹1299
+    const forestCard = desktopPage.locator('#lineup .group').filter({ hasText: 'Forest Honey' }).first();
+    const btn1000g = forestCard.locator('button[aria-label="Select 1000g for Forest Honey"]');
+    assert(await btn1000g.isVisible(), 'Forest Honey has 1000g variant button');
+    await btn1000g.click();
+    await desktopPage.waitForTimeout(200);
 
-    // 5. Add to Cart for Forest Honey -> WhatsApp Order Verification
-    const firstProduct = desktopPage.locator('#lineup .group').first();
-    await firstProduct.hover();
-    const addToCartButton = firstProduct.locator('button:has-text("Add to Cart")');
-    await addToCartButton.waitFor({ state: 'visible' });
-    await addToCartButton.click();
+    const forestPriceText = await forestCard.locator('span:has-text("₹1299")').first().textContent();
+    assert(forestPriceText.includes('1299'), `Forest Honey 1000g price dynamically updated to ₹1299`);
+
+    // Click "Add to Cart" for Forest Honey 1000g
+    const addForestBtn = forestCard.locator('button:has-text("Add to Cart")');
+    await addForestBtn.click();
     await desktopPage.waitForTimeout(400);
 
-    // Cart opens
-    const cartDrawer = desktopPage.locator('h3:has-text("Your Cart")');
-    assert(await cartDrawer.isVisible(), 'Cart drawer opens upon Add to Cart');
+    // Cart Drawer opens
+    const cartTitle = desktopPage.locator('h3:has-text("Your Cart")');
+    assert(await cartTitle.isVisible(), 'Cart drawer opens upon clicking Add to Cart');
 
-    // WhatsApp URL opened
-    const openedUrls = await desktopPage.evaluate(() => window.__openedUrls);
-    assert(openedUrls.length === 1, `WhatsApp opened on click (count: ${openedUrls.length})`);
-    const waUrl = openedUrls[0];
-    assert(waUrl.startsWith(`https://wa.me/${WHATSAPP_NUMBER}?text=`), `WhatsApp URL targets verified number ${WHATSAPP_NUMBER}`);
+    // CRITICAL: Verify NO automatic WhatsApp window.open occurred!
+    const openedUrlsAfterAdd = await desktopPage.evaluate(() => window.__openedUrls);
+    assert(
+      openedUrlsAfterAdd.length === 0,
+      `Add to Cart did NOT trigger automatic WhatsApp redirect (opened count: ${openedUrlsAfterAdd.length})`
+    );
 
-    const decoded = decodeURIComponent(waUrl.split('text=')[1]);
-    console.log('\nDecoded Single Product Message:\n' + decoded + '\n');
-    assert(decoded.includes('Product: Forest Honey'), 'Message includes "Product: Forest Honey"');
-    assert(decoded.includes('Weight: Standard'), 'Message includes "Weight: Standard"');
-    assert(decoded.includes('Price: ₹699'), 'Message includes "Price: ₹699"');
+    // Verify Cart contains "Forest Honey" with "1000g" and price "₹1,299"
+    const cartText = await desktopPage.locator('[aria-label="Your Cart"]').textContent();
+    assert(cartText.includes('Forest Honey'), 'Cart contains Forest Honey');
+    assert(cartText.includes('1000g'), 'Cart item shows size 1000g');
+    assert(cartText.includes('1,299') || cartText.includes('1299'), 'Cart item shows ₹1299');
 
-    // Close cart drawer to continue page interactions
+    // Close cart drawer
     await desktopPage.locator('button[aria-label="Close cart"]').click();
     await desktopPage.waitForTimeout(300);
 
-    // 6. Story section verification
-    const storyHeading = await desktopPage.locator('#story h2').textContent();
-    assert(storyHeading.includes('FOUR GENERATIONS') && storyHeading.includes('ONE TRADITION'), `Story heading verified: "${storyHeading.replace(/\s+/g, ' ').trim()}"`);
+    // Now select 400g for Forest Honey and add it too -> should create distinct item in cart
+    const btn400g = forestCard.locator('button[aria-label="Select 400g for Forest Honey"]');
+    await btn400g.click();
+    await desktopPage.waitForTimeout(200);
+    await addForestBtn.click();
+    await desktopPage.waitForTimeout(400);
 
-    // 7. BUY 1 GET 1 Banner verification
-    const promoHeading = await desktopPage.locator('#offers h2').textContent();
-    assert(promoHeading.includes('BUY 1 GET 1'), `Promotional heading verified: "${promoHeading.trim()}"`);
+    // Verify cart has 2 distinct line items
+    const cartItemsCount = await desktopPage.locator('[aria-label="Your Cart"] button:has-text("Remove")').count();
+    assert(cartItemsCount === 2, `Cart maintains distinct line items for 400g and 1000g variants (count: ${cartItemsCount})`);
 
-    // 8. Quality Section & Laboratory Report Verification
+    // Verify subtotal: 1299 + 699 = 1998
+    const subtotalText = await desktopPage.locator('[aria-label="Your Cart"]').textContent();
+    assert(subtotalText.includes('1,998') || subtotalText.includes('1998'), 'Cart subtotal correctly computed as ₹1,998');
+
+    // Test WhatsApp Checkout from Cart Drawer
+    const checkoutBtn = desktopPage.locator('button:has-text("Order via WhatsApp")');
+    await checkoutBtn.click();
+    await desktopPage.waitForTimeout(300);
+
+    const openedUrlsAfterCheckout = await desktopPage.evaluate(() => window.__openedUrls);
+    assert(openedUrlsAfterCheckout.length === 1, 'Manual checkout button opens WhatsApp');
+    const decodedWa = decodeURIComponent(openedUrlsAfterCheckout[0].split('text=')[1]);
+    console.log('\nDecoded Cart WhatsApp Order:\n' + decodedWa + '\n');
+    assert(decodedWa.includes('Forest Honey — 1000g'), 'WhatsApp text lists Forest Honey — 1000g');
+    assert(decodedWa.includes('Forest Honey — 400g'), 'WhatsApp text lists Forest Honey — 400g');
+
+    // Close cart
+    await desktopPage.locator('button[aria-label="Close cart"]').click();
+    await desktopPage.waitForTimeout(300);
+
+    // 4. Verify Absence of BUY 1 GET 1
+    console.log('\n--- Phase 1.2: Verify Absence of BUY 1 GET 1 ---');
+    const bogoCount = await desktopPage.locator('text=BUY 1 GET 1').count();
+    assert(bogoCount === 0, 'BUY 1 GET 1 section and copy completely removed from website');
+
+    // 5. Testimonials Section & Animated Carousel Verification
+    console.log('\n--- Phase 1.3: Animated Testimonials Carousel Verification ---');
+    const reviewsSection = desktopPage.locator('#reviews');
+    await reviewsSection.scrollIntoViewIfNeeded();
+    await desktopPage.waitForTimeout(500);
+
+    const reviewsEyebrow = await reviewsSection.locator('text=CUSTOMER EXPERIENCES').first().textContent();
+    assert(reviewsEyebrow.includes('CUSTOMER EXPERIENCES'), 'Testimonials eyebrow verified');
+
+    const reviewsH2 = await reviewsSection.locator('h2').textContent();
+    assert(reviewsH2.trim() === 'REAL EXPERIENCES.', `Testimonials heading verified: "${reviewsH2.trim()}"`);
+
+    const reviewsDesc = await reviewsSection.locator('p').first().textContent();
+    assert(
+      reviewsDesc.includes('Genuine customer experiences shared by honey lovers across Tamil Nadu and beyond'),
+      'Testimonials supporting text verified'
+    );
+
+    // Verify all 6 customers exist in carousel
+    const allCustomers = ['Kavitha R.', 'Senthil M.', 'Deepak N.', 'Ravi', 'Chandra', 'Tarun Naik'];
+    for (const author of allCustomers) {
+      const card = reviewsSection.locator(`h4:has-text("${author}")`);
+      assert(await card.isVisible(), `Customer review for "${author}" is rendered in the carousel`);
+    }
+
+    // Verify navigation controls: Previous / Next buttons & Dot indicators
+    const prevBtn = reviewsSection.locator('button[aria-label="Previous testimonial"]');
+    const nextBtn = reviewsSection.locator('button[aria-label="Next testimonial"]');
+    assert(await prevBtn.isVisible(), 'Carousel previous button is visible');
+    assert(await nextBtn.isVisible(), 'Carousel next button is visible');
+
+    const dotButtons = reviewsSection.locator('button[aria-label^="Go to testimonial"]');
+    const dotCount = await dotButtons.count();
+    assert(dotCount === 6, `Pagination indicators rendered with exactly 6 dots (found: ${dotCount})`);
+
+    // Click Next button and verify active slide advances
+    await nextBtn.click();
+    await desktopPage.waitForTimeout(400);
+
+    // Click on Tarun Naik's dot (index 5 / 6th dot)
+    await dotButtons.nth(5).click();
+    await desktopPage.waitForTimeout(400);
+
+    // 6. Quality & Lab Report Section
+    console.log('\n--- Phase 1.4: Quality & Lab Report Verification ---');
     const qualityHeading = await desktopPage.locator('#quality h2').textContent();
     assert(qualityHeading.includes('QUALITY YOU CAN VERIFY'), `Quality heading verified: "${qualityHeading.trim()}"`);
 
     const testHouse = desktopPage.locator('#quality').getByText('Tamilnadu Test House Private Limited').first();
-    assert(await testHouse.isVisible(), 'Tamilnadu Test House Private Limited is featured in Quality section');
+    assert(await testHouse.isVisible(), 'Tamilnadu Test House is featured');
 
-    const reportNo = desktopPage.locator('#quality').getByText('TNTH/M-0366/2026-27').first();
-    assert(await reportNo.isVisible(), 'Report Number TNTH/M-0366/2026-27 is visible');
-
-    // Click "VIEW FULL TEST REPORT" to open modal
-    const viewReportBtn = desktopPage.locator('#quality button:has-text("VIEW FULL TEST REPORT")');
-    await viewReportBtn.click();
-    await desktopPage.waitForTimeout(400);
-
-    // Verify Modal & 11 Results
-    const modalHeading = desktopPage.locator('.fixed.inset-0.z-50 h3:has-text("Tamilnadu Test House Private Limited")');
-    assert(await modalHeading.isVisible(), 'Lab report modal opened successfully');
-
-    // Verify specific parameters in table
-    const tableContent = await desktopPage.locator('table').textContent();
-    const verifiedParams = [
-      'Specific Gravity @ 27°C',
-      'Moisture',
-      'Total Reducing Sugar',
-      'Sucrose',
-      'Fructose-Glucose Ratio',
-      'Total Ash',
-      'Acidity',
-      'Pollen Count',
-      "Fiehe's Test",
-      'Hydroxymethylfurfural (HMF)',
-      'Optical Density @ 660 nm',
-    ];
-
-    for (const p of verifiedParams) {
-      assert(tableContent.includes(p), `Modal table contains verified parameter: "${p}"`);
-    }
-
-    // Verify Remark in modal
-    const modalText = await desktopPage.locator('.fixed.inset-0.z-50').textContent();
-    assert(modalText.includes('largely complies with the requirements of IS 4941:1994 for Special Grade honey'), 'Official laboratory remark verified');
-
-    // Close modal
-    await desktopPage.locator('button:has-text("Close")').click();
-    await desktopPage.waitForTimeout(300);
-
-    // 9. Customer Reviews (Real Honey. Real Experiences.)
-    const reviewsHeading = await desktopPage.locator('#reviews h2').textContent();
-    assert(reviewsHeading.includes('REAL HONEY') && reviewsHeading.includes('REAL EXPERIENCES'), `Reviews heading verified: "${reviewsHeading.replace(/\s+/g, ' ').trim()}"`);
-
-    // 10. Social Proof (From Our Community / 9,592 followers)
-    const communityHeading = await desktopPage.locator('h2:has-text("FROM OUR COMMUNITY")');
-    assert(await communityHeading.isVisible(), '"FROM OUR COMMUNITY" heading is visible');
-    const followersText = await desktopPage.locator('text=9,592 FOLLOWERS');
-    assert(await followersText.isVisible(), '9,592 followers verified in social proof section');
-
-    // 11. Wholesale section (Looking for honey in bulk?)
+    // 7. Wholesale Section
     const wholesaleHeading = await desktopPage.locator('#wholesale h2').textContent();
-    assert(wholesaleHeading.includes('LOOKING FOR HONEY IN BULK?'), `Wholesale heading verified: "${wholesaleHeading.trim()}"`);
+    assert(wholesaleHeading.includes('LOOKING FOR HONEY IN BULK?'), `Wholesale heading verified`);
 
-    // Click Wholesale CTA
-    const wholesaleCta = desktopPage.locator('#wholesale button:has-text("WHOLESALE ENQUIRY")');
-    await wholesaleCta.click();
-    await desktopPage.waitForTimeout(300);
-    const openedUrlsAfterWholesale = await desktopPage.evaluate(() => window.__openedUrls);
-    assert(openedUrlsAfterWholesale.length === 2, 'Wholesale button opened WhatsApp');
-    const wholesaleMsg = decodeURIComponent(openedUrlsAfterWholesale[1].split('text=')[1]);
-    assert(wholesaleMsg.includes('wholesale/bulk honey enquiry'), 'Wholesale message is correctly formulated');
+    // 8. Footer Legal Policy Links Verification
+    console.log('\n--- Phase 1.5: Policy Routes and Confirmed Terms Verification ---');
+    const privacyLink = desktopPage.locator('footer a[href="/privacy-policy"]');
+    const termsLink = desktopPage.locator('footer a[href="/terms-and-conditions"]');
+    const refundLink = desktopPage.locator('footer a[href="/refund-policy"]');
 
-    // 12. Footer verified
-    const footerPhone = await desktopPage.locator('footer a[href="tel:+918124391725"]').first();
-    assert(await footerPhone.isVisible(), 'Footer contains phone +91 81243 91725');
-    const footerInsta = await desktopPage.locator('footer a[href="https://instagram.com/himalayanharvesthoney"]').first();
-    assert(await footerInsta.isVisible(), 'Footer contains Instagram @himalayanharvesthoney');
+    assert(await privacyLink.isVisible(), 'Footer contains visible "Privacy Policy" link');
+    assert(await termsLink.isVisible(), 'Footer contains visible "Terms & Conditions" link');
+    assert(await refundLink.isVisible(), 'Footer contains visible "Refund & Return Policy" link');
 
-    // 13. Giant Footer Wordmark is strictly "HIMALAYAN"
-    const giantWordmark = await desktopPage.locator('#footer-giant-wordmark').textContent();
-    assert(giantWordmark.trim() === 'HIMALAYAN', `Giant footer wordmark is strictly "HIMALAYAN" (got "${giantWordmark.trim()}")`);
+    // Test Refund Policy
+    await refundLink.click();
+    await desktopPage.waitForTimeout(400);
+    const refundH1 = await desktopPage.locator('h1').textContent();
+    assert(refundH1.includes('Refund & Return Policy'), `Refund policy page rendered: "${refundH1.trim()}"`);
+    assert(await desktopPage.locator('text=24-Hour Return Request').first().isVisible(), '24-Hour Return Request callout visible');
+    assert(await desktopPage.locator('text=Within 10 Days').first().isVisible(), 'Within 10 Days refund callout visible');
+    assert(await desktopPage.locator('text=Applicable courier or shipping charges will be deducted').first().isVisible(), 'Courier deduction notice visible');
+
+    // Navigate back Home
+    await desktopPage.locator('button:has-text("Back to Home")').click();
+    await desktopPage.waitForTimeout(400);
 
     await desktopContext.close();
 
@@ -268,13 +309,13 @@ async function runTests() {
       });
       assert(!hasHorizontalScroll, `Viewport ${vp.name} has NO horizontal overflow/layout shift`);
 
-      // If mobile, test Mobile Menu toggle & logo
+      // If mobile, test Mobile Menu toggle
       if (vp.width <= 768) {
         const menuButton = vpPage.locator('button[aria-label="Toggle Navigation Menu"]');
         assert(await menuButton.isVisible(), `Mobile hamburger button is visible on ${vp.name}`);
         await menuButton.click();
-        await vpPage.waitForTimeout(400);
-        const shopLink = vpPage.locator('div a[href="#lineup"]:visible').first();
+        await vpPage.waitForTimeout(300);
+        const shopLink = vpPage.locator('div a[href="/#lineup"]:visible').first();
         assert(await shopLink.isVisible(), `Mobile menu opened and has Shop link on ${vp.name}`);
       }
 

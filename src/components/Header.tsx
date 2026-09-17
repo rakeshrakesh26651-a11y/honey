@@ -8,13 +8,22 @@ interface HeaderProps {
   onOpenCart: () => void;
   onToggleMobileMenu: () => void;
   isMobileMenuOpen: boolean;
+  onNavigate?: (path: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   cartCount,
   onOpenCart,
   onToggleMobileMenu,
+  onNavigate,
 }) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate(path);
+    }
+  };
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -12 }}
@@ -27,6 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex-shrink-0">
           <a
             href="/"
+            onClick={(e) => handleLinkClick(e, '/')}
             className="hover:opacity-80 transition-opacity"
             aria-label="Himalayan Harvest Honey Home"
           >
@@ -37,37 +47,36 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center space-x-8">
           <a
-            href="#lineup"
+            href="/#lineup"
+            onClick={(e) => handleLinkClick(e, '/#lineup')}
             className="font-sans text-[15px] font-medium text-[#1e1a16] hover:opacity-60 transition-opacity"
           >
             Shop
           </a>
           <a
-            href="#offers"
-            className="font-sans text-[15px] font-medium text-[#1e1a16] hover:opacity-60 transition-opacity"
-          >
-            Offers
-          </a>
-          <a
-            href="#story"
+            href="/#story"
+            onClick={(e) => handleLinkClick(e, '/#story')}
             className="font-sans text-[15px] font-medium text-[#1e1a16] hover:opacity-60 transition-opacity"
           >
             Our Story
           </a>
           <a
-            href="#quality"
+            href="/#quality"
+            onClick={(e) => handleLinkClick(e, '/#quality')}
             className="font-sans text-[15px] font-medium text-[#1e1a16] hover:opacity-60 transition-opacity"
           >
             Quality
           </a>
           <a
-            href="#reviews"
+            href="/#reviews"
+            onClick={(e) => handleLinkClick(e, '/#reviews')}
             className="font-sans text-[15px] font-medium text-[#1e1a16] hover:opacity-60 transition-opacity"
           >
             Reviews
           </a>
           <a
-            href="#wholesale"
+            href="/#wholesale"
+            onClick={(e) => handleLinkClick(e, '/#wholesale')}
             className="font-sans text-[15px] font-medium text-[#1e1a16] hover:opacity-60 transition-opacity"
           >
             Wholesale
@@ -78,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center space-x-4 lg:space-x-6">
           <button
             onClick={onOpenCart}
-            className="flex items-center space-x-2 text-[#1e1a16] hover:opacity-60 transition-opacity"
+            className="flex items-center space-x-2 text-[#1e1a16] hover:opacity-60 transition-opacity cursor-pointer"
             aria-label="View Shopping Cart"
           >
             <CartIcon size={20} color="#1e1a16" />
@@ -90,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Menu Hamburger Button */}
           <button
             onClick={onToggleMobileMenu}
-            className="p-1 text-[#1e1a16] hover:opacity-60 transition-opacity lg:hidden"
+            className="p-1 text-[#1e1a16] hover:opacity-60 transition-opacity lg:hidden cursor-pointer"
             aria-label="Toggle Navigation Menu"
           >
             <MenuIcon size={24} color="#1e1a16" />

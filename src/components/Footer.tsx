@@ -4,9 +4,10 @@ import { InstagramIcon } from './Icons';
 
 interface FooterProps {
   onOpenCart: () => void;
+  onNavigate?: (path: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenCart }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
   const footerRef = useRef<HTMLElement>(null);
 
   // Track scroll progress as the footer enters and reaches bottom of viewport
@@ -25,12 +26,19 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart }) => {
   // Physical scroll-scrubbed upward translation: 85% -> 0% (reversible, no fade)
   const wordmarkY = useTransform(smoothProgress, [0, 1], ['85%', '0%']);
 
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    if (onNavigate && !path.startsWith('http') && !path.startsWith('tel:') && !path.startsWith('mailto:')) {
+      e.preventDefault();
+      onNavigate(path);
+    }
+  };
+
   return (
     <footer
       ref={footerRef}
       className="relative w-full bg-[#1e1a16] text-white pt-20 sm:pt-24 pb-10 overflow-hidden"
     >
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-14 sm:gap-16">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-12 sm:gap-14">
         {/* Top Link Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           {/* Brand Column (spans 2 on desktop) */}
@@ -98,18 +106,30 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart }) => {
             </p>
             <ul className="space-y-2.5 font-sans text-[15px] text-white/85">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a
+                  href="/"
+                  onClick={(e) => handleLinkClick(e, '/')}
+                  className="hover:text-white transition-colors"
+                >
                   Home
                 </a>
               </li>
               <li>
-                <a href="#lineup" className="hover:text-white transition-colors">
+                <a
+                  href="/#lineup"
+                  onClick={(e) => handleLinkClick(e, '/#lineup')}
+                  className="hover:text-white transition-colors"
+                >
                   Shop
                 </a>
               </li>
               <li>
-                <a href="#offers" className="hover:text-white transition-colors">
-                  Special Offers
+                <a
+                  href="/#quality"
+                  onClick={(e) => handleLinkClick(e, '/#quality')}
+                  className="hover:text-white transition-colors"
+                >
+                  Quality & Lab Report
                 </a>
               </li>
               <li>
@@ -130,22 +150,38 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart }) => {
             </p>
             <ul className="space-y-2.5 font-sans text-[15px] text-white/85">
               <li>
-                <a href="#story" className="hover:text-white transition-colors">
+                <a
+                  href="/#story"
+                  onClick={(e) => handleLinkClick(e, '/#story')}
+                  className="hover:text-white transition-colors"
+                >
                   Our Heritage
                 </a>
               </li>
               <li>
-                <a href="#quality" className="hover:text-white transition-colors">
+                <a
+                  href="/#quality"
+                  onClick={(e) => handleLinkClick(e, '/#quality')}
+                  className="hover:text-white transition-colors"
+                >
                   Quality & Lab Report
                 </a>
               </li>
               <li>
-                <a href="#reviews" className="hover:text-white transition-colors">
+                <a
+                  href="/#reviews"
+                  onClick={(e) => handleLinkClick(e, '/#reviews')}
+                  className="hover:text-white transition-colors"
+                >
                   Customer Reviews
                 </a>
               </li>
               <li>
-                <a href="#wild" className="hover:text-white transition-colors">
+                <a
+                  href="/#wild"
+                  onClick={(e) => handleLinkClick(e, '/#wild')}
+                  className="hover:text-white transition-colors"
+                >
                   Community Gallery
                 </a>
               </li>
@@ -159,7 +195,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart }) => {
             </p>
             <ul className="space-y-2.5 font-sans text-[15px] text-white/85">
               <li>
-                <a href="#wholesale" className="hover:text-white transition-colors">
+                <a
+                  href="/#wholesale"
+                  onClick={(e) => handleLinkClick(e, '/#wholesale')}
+                  className="hover:text-white transition-colors"
+                >
                   Wholesale Enquiry
                 </a>
               </li>
@@ -209,8 +249,35 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart }) => {
           </motion.div>
         </div>
 
-        {/* Bottom Row */}
-        <div className="flex flex-col sm:flex-row items-center justify-between text-[13px] text-white font-sans space-y-2 sm:space-y-0 opacity-90 border-t border-white/10 pt-6">
+        {/* Legal Policy Links Bar */}
+        <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-5 gap-y-2 text-[13px] sm:text-[14px] text-white/75 font-sans border-t border-white/10 pt-6">
+          <a
+            href="/privacy-policy"
+            onClick={(e) => handleLinkClick(e, '/privacy-policy')}
+            className="hover:text-white transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
+          >
+            Privacy Policy
+          </a>
+          <span className="text-white/30 select-none hidden xs:inline">|</span>
+          <a
+            href="/terms-and-conditions"
+            onClick={(e) => handleLinkClick(e, '/terms-and-conditions')}
+            className="hover:text-white transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
+          >
+            Terms & Conditions
+          </a>
+          <span className="text-white/30 select-none hidden xs:inline">|</span>
+          <a
+            href="/refund-policy"
+            onClick={(e) => handleLinkClick(e, '/refund-policy')}
+            className="hover:text-white transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
+          >
+            Refund & Return Policy
+          </a>
+        </div>
+
+        {/* Bottom Copyright Row */}
+        <div className="flex flex-col sm:flex-row items-center justify-between text-[13px] text-white/60 font-sans space-y-2 sm:space-y-0 border-t border-white/5 pt-4">
           <p>© 2026 Himalayan Harvest Honey. All rights reserved.</p>
           <p className="hover:opacity-80 transition-opacity">
             Purity from the mountains

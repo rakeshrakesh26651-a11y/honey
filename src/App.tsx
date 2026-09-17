@@ -9,22 +9,37 @@ import { Hero } from './components/Hero';
 import { FeatureStrip } from './components/FeatureStrip';
 import { ProductSection } from './components/ProductSection';
 import { StorySection } from './components/StorySection';
-import { BundleSection } from './components/BundleSection';
-import { Testimonials } from './components/Testimonials';
 import { QualitySection } from './components/QualitySection';
+import { Testimonials } from './components/Testimonials';
 import { SocialGallery } from './components/SocialGallery';
 import { WholesaleSection } from './components/WholesaleSection';
 import { Newsletter } from './components/Newsletter';
 import { Footer } from './components/Footer';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsAndConditions } from './pages/TermsAndConditions';
+import { RefundPolicy } from './pages/RefundPolicy';
 import { Product } from './data/content';
 import { openWhatsAppOrder } from './utils/whatsapp';
 
 export function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    // Start with 1 item or empty state
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname || '/';
+    }
+    return '/';
+  });
+
+  // Listen to browser popstate (back/forward navigation)
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname || '/');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Initialize Lenis smooth scroll with optimal wheel & touch settings
   useEffect(() => {
@@ -51,38 +66,128 @@ export function App() {
     };
   }, []);
 
-  const handleAddToCart = (product: Product) => {
-    const existing = cartItems.find((item) => item.product.id === product.id);
-    const updatedItems = existing
-      ? cartItems.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      : [...cartItems, { product, quantity: 1 }];
+  const handleNavigate = (path: string) => {
+    if (typeof window === 'undefined') return;
 
-    setCartItems(updatedItems);
-    setIsCartOpen(true);
-    openWhatsAppOrder(updatedItems);
+    if (path.includes('#')) {
+      const [route, hash] = path.split('#');
+      const targetRoute = route || '/';
+      if (currentPath !== targetRoute) {
+        window.history.pushState({}, '', path);
+        setCurrentPath(targetRoute);
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
+    }
+
+    window.history.pushState({}, '', path);
+    setCurrentPath(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleUpdateQuantity = (productId: string, quantity: number) => {
+  /**
+   * Add to Cart handler:
+   * 1. Stores selected variant size (400g / 700g / 1000g)
+   * 2. Different sizes of the same product remain separate line items
+   * 3. Opens cart drawer WITHOUT redirecting or opening WhatsApp
+   */
+  const handleAddToCart = (product: Product, size: string = '400g', quantity: number = 1) => {
+    const itemId = `${product.id}-${size}`;
+    const variantObj = product.variants?.find((v) => v.size === size);
+    const unitPrice = variantObj ? variantObj.price : product.price;
+
+    setCartItems((prevItems) => {
+      const existing = prevItems.find((item) => item.id === itemId);
+      if (existing) {
+        return prevItems.map((item) =>
+          item.id === itemId
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      }
+      return [
+        ...prevItems,
+        {
+          id: itemId,
+          product,
+          size,
+          unitPrice,
+          quantity,
+        },
+      ];
+    });
+
+    // Open Cart Drawer (WITHOUT WhatsApp redirect)
+    setIsCartOpen(true);
+  };
+
+  const handleUpdateQuantity = (itemId: string, quantity: number) => {
     if (quantity <= 0) {
-      handleRemoveItem(productId);
+      handleRemoveItem(itemId);
       return;
     }
     setCartItems((prev) =>
       prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item.id === itemId ? { ...item, quantity } : item
       )
     );
   };
 
-  const handleRemoveItem = (productId: string) => {
-    setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
+  const handleRemoveItem = (itemId: string) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== itemId));
   };
 
   const totalCartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+
+  // Render the appropriate main content based on current path
+  const renderMainContent = () => {
+    if (currentPath === '/privacy-policy') {
+      return <PrivacyPolicy onNavigateHome={() => handleNavigate('/')} />;
+    }
+    if (currentPath === '/terms-and-conditions') {
+      return <TermsAndConditions onNavigateHome={() => handleNavigate('/')} />;
+    }
+    if (currentPath === '/refund-policy') {
+      return <RefundPolicy onNavigateHome={() => handleNavigate('/')} />;
+    }
+
+    return (
+      <>
+        {/* 3. Hero Section */}
+        <Hero onShopClick={() => handleNavigate('/#lineup')} />
+
+        {/* 4. Value / Feature Strip */}
+        <FeatureStrip />
+
+        {/* 5. The Lineup / Bestsellers with 400g / 700g / 1000g Size Selection */}
+        <ProductSection onAddToCart={handleAddToCart} />
+
+        {/* 6. Story Teaser */}
+        <StorySection />
+
+        {/* 7. Quality & Transparency (Lab Report) */}
+        <QualitySection />
+
+        {/* 8. Customer Testimonials Animated Carousel */}
+        <Testimonials />
+
+        {/* 9. Social UGC Gallery */}
+        <SocialGallery />
+
+        {/* 10. Wholesale & Bulk Enquiries */}
+        <WholesaleSection />
+
+        {/* 11. Email Newsletter */}
+        <Newsletter />
+      </>
+    );
+  };
 
   return (
     <motion.div
@@ -100,12 +205,14 @@ export function App() {
         onOpenCart={() => setIsCartOpen(true)}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         isMobileMenuOpen={isMobileMenuOpen}
+        onNavigate={handleNavigate}
       />
 
       {/* Mobile Drawer Menu */}
       <MobileMenu
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        onNavigate={handleNavigate}
       />
 
       {/* Interactive Cart Slide-over */}
@@ -118,41 +225,16 @@ export function App() {
         onCheckout={() => openWhatsAppOrder(cartItems)}
       />
 
-      {/* Main Page Sections */}
+      {/* Main Page Content */}
       <main className="flex-1 w-full">
-        {/* 3. Hero Section */}
-        <Hero onShopClick={() => {}} />
-
-        {/* 4. Value / Feature Strip */}
-        <FeatureStrip />
-
-        {/* 5. The Lineup / Bestsellers */}
-        <ProductSection onAddToCart={handleAddToCart} />
-
-        {/* 6. Story Teaser */}
-        <StorySection />
-
-        {/* 7. Promotional / BUY 1 GET 1 Banner */}
-        <BundleSection onAddToCart={handleAddToCart} />
-
-        {/* 8. Quality & Transparency (Lab Report) */}
-        <QualitySection />
-
-        {/* 9. Testimonials / Kind Words */}
-        <Testimonials />
-
-        {/* 10. Social UGC Gallery */}
-        <SocialGallery />
-
-        {/* 11. Wholesale & Bulk Enquiries */}
-        <WholesaleSection />
-
-        {/* 12. Email Newsletter */}
-        <Newsletter />
+        {renderMainContent()}
       </main>
 
-      {/* 11. Footer */}
-      <Footer onOpenCart={() => setIsCartOpen(true)} />
+      {/* Footer */}
+      <Footer
+        onOpenCart={() => setIsCartOpen(true)}
+        onNavigate={handleNavigate}
+      />
     </motion.div>
   );
 }

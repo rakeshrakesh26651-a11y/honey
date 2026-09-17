@@ -4,6 +4,11 @@
  * and laboratory analysis report TNTH/M-0366/2026-27.
  */
 
+export interface ProductVariant {
+  size: '400g' | '700g' | '1000g' | string;
+  price: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -19,6 +24,7 @@ export interface Product {
   offer?: string;
   badge?: string;
   available: boolean;
+  variants: ProductVariant[];
   whatsappMessage?: string;
 }
 
@@ -35,6 +41,7 @@ export interface Testimonial {
   quote: string;
   author: string;
   role: string;
+  location?: string;
 }
 
 export interface LabTestParameter {
@@ -74,11 +81,7 @@ export const BRAND_CONFIG = {
 export const WHATSAPP_NUMBER = BRAND_CONFIG.whatsappNumber;
 
 /**
- * Verified Promotional Offers from Client Material:
- * - Offer 1: ₹699
- * - Offer 2: ₹799 ONLY
- * - Offer 3: BUY 1 GET 1
- * - Offer 4: 1 KG — ₹900 ("malai thean oru kilo 900 only")
+ * Verified Promotional Offers from Client Material
  */
 export const OFFERS: Offer[] = [
   {
@@ -97,130 +100,141 @@ export const OFFERS: Offer[] = [
     price: 799,
     label: "₹799 ONLY",
   },
-  {
-    title: "BUY 1 GET 1",
-    label: "BUY 1 GET 1",
-    offerTerms: "Offer terms to be confirmed",
-  },
 ];
 
 /**
- * Complete Product Collection:
- * 1. FOREST HONEY (Honey)
- * 2. KOMBU HONEY (Honey)
- * 3. GULKAND HONEY (Honey)
- * 4. KURINJI HONEY (Honey)
- * 5. GHEE (Ghee - separate product category, not described as honey)
+ * Complete Product Collection with 3 Selectable Size Variants:
+ * 1. FOREST HONEY (Honey) — 400g (₹699), 700g (₹999), 1000g (₹1299)
+ * 2. KOMBU HONEY (Honey) — 400g (₹799), 700g (₹1199), 1000g (₹1599)
+ * 3. GULKAND HONEY (Honey) — 400g (₹699), 700g (₹999), 1000g (₹1299)
+ * 4. KURINJI HONEY (Honey) — 400g (₹799), 700g (₹1199), 1000g (₹1599)
+ * 5. GHEE (Ghee - separate category) — 400g (₹699), 700g (₹999), 1000g (₹1299)
  */
 export const PRODUCTS: Product[] = [
   {
     id: "forest-honey",
     name: "Forest Honey",
     category: "Honey",
-    subtitle: "Natural Wild Forest Harvest",
+    subtitle: "Rich • Floral • Natural",
     description: "Natural wild forest honey harvested from native mountain flora.",
     price: 699,
-    weight: "Standard",
-    badge: "SPECIAL OFFER",
+    weight: "400g",
+    badge: "BEST SELLER",
     offer: "₹699",
     image: "/images/product_multifloral.jpg",
     alt: "Forest Honey pure natural harvest jar",
     slug: "forest-honey",
     available: true,
+    variants: [
+      { size: "400g", price: 699 },
+      { size: "700g", price: 999 },
+      { size: "1000g", price: 1299 },
+    ],
   },
   {
     id: "kombu-honey",
     name: "Kombu Honey",
     category: "Honey",
-    subtitle: "Small Bee Wild Comb Honey",
+    subtitle: "Rare • Comb • Natural",
     description: "Traditional small bee wild comb honey harvested through generations of harvesting practice.",
     price: 799,
-    weight: "Standard",
-    badge: "₹799 ONLY",
+    weight: "400g",
+    badge: "RARE",
     offer: "₹799 ONLY",
     image: "/images/product_wildflower.jpg",
     alt: "Kombu Honey pure mountain comb jar",
     slug: "kombu-honey",
     available: true,
+    variants: [
+      { size: "400g", price: 799 },
+      { size: "700g", price: 1199 },
+      { size: "1000g", price: 1599 },
+    ],
   },
   {
     id: "gulkand-honey",
     name: "Gulkand Honey",
     category: "Honey",
-    subtitle: "Natural Rose Petal Infusion",
+    subtitle: "Rose Petal • Natural Blend",
     description: "Pure natural honey blended with traditional gulkand prepared from aromatic rose petals.",
     price: 699,
-    weight: "Standard",
-    badge: "NATURAL BLEND",
+    weight: "400g",
+    badge: undefined,
     offer: "₹699",
-    image: "/images/hero_honey_jar.jpg",
+    image: "/images/product_gulkand.jpg",
     alt: "Gulkand Honey jar with rose petal preserve",
     slug: "gulkand-honey",
     available: true,
+    variants: [
+      { size: "400g", price: 699 },
+      { size: "700g", price: 999 },
+      { size: "1000g", price: 1299 },
+    ],
   },
   {
     id: "kurinji-honey",
     name: "Kurinji Honey",
     category: "Honey",
-    subtitle: "Rare High-Altitude Blossom",
+    subtitle: "High-Altitude • Rare Bloom",
     description: "Rare high-altitude honey harvested from blooming wild mountain kurinji flora.",
     price: 799,
-    weight: "Standard",
-    badge: "SPECIAL RESERVE",
+    weight: "400g",
+    badge: undefined,
     offer: "₹799 ONLY",
     image: "/images/product_raw_reserve.jpg",
     alt: "Kurinji Honey rare high-altitude reserve jar",
     slug: "kurinji-honey",
     available: true,
+    variants: [
+      { size: "400g", price: 799 },
+      { size: "700g", price: 1199 },
+      { size: "1000g", price: 1599 },
+    ],
   },
   {
     id: "ghee",
     name: "Ghee",
     category: "Ghee",
-    subtitle: "Traditional Artisanal Cultured Ghee",
+    subtitle: "Cultured • Traditional Artisanal",
     description: "Traditional artisanal cultured ghee crafted using time-honored methods.",
     price: 699,
-    weight: "Standard",
-    badge: "ARTISANAL GHEE",
+    weight: "400g",
+    badge: undefined,
     offer: "ARTISANAL",
-    image: "/images/bundle_set.jpg",
+    image: "/images/product_ghee.jpg",
     alt: "Traditional artisanal cultured ghee jar",
     slug: "ghee",
     available: true,
+    variants: [
+      { size: "400g", price: 699 },
+      { size: "700g", price: 999 },
+      { size: "1000g", price: 1299 },
+    ],
   },
 ];
 
 /**
- * Additional Confirmed Visible Products & Special Offers
+ * Additional Confirmed Visible Products
  */
 export const MOUNTAIN_HONEY_PRODUCT: Product = {
   id: "mountain-honey",
   name: "Mountain Honey",
   category: "Honey",
-  subtitle: "High-Altitude Harvest — 1 KG",
-  description: "Mountain honey harvested from high altitudes in a 1 KG pack.",
-  weight: "1 KG",
+  subtitle: "High-Altitude Harvest — 1000g",
+  description: "Mountain honey harvested from high altitudes in a 1000g pack.",
+  weight: "1000g",
   price: 900,
   badge: "₹900 ONLY",
-  offer: "1 KG — ₹900",
+  offer: "1000g — ₹900",
   image: "/images/product_wildflower.jpg",
-  alt: "Mountain Honey 1 KG pure high-altitude harvest",
+  alt: "Mountain Honey 1000g pure high-altitude harvest",
   slug: "mountain-honey",
   available: true,
-};
-
-export const PROMO_OFFER_PRODUCT: Product = {
-  id: "buy-1-get-1",
-  name: "Buy 1 Get 1 Special Offer",
-  category: "Honey",
-  subtitle: "High-Altitude Harvest Limited Promotion",
-  description: "Special Buy 1 Get 1 promotional offer.",
-  price: 799,
-  badge: "BUY 1 GET 1",
-  image: "/images/bundle_set.jpg",
-  alt: "Himalayan Harvest Honey Buy 1 Get 1 promotional set",
-  slug: "buy-1-get-1",
-  available: true,
+  variants: [
+    { size: "400g", price: 699 },
+    { size: "700g", price: 999 },
+    { size: "1000g", price: 900 },
+  ],
 };
 
 /**
@@ -377,18 +391,42 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: "Outstanding purity and authentic mountain aroma. You can genuinely taste the fresh high-altitude flora in every spoonful.",
     author: "Kavitha R.",
     role: "CUSTOMER FEEDBACK",
+    location: "Chennai",
   },
   {
     id: "2",
-    quote: "The 1 KG Mountain Honey has become a daily staple for our morning routine. Beautiful texture and rich natural sweetness.",
+    quote: "The Mountain Honey has become a daily staple for our morning routine. Beautiful texture and rich natural sweetness.",
     author: "Senthil M.",
     role: "CUSTOMER REVIEW",
+    location: "Madurai",
   },
   {
     id: "3",
-    quote: "Ordered directly via WhatsApp and the delivery was seamless. Honest quality and unmatched natural taste.",
+    quote: "Ordered directly and the delivery was seamless. Honest quality and unmatched natural mountain taste.",
     author: "Deepak N.",
     role: "CUSTOMER FEEDBACK",
+    location: "Coimbatore",
+  },
+  {
+    id: "4",
+    quote: "Exceptional raw honey quality with rich natural flavor. The small bee kombu honey is truly rare and remarkable.",
+    author: "Ravi",
+    role: "CUSTOMER REVIEW",
+    location: "Salem",
+  },
+  {
+    id: "5",
+    quote: "Pure, unadulterated honey delivered in pristine packaging. Authentic taste that my entire family loves.",
+    author: "Chandra",
+    role: "CUSTOMER FEEDBACK",
+    location: "Trichy",
+  },
+  {
+    id: "6",
+    quote: "Distinct floral notes and incredible texture. You immediately notice the difference from commercial store brands.",
+    author: "Tarun Naik",
+    role: "CUSTOMER REVIEW",
+    location: "Bengaluru",
   },
 ];
 
