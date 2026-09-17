@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
   return (
     <footer
       ref={footerRef}
-      className="relative w-full bg-[#1e1a16] text-white pt-20 sm:pt-24 pb-10 overflow-hidden"
+      className="relative w-full bg-[#08291F] text-[#FAF8F0] pt-20 sm:pt-24 pb-10 overflow-hidden border-t border-[#123C2D]"
     >
       <div className="max-w-[1200px] mx-auto px-6 md:px-10 flex flex-col gap-12 sm:gap-14">
         {/* Top Link Columns */}
@@ -46,7 +46,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
             <div className="flex items-center space-x-2.5">
               <svg
                 viewBox="0 0 24 24"
-                className="w-6 h-6 text-white flex-shrink-0"
+                className="w-6 h-6 text-[#D6A83A] flex-shrink-0"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -54,12 +54,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 <path d="M12 9L7 19H17L12 9Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
                 <circle cx="12" cy="14.5" r="1.2" fill="currentColor" />
               </svg>
-              <h3 className="font-serif text-[22px] font-semibold text-white tracking-[-0.01em]">
+              <h3 className="font-serif text-[22px] font-semibold text-[#FAF8F0] tracking-[-0.01em]">
                 HIMALAYAN HARVEST HONEY
               </h3>
             </div>
 
-            <p className="font-sans text-[15px] leading-[1.6] text-white/80 max-w-[320px]">
+            <p className="font-sans text-[15px] leading-[1.6] text-[#F5F1E6]/80 max-w-[320px]">
               Pure Himalayan honey rooted in generations of harvesting tradition.
             </p>
 
@@ -68,7 +68,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
               <div>
                 <a
                   href="tel:+918124391725"
-                  className="text-white hover:opacity-70 transition-opacity font-mono text-[14px]"
+                  className="text-[#FAF8F0] hover:text-[#D6A83A] transition-colors font-mono text-[14px]"
                 >
                   +91 81243 91725
                 </a>
@@ -78,9 +78,9 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                   href="https://instagram.com/himalayanharvesthoney"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
+                  className="inline-flex items-center space-x-2 text-[#F5F1E6]/80 hover:text-[#D6A83A] transition-colors"
                 >
-                  <InstagramIcon size={16} color="#ffffff" />
+                  <InstagramIcon size={16} color="#D6A83A" />
                   <span>@himalayanharvesthoney</span>
                 </a>
               </div>
@@ -92,7 +92,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 href="https://wa.me/918124391725?text=Hello%20Himalayan%20Harvest%20Honey!%20%F0%9F%91%8B%0A%0AI%20would%20like%20to%20order%20pure%20honey."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center h-[42px] px-6 rounded-full bg-[#657044] hover:bg-[#525b37] text-white font-sans text-[14px] font-medium transition-all shadow-sm"
+                className="inline-flex items-center justify-center h-[44px] px-7 rounded-full bg-[#D6A83A] hover:bg-[#C99528] text-[#08291F] font-sans text-[14px] font-semibold tracking-wide transition-all shadow-md cursor-pointer"
               >
                 ORDER ON WHATSAPP
               </a>
@@ -101,15 +101,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
 
           {/* Explore Links */}
           <div className="space-y-4">
-            <p className="font-sans text-[15px] font-medium text-white tracking-wide">
+            <p className="font-sans text-[15px] font-semibold text-[#FAF8F0] tracking-wide">
               Explore
             </p>
-            <ul className="space-y-2.5 font-sans text-[15px] text-white/85">
+            <ul className="space-y-2.5 font-sans text-[15px] text-[#F5F1E6]/85">
               <li>
                 <a
                   href="/"
                   onClick={(e) => handleLinkClick(e, '/')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Home
                 </a>
@@ -118,7 +118,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 <a
                   href="/#lineup"
                   onClick={(e) => handleLinkClick(e, '/#lineup')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Shop
                 </a>
@@ -127,7 +127,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 <a
                   href="/#quality"
                   onClick={(e) => handleLinkClick(e, '/#quality')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Quality & Lab Report
                 </a>
@@ -135,7 +135,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
               <li>
                 <button
                   onClick={onOpenCart}
-                  className="hover:text-white transition-colors text-left text-white/85 cursor-pointer"
+                  className="hover:text-[#D6A83A] transition-colors text-left text-[#F5F1E6]/85 cursor-pointer"
                 >
                   Cart
                 </button>
@@ -145,15 +145,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
 
           {/* About Links */}
           <div className="space-y-4">
-            <p className="font-sans text-[15px] font-medium text-white tracking-wide">
+            <p className="font-sans text-[15px] font-semibold text-[#FAF8F0] tracking-wide">
               Our Story
             </p>
-            <ul className="space-y-2.5 font-sans text-[15px] text-white/85">
+            <ul className="space-y-2.5 font-sans text-[15px] text-[#F5F1E6]/85">
               <li>
                 <a
                   href="/#story"
                   onClick={(e) => handleLinkClick(e, '/#story')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Our Heritage
                 </a>
@@ -162,7 +162,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 <a
                   href="/#quality"
                   onClick={(e) => handleLinkClick(e, '/#quality')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Quality & Lab Report
                 </a>
@@ -171,7 +171,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 <a
                   href="/#reviews"
                   onClick={(e) => handleLinkClick(e, '/#reviews')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Customer Reviews
                 </a>
@@ -180,7 +180,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 <a
                   href="/#wild"
                   onClick={(e) => handleLinkClick(e, '/#wild')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Community Gallery
                 </a>
@@ -190,15 +190,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
 
           {/* Wholesale & Contact */}
           <div className="space-y-4">
-            <p className="font-sans text-[15px] font-medium text-white tracking-wide">
+            <p className="font-sans text-[15px] font-semibold text-[#FAF8F0] tracking-wide">
               Wholesale & Help
             </p>
-            <ul className="space-y-2.5 font-sans text-[15px] text-white/85">
+            <ul className="space-y-2.5 font-sans text-[15px] text-[#F5F1E6]/85">
               <li>
                 <a
                   href="/#wholesale"
                   onClick={(e) => handleLinkClick(e, '/#wholesale')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Wholesale Enquiry
                 </a>
@@ -208,7 +208,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                   href="https://wa.me/918124391725?text=Hello%20Himalayan%20Harvest%20Honey!%20%F0%9F%91%8B%0A%0APlease%20confirm%20availability%20and%20pricing."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Contact on WhatsApp
                 </a>
@@ -218,7 +218,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                   href="https://instagram.com/himalayanharvesthoney"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#D6A83A] transition-colors"
                 >
                   Instagram
                 </a>
@@ -238,7 +238,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
           >
             <div
               id="footer-giant-wordmark"
-              className="font-serif font-semibold text-white tracking-[-0.01em] whitespace-nowrap text-center text-[70px] xs:text-[86px] sm:text-[116px] md:text-[150px] lg:text-[185px] xl:text-[210px] leading-[0.92] select-none pointer-events-none w-full"
+              className="font-serif font-semibold text-[#FAF8F0] tracking-[-0.01em] whitespace-nowrap text-center text-[70px] xs:text-[86px] sm:text-[116px] md:text-[150px] lg:text-[185px] xl:text-[210px] leading-[0.92] select-none pointer-events-none w-full"
               style={{
                 fontFamily: 'Recia, "Recia Placeholder", serif',
                 letterSpacing: 'clamp(-0.02em, -0.01em + 0.2vw, 0.02em)',
@@ -250,11 +250,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
         </div>
 
         {/* Legal Policy Links Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-5 gap-y-2 text-[13px] sm:text-[14px] text-white/75 font-sans border-t border-white/10 pt-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-5 gap-y-2 text-[13px] sm:text-[14px] text-[#F5F1E6]/80 font-sans border-t border-white/10 pt-6">
           <a
             href="/privacy-policy"
             onClick={(e) => handleLinkClick(e, '/privacy-policy')}
-            className="hover:text-white transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
+            className="hover:text-[#D6A83A] transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
           >
             Privacy Policy
           </a>
@@ -262,7 +262,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
           <a
             href="/terms-and-conditions"
             onClick={(e) => handleLinkClick(e, '/terms-and-conditions')}
-            className="hover:text-white transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
+            className="hover:text-[#D6A83A] transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
           >
             Terms & Conditions
           </a>
@@ -270,7 +270,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
           <a
             href="/refund-policy"
             onClick={(e) => handleLinkClick(e, '/refund-policy')}
-            className="hover:text-white transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
+            className="hover:text-[#D6A83A] transition-colors py-1.5 px-2 inline-block rounded-md hover:bg-white/5 active:bg-white/10"
           >
             Refund & Return Policy
           </a>

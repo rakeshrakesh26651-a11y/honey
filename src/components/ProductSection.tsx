@@ -9,7 +9,7 @@ interface ProductSectionProps {
 
 export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart }) => {
   return (
-    <section id="lineup" className="w-full py-16 md:py-24 bg-[#f7f2e7] overflow-hidden">
+    <section id="lineup" className="w-full py-16 md:py-24 bg-[#F5F1E6] overflow-hidden">
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
         {/* Section Header Row */}
         <motion.div
@@ -22,24 +22,24 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart }) =
           {/* Left: Eyebrow + Editorial Heading */}
           <div className="space-y-1.5 md:space-y-2 text-left">
             <div className="flex items-center gap-2">
-              <span className="w-4 h-[1.5px] bg-[#657044] inline-block" />
-              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.12em] text-[#657044] font-medium">
+              <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
+              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
                 OUR HONEY COLLECTION
               </span>
             </div>
-            <h2 className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#1e1a16] leading-[1.15] tracking-[-0.01em]">
+            <h2 className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#123C2D] leading-[1.15] tracking-[-0.01em]">
               Find Your Perfect Honey
             </h2>
           </div>
 
           {/* Right: Tagline + View All Action */}
           <div className="flex items-center justify-between md:justify-end gap-5 sm:gap-8 pt-2 md:pt-0">
-            <span className="font-sans text-[13px] sm:text-[14px] md:text-[15px] text-[#1e1a16]/65 font-normal tracking-wide">
+            <span className="font-sans text-[13px] sm:text-[14px] md:text-[15px] text-[#607568] font-normal tracking-wide">
               Pure. Rare. Powerful.
             </span>
             <a
               href="#lineup"
-              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-medium text-[#1e1a16] hover:text-[#657044] transition-colors"
+              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-medium text-[#123C2D] hover:text-[#D6A83A] transition-colors"
             >
               <span>View All</span>
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>

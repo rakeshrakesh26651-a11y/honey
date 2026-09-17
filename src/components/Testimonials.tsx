@@ -55,12 +55,15 @@ export const Testimonials: React.FC = () => {
     ? containerWidth / 2 - (activeIndex * step + cardWidth / 2)
     : 0;
 
-  // Gentle auto-advancing carousel (paused on hover / touch)
+  // Gentle auto-advancing carousel (paused on hover / touch / reduced motion)
   useEffect(() => {
     if (isPaused) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % totalReviews);
-    }, 5500);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, [isPaused, totalReviews]);
@@ -97,7 +100,7 @@ export const Testimonials: React.FC = () => {
   return (
     <section
       id="reviews"
-      className="relative w-full py-20 lg:py-32 bg-[#f7f2e7] overflow-hidden select-none"
+      className="relative w-full py-20 lg:py-32 bg-[#F5F1E6] overflow-hidden select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -115,7 +118,7 @@ export const Testimonials: React.FC = () => {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute top-1/4 -left-24 w-96 h-96 rounded-full bg-[#c88a2b]/[0.05] blur-3xl pointer-events-none"
+        className="absolute top-1/4 -left-24 w-96 h-96 rounded-full bg-[#D6A83A]/[0.08] blur-3xl pointer-events-none"
       />
       <motion.div
         animate={{
@@ -128,7 +131,7 @@ export const Testimonials: React.FC = () => {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute bottom-1/4 -right-24 w-96 h-96 rounded-full bg-[#657044]/[0.05] blur-3xl pointer-events-none"
+        className="absolute bottom-1/4 -right-24 w-96 h-96 rounded-full bg-[#123C2D]/[0.08] blur-3xl pointer-events-none"
       />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8">
@@ -142,11 +145,11 @@ export const Testimonials: React.FC = () => {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-center justify-center gap-2"
           >
-            <span className="w-4 h-[1.5px] bg-[#657044] inline-block" />
-            <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#657044] font-medium">
+            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
+            <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
               CUSTOMER EXPERIENCES
             </span>
-            <span className="w-4 h-[1.5px] bg-[#657044] inline-block" />
+            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
           </motion.div>
 
           {/* Main Heading */}
@@ -155,7 +158,7 @@ export const Testimonials: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-[32px] sm:text-[44px] md:text-[50px] font-semibold text-[#1e1a16] leading-[1.1] tracking-[-0.01em]"
+            className="font-serif text-[32px] sm:text-[44px] md:text-[50px] font-semibold text-[#123C2D] leading-[1.1] tracking-[-0.01em]"
           >
             REAL EXPERIENCES.
           </motion.h2>
@@ -166,7 +169,7 @@ export const Testimonials: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-sans text-[16px] sm:text-[18px] md:text-[19px] font-normal text-[#1e1a16]/75 leading-[1.5]"
+            className="font-sans text-[16px] sm:text-[18px] md:text-[19px] font-normal text-[#2A2118]/80 leading-[1.5]"
           >
             Genuine customer experiences shared by honey lovers across Tamil Nadu and beyond.
           </motion.p>
@@ -210,10 +213,10 @@ export const Testimonials: React.FC = () => {
                     <div
                       className={`h-full flex flex-col justify-between p-6 sm:p-7 md:p-8 rounded-[20px] transition-all duration-700 select-none cursor-pointer ${
                         isActive
-                          ? 'bg-white shadow-[0_16px_40px_rgba(30,26,22,0.09)] border border-[#657044]/35 scale-[1.03] -translate-y-1.5 opacity-100 ring-1 ring-[#657044]/20'
+                          ? 'bg-[#FAF8F0] shadow-[0_20px_45px_rgba(18,60,45,0.09)] border border-[#D6A83A]/70 scale-[1.04] -translate-y-2 opacity-100 ring-1 ring-[#D6A83A]/40'
                           : distFromActive === 1
-                          ? 'bg-white/75 shadow-xs border border-[#1e1a16]/[0.07] scale-[0.95] opacity-65 hover:opacity-90 hover:bg-white hover:scale-[0.97]'
-                          : 'bg-white/50 shadow-2xs border border-[#1e1a16]/[0.05] scale-[0.91] opacity-40 hover:opacity-75 hover:bg-white/80'
+                          ? 'bg-[#FAF8F0]/85 shadow-xs border border-[#D9D5C8] scale-[0.93] opacity-60 hover:opacity-85 hover:bg-[#FAF8F0]'
+                          : 'bg-[#FAF8F0]/50 shadow-2xs border border-[#D9D5C8]/70 scale-[0.88] opacity-35 hover:opacity-65'
                       }`}
                     >
                       {/* Quote & Rating Stars */}
@@ -222,15 +225,15 @@ export const Testimonials: React.FC = () => {
                           <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
                               isActive
-                                ? 'bg-[#657044]/10 text-[#657044]'
-                                : 'bg-[#1e1a16]/[0.04] text-[#1e1a16]/60'
+                                ? 'bg-[#D6A83A]/15 text-[#D6A83A]'
+                                : 'bg-white text-[#D6A83A] border border-[#D9D5C8]'
                             }`}
                           >
-                            <QuoteIcon size={22} color={isActive ? '#657044' : '#1e1a16'} />
+                            <QuoteIcon size={20} color="#D6A83A" />
                           </div>
 
                           {/* 5 Golden Stars */}
-                          <div className="flex items-center space-x-1 text-[#f2c94c]">
+                          <div className="flex items-center space-x-1 text-[#D6A83A]">
                             {[...Array(5)].map((_, i) => (
                               <svg
                                 key={i}
@@ -245,31 +248,31 @@ export const Testimonials: React.FC = () => {
                           </div>
                         </div>
 
-                        <p className="font-serif text-[17px] sm:text-[18px] md:text-[19px] font-normal text-[#1e1a16] leading-[1.48]">
+                        <p className="font-serif text-[17px] sm:text-[18px] md:text-[19px] font-normal text-[#123C2D] leading-[1.48]">
                           "{t.quote}"
                         </p>
                       </div>
 
                       {/* Author Info & Label */}
-                      <div className="pt-5 mt-4 border-t border-[#1e1a16]/[0.08] flex items-center justify-between">
+                      <div className="pt-5 mt-4 border-t border-[#D9D5C8] flex items-center justify-between">
                         <div>
-                          <h4 className="font-sans text-[15px] sm:text-[16px] font-semibold text-[#1e1a16] leading-tight">
+                          <h4 className="font-sans text-[15px] sm:text-[16px] font-semibold text-[#123C2D] leading-tight">
                             {t.author}
                           </h4>
                           {t.location && (
-                            <span className="font-sans text-[12px] text-[#1e1a16]/55 block mt-0.5">
+                            <span className="font-sans text-[12px] text-[#607568] block mt-0.5">
                               {t.location}
                             </span>
                           )}
                         </div>
                         <span
-                          className={`font-mono text-[10.5px] font-medium tracking-[0.08em] uppercase px-2.5 py-1 rounded-full transition-colors ${
+                          className={`font-mono text-[10px] font-semibold tracking-[0.1em] uppercase px-2.5 py-1 rounded-full transition-colors ${
                             isActive
-                              ? 'bg-[#657044]/15 text-[#657044]'
-                              : 'bg-[#1e1a16]/[0.05] text-[#1e1a16]/60'
+                              ? 'bg-[#123C2D]/10 text-[#123C2D]'
+                              : 'bg-white text-[#607568] border border-[#D9D5C8]/80'
                           }`}
                         >
-                          {t.role}
+                          CUSTOMER REVIEW
                         </span>
                       </div>
                     </div>
@@ -292,7 +295,7 @@ export const Testimonials: React.FC = () => {
               type="button"
               onClick={handlePrev}
               aria-label="Previous testimonial"
-              className="w-11 h-11 rounded-full bg-white border border-[#1e1a16]/15 hover:bg-[#1e1a16] hover:text-white text-[#1e1a16] flex items-center justify-center transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer active:scale-95"
+              className="w-11 h-11 rounded-full bg-white border border-[#D9D5C8] hover:bg-[#123C2D] hover:text-[#FAF8F0] hover:border-[#123C2D] text-[#123C2D] flex items-center justify-center transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer active:scale-95"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -316,8 +319,8 @@ export const Testimonials: React.FC = () => {
                   aria-label={`Go to testimonial ${i + 1}`}
                   className={`transition-all duration-300 rounded-full cursor-pointer ${
                     i === activeIndex
-                      ? 'w-7 h-2.5 bg-[#657044]'
-                      : 'w-2.5 h-2.5 bg-[#1e1a16]/20 hover:bg-[#1e1a16]/40'
+                      ? 'w-7 h-2 bg-[#D6A83A]'
+                      : 'w-2 h-2 bg-[#D9D5C8] hover:bg-[#607568]'
                   }`}
                 />
               ))}
@@ -328,7 +331,7 @@ export const Testimonials: React.FC = () => {
               type="button"
               onClick={handleNext}
               aria-label="Next testimonial"
-              className="w-11 h-11 rounded-full bg-white border border-[#1e1a16]/15 hover:bg-[#1e1a16] hover:text-white text-[#1e1a16] flex items-center justify-center transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer active:scale-95"
+              className="w-11 h-11 rounded-full bg-white border border-[#D9D5C8] hover:bg-[#123C2D] hover:text-[#FAF8F0] hover:border-[#123C2D] text-[#123C2D] flex items-center justify-center transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer active:scale-95"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

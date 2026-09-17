@@ -53,17 +53,25 @@
 }
 
 :root {
-  --bg-cream: #f7f2e7;
-  --text-espresso: #1e1a16;
-  --accent-forest: #657044;
-  --accent-honey: #c88a2b;
-  --badge-butter: #f2c94c;
+  --bg-cream: #F5F1E6;
+  --text-espresso: #123C2D;
+  --accent-forest: #123C2D;
+  --accent-honey: #D6A83A;
+  --badge-butter: #D6A83A;
   --white: #ffffff;
-  --token-1974469e-4601-4e12-a16e-16421811598c: #f7f2e7;
-  --token-cd62a7dd-ff16-4091-8c01-602c7bd35178: #1e1a16;
-  --token-6226a574-2110-4960-9a2f-d52a6002e23b: #657044;
-  --token-87abc887-083b-4c56-8642-c84aa1a13bdf: #c88a2b;
-  --token-86798048-8202-49ef-ae17-441f2eeeb0b1: #f2c94c;
+  --primary-forest: #123C2D;
+  --dark-forest: #08291F;
+  --deep-green: #0B3327;
+  --light-cream: #FAF8F0;
+  --warm-honey: #C99528;
+  --dark-brown: #2A2118;
+  --muted-green: #607568;
+  --light-border: #D9D5C8;
+  --token-1974469e-4601-4e12-a16e-16421811598c: #F5F1E6;
+  --token-cd62a7dd-ff16-4091-8c01-602c7bd35178: #123C2D;
+  --token-6226a574-2110-4960-9a2f-d52a6002e23b: #123C2D;
+  --token-87abc887-083b-4c56-8642-c84aa1a13bdf: #D6A83A;
+  --token-86798048-8202-49ef-ae17-441f2eeeb0b1: #D6A83A;
   --token-d782bb97-dc9e-44a3-a092-893cfc4a9fbf: #ffffff;
 }
 
@@ -101,8 +109,8 @@ body {
 
 /* Custom transitions and scrollbar */
 ::selection {
-  background: #c88a2b;
-  color: #ffffff;
+  background: #D6A83A;
+  color: #08291F;
 }
 
 /* Custom scrollbar styling */
@@ -110,12 +118,12 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f7f2e7;
+  background: #F5F1E6;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(30, 26, 22, 0.2);
+  background: rgba(18, 60, 45, 0.25);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(30, 26, 22, 0.4);
+  background: rgba(18, 60, 45, 0.45);
 }

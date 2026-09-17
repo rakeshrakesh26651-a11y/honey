@@ -37,10 +37,10 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="overflow-hidden bg-[#f7f2e7] border-b border-[#1e1a16]/[0.08] lg:hidden z-30"
+          className="overflow-hidden bg-[#F5F1E6] border-b border-[#D9D5C8] lg:hidden z-30"
         >
           <div className="px-6 py-6 flex flex-col space-y-4">
-            <div className="pb-3 border-b border-[#1e1a16]/10">
+            <div className="pb-3 border-b border-[#D9D5C8]">
               <a href="/" onClick={(e) => handleLinkClick(e, '/')}>
                 <BrandLogo variant="mobile" />
               </a>
@@ -50,7 +50,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, onNavig
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
-                className="font-sans text-[20px] font-medium text-[#1e1a16] hover:opacity-60 transition-opacity"
+                className="font-sans text-[20px] font-medium text-[#123C2D] hover:text-[#D6A83A] transition-colors"
               >
                 {link.label}
               </a>

@@ -11,7 +11,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', variant = 
       <div className={`flex items-center space-x-3 select-none ${className}`}>
         <svg
           viewBox="0 0 28 28"
-          className="w-7 h-7 sm:w-8 sm:h-8 text-[#1e1a16] flex-shrink-0"
+          className="w-7 h-7 sm:w-8 sm:h-8 text-[#D6A83A] flex-shrink-0"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
@@ -30,7 +30,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', variant = 
           />
           <circle cx="14" cy="16.5" r="1.5" fill="currentColor" />
         </svg>
-        <span className="font-serif text-[22px] sm:text-[28px] md:text-[32px] font-medium tracking-[-0.02em] text-[#1e1a16] leading-none whitespace-nowrap">
+        <span className="font-serif text-[22px] sm:text-[28px] md:text-[32px] font-medium tracking-[-0.02em] text-[#FAF8F0] leading-none whitespace-nowrap">
           HIMALAYAN HARVEST HONEY
         </span>
       </div>
@@ -42,7 +42,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', variant = 
       <div className={`flex items-center space-x-2 select-none ${className}`}>
         <svg
           viewBox="0 0 24 24"
-          className="w-5 h-5 text-[#1e1a16] flex-shrink-0"
+          className="w-5 h-5 text-[#123C2D] flex-shrink-0"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
@@ -59,9 +59,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', variant = 
             strokeWidth="1.3"
             strokeLinejoin="round"
           />
-          <circle cx="12" cy="14.5" r="1.2" fill="currentColor" />
+          <circle cx="12" cy="14.5" r="1.2" fill="#D6A83A" />
         </svg>
-        <span className="font-serif text-[17px] sm:text-[19px] font-semibold tracking-[-0.01em] text-[#1e1a16] whitespace-nowrap leading-none">
+        <span className="font-serif text-[17px] sm:text-[19px] font-semibold tracking-[-0.01em] text-[#123C2D] whitespace-nowrap leading-none">
           HIMALAYAN HARVEST HONEY
         </span>
       </div>
@@ -73,7 +73,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', variant = 
     <div className={`flex items-center space-x-2 sm:space-x-2.5 select-none ${className}`}>
       <svg
         viewBox="0 0 24 24"
-        className="w-5 h-5 sm:w-6 sm:h-6 text-[#1e1a16] flex-shrink-0"
+        className="w-5 h-5 sm:w-6 sm:h-6 text-[#123C2D] flex-shrink-0"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
@@ -90,9 +90,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', variant = 
           strokeWidth="1.3"
           strokeLinejoin="round"
         />
-        <circle cx="12" cy="14.5" r="1.2" fill="currentColor" />
+        <circle cx="12" cy="14.5" r="1.2" fill="#D6A83A" />
       </svg>
-      <span className="font-serif text-[16px] xs:text-[18px] sm:text-[21px] font-semibold tracking-[-0.01em] text-[#1e1a16] whitespace-nowrap leading-none">
+      <span className="font-serif text-[16px] xs:text-[18px] sm:text-[21px] font-semibold tracking-[-0.01em] text-[#123C2D] whitespace-nowrap leading-none">
         HIMALAYAN HARVEST HONEY
       </span>
     </div>

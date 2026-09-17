@@ -194,7 +194,7 @@ export function App() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="min-h-screen bg-[#f7f2e7] flex flex-col selection:bg-[#c88a2b] selection:text-white"
+      className="min-h-screen bg-[#F5F1E6] flex flex-col selection:bg-[#D6A83A] selection:text-[#08291F]"
     >
       {/* 1. Announcement Bar */}
       <AnnouncementBar />

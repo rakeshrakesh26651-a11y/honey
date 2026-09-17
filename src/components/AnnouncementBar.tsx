@@ -13,16 +13,16 @@ export const AnnouncementBar: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="bg-[#c88a2b] text-white py-2 overflow-hidden select-none border-b border-[#c88a2b]"
+      className="bg-[#08291F] text-[#FAF8F0] py-2 overflow-hidden select-none border-b border-[#123C2D]"
       style={{ height: '34px', display: 'flex', alignItems: 'center' }}
     >
       <div className="animate-marquee flex items-center whitespace-nowrap">
         {items.map((_, i) => (
           <div key={i} className="flex items-center space-x-6 mx-4">
-            <span className="font-mono text-[13px] uppercase tracking-wide leading-none font-normal text-white">
+            <span className="font-mono text-[12px] sm:text-[13px] uppercase tracking-wider leading-none font-medium text-[#FAF8F0]">
               {itemText}
             </span>
-            <OilDropIcon size={14} color="#ffffff" className="inline-block opacity-90" />
+            <OilDropIcon size={13} color="#D6A83A" className="inline-block opacity-95" />
           </div>
         ))}
       </div>

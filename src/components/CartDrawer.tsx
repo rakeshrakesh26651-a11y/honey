@@ -46,7 +46,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#1e1a16]/40 backdrop-blur-sm cursor-pointer"
+            className="fixed inset-0 bg-[#08291F]/50 backdrop-blur-sm cursor-pointer"
           />
 
           {/* Drawer panel */}
@@ -57,21 +57,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             role="dialog"
             aria-label="Your Cart"
-            className="relative w-full max-w-[440px] h-full bg-[#f7f2e7] shadow-2xl flex flex-col z-10 border-l border-[#1e1a16]/10"
+            className="relative w-full max-w-[440px] h-full bg-[#FAF8F0] shadow-2xl flex flex-col z-10 border-l border-[#D9D5C8]"
           >
             {/* Drawer Header */}
-            <div className="p-5 sm:p-6 border-b border-[#1e1a16]/10 flex items-center justify-between bg-white/60 backdrop-blur-xs">
+            <div className="p-5 sm:p-6 border-b border-[#D9D5C8] flex items-center justify-between bg-white/80 backdrop-blur-xs">
               <div className="flex items-center space-x-2.5">
-                <h3 className="font-serif text-[22px] sm:text-[24px] font-semibold text-[#1e1a16]">
+                <h3 className="font-serif text-[22px] sm:text-[24px] font-semibold text-[#123C2D]">
                   Your Cart
                 </h3>
-                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-[#1e1a16] text-white font-medium">
+                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-[#123C2D] text-[#FAF8F0] font-medium">
                   {totalItemCount}
                 </span>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 text-[#1e1a16] hover:bg-[#1e1a16]/5 rounded-full transition-colors cursor-pointer"
+                className="p-2 text-[#123C2D] hover:bg-[#123C2D]/5 rounded-full transition-colors cursor-pointer"
                 aria-label="Close cart"
               >
                 <CloseIcon size={20} />
@@ -79,21 +79,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
 
             {/* Free Shipping Meter */}
-            <div className="px-6 py-3 bg-[#c88a2b]/10 border-b border-[#c88a2b]/20">
-              <div className="flex items-center justify-between text-xs font-mono mb-1.5 text-[#1e1a16]">
+            <div className="px-6 py-3 bg-[#D6A83A]/10 border-b border-[#D6A83A]/25">
+              <div className="flex items-center justify-between text-xs font-mono mb-1.5 text-[#123C2D]">
                 <span className="flex items-center gap-1.5">
-                  <OilDropIcon size={12} color="#c88a2b" />
+                  <OilDropIcon size={12} color="#D6A83A" />
                   {freeShippingRemaining === 0 ? (
-                    <span className="font-bold text-[#c88a2b]">You've unlocked free shipping!</span>
+                    <span className="font-bold text-[#C99528]">You've unlocked free shipping!</span>
                   ) : (
                     <span>Add ₹{freeShippingRemaining.toFixed(0)} more for free shipping</span>
                   )}
                 </span>
-                <span>{freeShippingPercent.toFixed(0)}%</span>
+                <span className="font-semibold text-[#123C2D]">{freeShippingPercent.toFixed(0)}%</span>
               </div>
-              <div className="w-full bg-[#1e1a16]/10 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-[#D9D5C8] h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-[#c88a2b] h-full transition-all duration-300 rounded-full"
+                  className="bg-[#D6A83A] h-full transition-all duration-300 rounded-full"
                   style={{ width: `${freeShippingPercent}%` }}
                 />
               </div>
@@ -103,16 +103,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-16">
-                  <div className="w-16 h-16 rounded-full bg-[#1e1a16]/5 flex items-center justify-center">
-                    <OilDropIcon size={32} color="#657044" />
+                  <div className="w-16 h-16 rounded-full bg-[#123C2D]/5 flex items-center justify-center">
+                    <OilDropIcon size={32} color="#123C2D" />
                   </div>
-                  <h4 className="font-serif text-2xl text-[#1e1a16]">Your cart is empty</h4>
-                  <p className="font-sans text-sm text-[#1e1a16]/70 max-w-[260px]">
+                  <h4 className="font-serif text-2xl text-[#123C2D]">Your cart is empty</h4>
+                  <p className="font-sans text-sm text-[#2A2118]/70 max-w-[260px]">
                     Pure Himalayan honey is waiting. Discover our single-origin mountain harvests.
                   </p>
                   <button
                     onClick={onClose}
-                    className="mt-4 px-6 py-3 rounded-full bg-[#657044] text-white font-sans text-sm font-medium hover:bg-[#525b37] transition-colors cursor-pointer"
+                    className="mt-4 px-6 py-3 rounded-full bg-[#123C2D] text-[#FAF8F0] font-sans text-sm font-medium hover:bg-[#08291F] transition-colors cursor-pointer"
                   >
                     Explore The Collection
                   </button>
@@ -121,57 +121,57 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex space-x-3.5 p-3.5 rounded-[12px] bg-white border border-[#1e1a16]/[0.06] shadow-2xs"
+                    className="flex space-x-3.5 p-3.5 rounded-[12px] bg-white border border-[#D9D5C8] shadow-2xs"
                   >
                     <img
                       src={item.product.image}
                       alt={item.product.alt}
-                      className="w-18 h-22 object-cover rounded-[8px] bg-[#1e1a16]/5 flex-shrink-0"
+                      className="w-18 h-22 object-cover rounded-[8px] bg-[#F5F1E6] flex-shrink-0"
                     />
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <div className="flex justify-between items-start gap-2">
-                          <h4 className="font-serif text-[16px] font-medium text-[#1e1a16] leading-tight">
+                          <h4 className="font-serif text-[16px] font-medium text-[#123C2D] leading-tight">
                             {item.product.name}
                           </h4>
                           <button
                             onClick={() => onRemoveItem(item.id)}
-                            className="text-xs text-[#1e1a16]/40 hover:text-[#c88a2b] transition-colors p-0.5 cursor-pointer"
+                            className="text-xs text-[#2A2118]/40 hover:text-[#D6A83A] transition-colors p-0.5 cursor-pointer"
                             aria-label={`Remove ${item.product.name} (${item.size})`}
                           >
                             Remove
                           </button>
                         </div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-[#1e1a16]/5 text-[#1e1a16] font-semibold">
+                          <span className="font-mono text-[11px] px-2 py-0.5 rounded-md bg-[#F5F1E6] text-[#123C2D] font-semibold">
                             {item.size}
                           </span>
-                          <span className="font-sans text-xs text-[#1e1a16]/60">
+                          <span className="font-sans text-xs text-[#2A2118]/60">
                             ₹{item.unitPrice} each
                           </span>
                         </div>
                       </div>
 
                       {/* Quantity Selector & Line Total */}
-                      <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-[#1e1a16]/[0.05]">
-                        <div className="flex items-center border border-[#1e1a16]/20 rounded-full px-2 py-0.5 bg-[#f7f2e7]/70">
+                      <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-[#D9D5C8]/40">
+                        <div className="flex items-center border border-[#D9D5C8] rounded-full px-2 py-0.5 bg-[#FAF8F0]">
                           <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                            className="w-4 h-4 flex items-center justify-center text-xs text-[#1e1a16] hover:opacity-60 font-mono cursor-pointer"
+                            className="w-4 h-4 flex items-center justify-center text-xs text-[#123C2D] hover:opacity-60 font-mono cursor-pointer"
                             aria-label="Decrease quantity"
                           >
                             −
                           </button>
-                          <span className="px-2 text-xs font-mono font-medium select-none">{item.quantity}</span>
+                          <span className="px-2 text-xs font-mono font-medium text-[#123C2D] select-none">{item.quantity}</span>
                           <button
                             onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="w-4 h-4 flex items-center justify-center text-xs text-[#1e1a16] hover:opacity-60 font-mono cursor-pointer"
+                            className="w-4 h-4 flex items-center justify-center text-xs text-[#123C2D] hover:opacity-60 font-mono cursor-pointer"
                             aria-label="Increase quantity"
                           >
                             +
                           </button>
                         </div>
-                        <span className="font-sans text-[15px] font-bold text-[#1e1a16]">
+                        <span className="font-sans text-[15px] font-bold text-[#123C2D]">
                           ₹{item.unitPrice * item.quantity}
                         </span>
                       </div>
@@ -183,25 +183,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
             {/* Drawer Footer */}
             {items.length > 0 && (
-              <div className="p-5 sm:p-6 border-t border-[#1e1a16]/10 bg-white/70 backdrop-blur-xs space-y-3">
+              <div className="p-5 sm:p-6 border-t border-[#D9D5C8] bg-white/80 backdrop-blur-xs space-y-3">
                 <div className="flex justify-between items-baseline">
-                  <span className="font-sans text-sm text-[#1e1a16]/70">Subtotal</span>
-                  <span className="font-serif text-2xl font-semibold text-[#1e1a16]">
+                  <span className="font-sans text-sm text-[#2A2118]/70">Subtotal</span>
+                  <span className="font-serif text-2xl font-semibold text-[#123C2D]">
                     ₹{subtotal.toLocaleString('en-IN')}
                   </span>
                 </div>
-                <p className="font-sans text-xs text-[#1e1a16]/60">
+                <p className="font-sans text-xs text-[#2A2118]/60">
                   Taxes and shipping calculated at checkout.
                 </p>
                 <button
                   onClick={() => (onCheckout ? onCheckout() : openWhatsAppOrder(items))}
-                  className="w-full py-3.5 rounded-full bg-[#1e1a16] hover:bg-[#332c25] text-white font-sans text-[15px] font-medium transition-all shadow-sm cursor-pointer"
+                  className="w-full py-3.5 rounded-full bg-[#123C2D] hover:bg-[#D6A83A] hover:text-[#08291F] text-[#FAF8F0] font-sans text-[15px] font-semibold transition-all shadow-sm cursor-pointer"
                 >
                   Order via WhatsApp / Checkout
                 </button>
                 <button
                   onClick={onClose}
-                  className="w-full py-2 text-center text-xs font-sans text-[#1e1a16]/60 hover:text-[#1e1a16] transition-colors cursor-pointer"
+                  className="w-full py-2 text-center text-xs font-sans text-[#2A2118]/60 hover:text-[#123C2D] transition-colors cursor-pointer"
                 >
                   Continue Shopping
                 </button>
