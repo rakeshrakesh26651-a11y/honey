@@ -77,7 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                 <a
                   href="https://instagram.com/himalayanharvesthoney"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center space-x-2 text-[#F5F1E6]/80 hover:text-[#D6A83A] transition-colors"
                 >
                   <InstagramIcon size={16} color="#D6A83A" />
@@ -116,20 +116,29 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
               </li>
               <li>
                 <a
-                  href="/#lineup"
-                  onClick={(e) => handleLinkClick(e, '/#lineup')}
+                  href="/shop"
+                  onClick={(e) => handleLinkClick(e, '/shop')}
                   className="hover:text-[#D6A83A] transition-colors"
                 >
-                  Shop
+                  Shop Honey
                 </a>
               </li>
               <li>
                 <a
-                  href="/#quality"
-                  onClick={(e) => handleLinkClick(e, '/#quality')}
+                  href="/lab-reports"
+                  onClick={(e) => handleLinkClick(e, '/lab-reports')}
                   className="hover:text-[#D6A83A] transition-colors"
                 >
-                  Quality & Lab Report
+                  Quality & Lab Reports
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/faq"
+                  onClick={(e) => handleLinkClick(e, '/faq')}
+                  className="hover:text-[#D6A83A] transition-colors"
+                >
+                  Frequently Asked Questions
                 </a>
               </li>
               <li>
@@ -151,8 +160,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
             <ul className="space-y-2.5 font-sans text-[15px] text-[#F5F1E6]/85">
               <li>
                 <a
-                  href="/#story"
-                  onClick={(e) => handleLinkClick(e, '/#story')}
+                  href="/about"
+                  onClick={(e) => handleLinkClick(e, '/about')}
                   className="hover:text-[#D6A83A] transition-colors"
                 >
                   Our Heritage
@@ -160,29 +169,20 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
               </li>
               <li>
                 <a
-                  href="/#quality"
-                  onClick={(e) => handleLinkClick(e, '/#quality')}
+                  href="/lab-reports"
+                  onClick={(e) => handleLinkClick(e, '/lab-reports')}
                   className="hover:text-[#D6A83A] transition-colors"
                 >
-                  Quality & Lab Report
+                  Laboratory Purity
                 </a>
               </li>
               <li>
                 <a
-                  href="/#reviews"
-                  onClick={(e) => handleLinkClick(e, '/#reviews')}
+                  href="/reviews"
+                  onClick={(e) => handleLinkClick(e, '/reviews')}
                   className="hover:text-[#D6A83A] transition-colors"
                 >
                   Customer Reviews
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/#wild"
-                  onClick={(e) => handleLinkClick(e, '/#wild')}
-                  className="hover:text-[#D6A83A] transition-colors"
-                >
-                  Community Gallery
                 </a>
               </li>
             </ul>
@@ -191,16 +191,16 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
           {/* Wholesale & Contact */}
           <div className="space-y-4">
             <p className="font-sans text-[15px] font-semibold text-[#FAF8F0] tracking-wide">
-              Wholesale & Help
+              Help & Wholesale
             </p>
             <ul className="space-y-2.5 font-sans text-[15px] text-[#F5F1E6]/85">
               <li>
                 <a
-                  href="/#wholesale"
-                  onClick={(e) => handleLinkClick(e, '/#wholesale')}
+                  href="/contact"
+                  onClick={(e) => handleLinkClick(e, '/contact')}
                   className="hover:text-[#D6A83A] transition-colors"
                 >
-                  Wholesale Enquiry
+                  Contact Us
                 </a>
               </li>
               <li>
@@ -210,7 +210,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenCart, onNavigate }) => {
                   rel="noopener noreferrer"
                   className="hover:text-[#D6A83A] transition-colors"
                 >
-                  Contact on WhatsApp
+                  WhatsApp Ordering
                 </a>
               </li>
               <li>

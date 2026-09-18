@@ -2,12 +2,23 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ProductCard } from './ProductCard';
 import { PRODUCTS, Product } from '../data/content';
+import { AnimatedHeading } from './motion/AnimatedHeading';
 
 interface ProductSectionProps {
   onAddToCart: (product: Product, size: string, quantity: number) => void;
+  onNavigate?: (path: string) => void;
 }
 
-export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart }) => {
+export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart, onNavigate }) => {
+  const handleViewAll = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate('/shop');
+    } else if (typeof window !== 'undefined') {
+      window.location.href = '/shop';
+    }
+  };
+
   return (
     <section id="lineup" className="w-full py-16 md:py-24 bg-[#F5F1E6] overflow-hidden">
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
@@ -27,9 +38,11 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart }) =
                 OUR HONEY COLLECTION
               </span>
             </div>
-            <h2 className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#123C2D] leading-[1.15] tracking-[-0.01em]">
-              Find Your Perfect Honey
-            </h2>
+            <AnimatedHeading
+              text="FIND YOUR PERFECT HONEY"
+              as="h2"
+              className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#123C2D] leading-[1.15] tracking-[-0.01em]"
+            />
           </div>
 
           {/* Right: Tagline + View All Action */}
@@ -38,10 +51,11 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart }) =
               Pure. Rare. Powerful.
             </span>
             <a
-              href="#lineup"
-              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-medium text-[#123C2D] hover:text-[#D6A83A] transition-colors"
+              href="/shop"
+              onClick={handleViewAll}
+              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-medium text-[#123C2D] hover:text-[#D6A83A] transition-colors cursor-pointer"
             >
-              <span>View All</span>
+              <span>Explore All</span>
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
             </a>
           </div>
@@ -60,6 +74,7 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart }) =
               key={product.id}
               product={product}
               onAddToCart={onAddToCart}
+              onNavigate={onNavigate}
             />
           ))}
         </motion.div>

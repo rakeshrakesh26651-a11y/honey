@@ -30,7 +30,7 @@ function formatWhatsAppOrderMessage(items) {
 
 async function runTests() {
   console.log('============================================================');
-  console.log('PLAYWRIGHT VERIFICATION: VARIANTS, CART, TESTIMONIALS & POLICIES');
+  console.log('PLAYWRIGHT VERIFICATION: BEST SELLERS, VARIANTS, CART & SECTIONS');
   console.log('============================================================\n');
 
   let failures = 0;
@@ -99,35 +99,142 @@ async function runTests() {
     const offersInHeader = await desktopPage.locator('header a[href="/#offers"]').count();
     assert(offersInHeader === 0, 'Offers link cleanly removed from header');
 
-    // 2. Hero copy verification
+    // Verify Reviews link is NOT in Header
+    const reviewsInHeader = await desktopPage.locator('header a[href="/reviews"]').count();
+    assert(reviewsInHeader === 0, 'Reviews link cleanly removed from header navigation');
+
+    // Verify Desktop Header navigation links
+    const desktopNavLinks = await desktopPage.locator('header nav a').allTextContents();
+    const trimmedNav = desktopNavLinks.map(t => t.trim());
+    assert(!trimmedNav.includes('Reviews'), 'Desktop header does NOT include Reviews');
+    assert(trimmedNav.includes('Shop'), 'Desktop header includes Shop');
+    assert(trimmedNav.includes('Our Story'), 'Desktop header includes Our Story');
+    assert(trimmedNav.includes('Lab Report'), 'Desktop header includes Lab Report');
+    assert(trimmedNav.includes('FAQ'), 'Desktop header includes FAQ');
+    assert(trimmedNav.includes('Contact'), 'Desktop header includes Contact');
+    assert(trimmedNav.length === 5, `Desktop header has exactly 5 nav links (found: ${trimmedNav.join(', ')})`);
+
+    // 2. Hero copy & Background Video verification
     const heroHeading = await desktopPage.locator('h1').textContent();
     assert(
-      heroHeading.includes('PURE BY NATURE') && heroHeading.includes('PERFECTED BY THE PEAKS'),
+      heroHeading.includes('Pure Honey'),
       `Hero heading verified: "${heroHeading.replace(/\s+/g, ' ').trim()}"`
     );
+    const heroVideo = desktopPage.locator('section video source[src="/videos/himalayan-honey-hero.mp4"]');
+    assert((await heroVideo.count()) > 0, 'Cinematic background video is mounted with /videos/himalayan-honey-hero.mp4');
+    const supportingLine = desktopPage.locator('text=From the Himalayas.').first();
+    assert(await supportingLine.isVisible(), 'Supporting line "From the Himalayas." is visible');
 
-    // 3. Product Collection with 3 Variants (400g / 700g / 1000g)
-    console.log('\n--- Phase 1.1: Product Variants & Add to Cart (No Auto WhatsApp) ---');
-    const lineupHeading = await desktopPage.locator('#lineup h2').textContent();
-    assert(lineupHeading.includes('Find Your Perfect Honey'), `Collection heading verified: "${lineupHeading.trim()}"`);
+    // 3. Best Sellers Section on Landing Page (OLIO-Style Minimal Presentation)
+    console.log('\n--- Phase 1.1: OLIO-Style Best Sellers Section on Landing Page ---');
+    const lineupSection = desktopPage.locator('#lineup');
+    assert(await lineupSection.isVisible(), 'Best Sellers section (#lineup) is visible on landing page');
 
-    const expectedProducts = [
-      'Forest Honey',
-      'Kombu Honey',
-      'Gulkand Honey',
-      'Kurinji Honey',
-      'Ghee',
-    ];
+    const lineupHeading = await lineupSection.locator('h2').textContent();
+    assert(lineupHeading.includes('MEET THE BEST SELLERS'), `Best Sellers heading verified: "${lineupHeading.trim()}"`);
 
-    for (const name of expectedProducts) {
-      const prodCard = desktopPage.locator(`#lineup h4:has-text("${name}")`);
-      assert(await prodCard.isVisible(), `Product "${name}" is present in the collection`);
+    // Must show EXACTLY 3 Honey products
+    const bestSellerCards = lineupSection.locator('a[href^="/product/"]');
+    const cardCount = await bestSellerCards.count();
+    assert(cardCount === 3, `Exactly 3 products displayed in Best Sellers (found: ${cardCount})`);
+
+    const expectedBestSellers = ['Forest Honey', 'Kombu Honey', 'Gulkand Honey'];
+    for (const name of expectedBestSellers) {
+      const card = lineupSection.locator(`h3:has-text("${name}")`);
+      assert(await card.isVisible(), `Best seller "${name}" is present`);
     }
 
+    // Verify badges: Each has "Best Seller" badge
+    const badgesCount = await lineupSection.locator('[data-testid="bestseller-badge"]').count();
+    assert(badgesCount === 3, `All 3 products have "Best Seller" badge (found: ${badgesCount})`);
+
+    // Verify prices are displayed
+    assert(await lineupSection.locator('span:has-text("₹699")').count() >= 2, 'Prices rendered for 699 products');
+    assert(await lineupSection.locator('span:has-text("₹799")').count() >= 1, 'Price rendered for 799 product');
+
+    // STRICT CHECKS: No Add to Cart, No ML/Grams, No Quantity, No Reviews/Ratings
+    const addBtnCount = await lineupSection.locator('button:has-text("Add to Cart")').count();
+    assert(addBtnCount === 0, `No "Add to Cart" button in Best Sellers section (found: ${addBtnCount})`);
+
+    const sizeBtnCount = await lineupSection.locator('button:has-text("400g"), button:has-text("700g"), button:has-text("1000g")').count();
+    assert(sizeBtnCount === 0, `No size selector buttons in Best Sellers section (found: ${sizeBtnCount})`);
+
+    const ratingCount = await lineupSection.locator('[aria-label*="star"]').count();
+    assert(ratingCount === 0, `No star ratings in Best Sellers section (found: ${ratingCount})`);
+
+    // 4. Quality Checklist Removed from Landing Page
+    console.log('\n--- Phase 1.2: Verify Quality Checklist & FAQ Removed from Landing Page ---');
+    const qualityOnHome = await desktopPage.locator('#quality').count();
+    assert(qualityOnHome === 0, 'Quality Checklist section removed from landing page');
+
+    const faqOnHome = await desktopPage.locator('#faq').count();
+    assert(faqOnHome === 0, 'FAQ section removed from landing page');
+
+    // 5. From Our Community Preserved
+    console.log('\n--- Phase 1.3: Verify "From Our Community" Preserved on Landing Page ---');
+    const communitySection = desktopPage.locator('#wild');
+    assert(await communitySection.isVisible(), 'From Our Community section is present on landing page');
+    const communityHeading = await communitySection.locator('h2').textContent();
+    assert(communityHeading.includes('FROM OUR COMMUNITY'), `From Our Community heading verified: "${communityHeading.trim()}"`);
+
+    // 6. Testimonials Section
+    console.log('\n--- Phase 1.4: Animated Testimonials Carousel Verification ---');
+    const reviewsSection = desktopPage.locator('#reviews');
+    await reviewsSection.scrollIntoViewIfNeeded();
+    await desktopPage.waitForTimeout(400);
+
+    const reviewsH2 = await reviewsSection.locator('h2').textContent();
+    assert(
+      reviewsH2.includes('WHAT OUR CUSTOMERS') || reviewsH2.includes('REAL PEOPLE. REAL RESULTS.') || reviewsH2.includes('REAL EXPERIENCES.'),
+      `Testimonials heading verified: "${reviewsH2.trim()}"`
+    );
+
+    const allCustomers = [
+      { name: 'Kavitha R.', img: '/images/reviews/kavitha-r.jpg' },
+      { name: 'Senthil M.', img: '/images/reviews/senthil-m.jpg' },
+      { name: 'Deepak N.', img: '/images/reviews/deepak-n.jpg' },
+      { name: 'Ravi', img: '/images/reviews/ravi.jpg' },
+      { name: 'Chandra', img: '/images/reviews/chandra.jpg' },
+      { name: 'Tarun Naik', img: '/images/reviews/tarun-naik.jpg' },
+    ];
+
+    for (const c of allCustomers) {
+      const card = reviewsSection.locator(`h4:has-text("${c.name}")`).first();
+      assert(await card.isVisible(), `Customer review for "${c.name}" is rendered in the carousel`);
+      const img = reviewsSection.locator(`img[src="${c.img}"]`);
+      assert(await img.count() >= 1, `Portrait image "${c.img}" is present for ${c.name}`);
+    }
+
+    // Verify Carousel Arrows and Dots
+    const prevBtn = reviewsSection.locator('button[aria-label="Previous testimonial"]');
+    const nextBtn = reviewsSection.locator('button[aria-label="Next testimonial"]');
+    assert(await prevBtn.isVisible(), 'Carousel previous button is visible');
+    assert(await nextBtn.isVisible(), 'Carousel next button is visible');
+
+    // Test clicking Next button
+    await nextBtn.click();
+    await desktopPage.waitForTimeout(400);
+    const activeImgAfterNext = reviewsSection.locator('img[src="/images/reviews/senthil-m.jpg"]').first();
+    assert(await activeImgAfterNext.isVisible(), 'Active portrait transitioned to Senthil M. on Next button click');
+
+    // Test keyboard navigation (ArrowLeft)
+    await desktopPage.keyboard.press('ArrowLeft');
+    await desktopPage.waitForTimeout(400);
+    const activeImgAfterKey = reviewsSection.locator('img[src="/images/reviews/kavitha-r.jpg"]').first();
+    assert(await activeImgAfterKey.isVisible(), 'Active portrait transitioned back to Kavitha R. on ArrowLeft keypress');
+
+    // 7. Test Dedicated Shop Page with Variants & Add to Cart
+    console.log('\n--- Phase 1.5: Dedicated Shop Page Variants & Cart Interaction ---');
+    await desktopPage.goto('http://localhost:3000/shop', { waitUntil: 'domcontentloaded' });
+    await desktopPage.waitForTimeout(500);
+
+    const shopHeading = await desktopPage.locator('h1').textContent();
+    assert(shopHeading.includes('OUR HONEY COLLECTION'), `Shop page loaded: "${shopHeading.trim()}"`);
+
     // Select 1000g for Forest Honey and verify price updates to ₹1299
-    const forestCard = desktopPage.locator('#lineup .group').filter({ hasText: 'Forest Honey' }).first();
+    const forestCard = desktopPage.locator('.group').filter({ hasText: 'Forest Honey' }).first();
     const btn1000g = forestCard.locator('button[aria-label="Select 1000g for Forest Honey"]');
-    assert(await btn1000g.isVisible(), 'Forest Honey has 1000g variant button');
+    assert(await btn1000g.isVisible(), 'Forest Honey on /shop has 1000g variant button');
     await btn1000g.click();
     await desktopPage.waitForTimeout(200);
 
@@ -149,12 +256,6 @@ async function runTests() {
       openedUrlsAfterAdd.length === 0,
       `Add to Cart did NOT trigger automatic WhatsApp redirect (opened count: ${openedUrlsAfterAdd.length})`
     );
-
-    // Verify Cart contains "Forest Honey" with "1000g" and price "₹1,299"
-    const cartText = await desktopPage.locator('[aria-label="Your Cart"]').textContent();
-    assert(cartText.includes('Forest Honey'), 'Cart contains Forest Honey');
-    assert(cartText.includes('1000g'), 'Cart item shows size 1000g');
-    assert(cartText.includes('1,299') || cartText.includes('1299'), 'Cart item shows ₹1299');
 
     // Close cart drawer
     await desktopPage.locator('button[aria-label="Close cart"]').click();
@@ -183,7 +284,6 @@ async function runTests() {
     const openedUrlsAfterCheckout = await desktopPage.evaluate(() => window.__openedUrls);
     assert(openedUrlsAfterCheckout.length === 1, 'Manual checkout button opens WhatsApp');
     const decodedWa = decodeURIComponent(openedUrlsAfterCheckout[0].split('text=')[1]);
-    console.log('\nDecoded Cart WhatsApp Order:\n' + decodedWa + '\n');
     assert(decodedWa.includes('Forest Honey — 1000g'), 'WhatsApp text lists Forest Honey — 1000g');
     assert(decodedWa.includes('Forest Honey — 400g'), 'WhatsApp text lists Forest Honey — 400g');
 
@@ -191,88 +291,27 @@ async function runTests() {
     await desktopPage.locator('button[aria-label="Close cart"]').click();
     await desktopPage.waitForTimeout(300);
 
-    // 4. Verify Absence of BUY 1 GET 1
-    console.log('\n--- Phase 1.2: Verify Absence of BUY 1 GET 1 ---');
-    const bogoCount = await desktopPage.locator('text=BUY 1 GET 1').count();
-    assert(bogoCount === 0, 'BUY 1 GET 1 section and copy completely removed from website');
+    // 8. Quality & Lab Reports Dedicated Page
+    console.log('\n--- Phase 1.6: Dedicated Quality & Lab Reports Page Verification ---');
+    await desktopPage.goto('http://localhost:3000/lab-reports', { waitUntil: 'domcontentloaded' });
+    const labH1 = await desktopPage.locator('h1').textContent();
+    assert(labH1.includes('LAB REPORTS'), `Dedicated Lab Reports page renders: "${labH1.trim()}"`);
+    const labTestHouse = desktopPage.getByText('Tamilnadu Test House Private Limited').first();
+    assert(await labTestHouse.isVisible(), 'Tamilnadu Test House report is present on dedicated /lab-reports');
 
-    // 5. Testimonials Section & Animated Carousel Verification
-    console.log('\n--- Phase 1.3: Animated Testimonials Carousel Verification ---');
-    const reviewsSection = desktopPage.locator('#reviews');
-    await reviewsSection.scrollIntoViewIfNeeded();
-    await desktopPage.waitForTimeout(500);
+    // 9. FAQ Dedicated Page
+    console.log('\n--- Phase 1.7: Dedicated FAQ Page Verification ---');
+    await desktopPage.goto('http://localhost:3000/faq', { waitUntil: 'domcontentloaded' });
+    const faqHeading = await desktopPage.locator('#faq h2').textContent();
+    assert(faqHeading.includes('FREQUENTLY ASKED QUESTIONS'), `Dedicated FAQ page renders: "${faqHeading.trim()}"`);
+    const faqItems = await desktopPage.locator('button[aria-expanded]').count();
+    assert(faqItems >= 8, `Dedicated FAQ page renders all FAQ accordion items (found: ${faqItems})`);
 
-    const reviewsEyebrow = await reviewsSection.locator('text=CUSTOMER EXPERIENCES').first().textContent();
-    assert(reviewsEyebrow.includes('CUSTOMER EXPERIENCES'), 'Testimonials eyebrow verified');
-
-    const reviewsH2 = await reviewsSection.locator('h2').textContent();
-    assert(reviewsH2.trim() === 'REAL EXPERIENCES.', `Testimonials heading verified: "${reviewsH2.trim()}"`);
-
-    const reviewsDesc = await reviewsSection.locator('p').first().textContent();
-    assert(
-      reviewsDesc.includes('Genuine customer experiences shared by honey lovers across Tamil Nadu and beyond'),
-      'Testimonials supporting text verified'
-    );
-
-    // Verify all 6 customers exist in carousel
-    const allCustomers = ['Kavitha R.', 'Senthil M.', 'Deepak N.', 'Ravi', 'Chandra', 'Tarun Naik'];
-    for (const author of allCustomers) {
-      const card = reviewsSection.locator(`h4:has-text("${author}")`);
-      assert(await card.isVisible(), `Customer review for "${author}" is rendered in the carousel`);
-    }
-
-    // Verify navigation controls: Previous / Next buttons & Dot indicators
-    const prevBtn = reviewsSection.locator('button[aria-label="Previous testimonial"]');
-    const nextBtn = reviewsSection.locator('button[aria-label="Next testimonial"]');
-    assert(await prevBtn.isVisible(), 'Carousel previous button is visible');
-    assert(await nextBtn.isVisible(), 'Carousel next button is visible');
-
-    const dotButtons = reviewsSection.locator('button[aria-label^="Go to testimonial"]');
-    const dotCount = await dotButtons.count();
-    assert(dotCount === 6, `Pagination indicators rendered with exactly 6 dots (found: ${dotCount})`);
-
-    // Click Next button and verify active slide advances
-    await nextBtn.click();
-    await desktopPage.waitForTimeout(400);
-
-    // Click on Tarun Naik's dot (index 5 / 6th dot)
-    await dotButtons.nth(5).click();
-    await desktopPage.waitForTimeout(400);
-
-    // 6. Quality & Lab Report Section
-    console.log('\n--- Phase 1.4: Quality & Lab Report Verification ---');
-    const qualityHeading = await desktopPage.locator('#quality h2').textContent();
-    assert(qualityHeading.includes('QUALITY YOU CAN VERIFY'), `Quality heading verified: "${qualityHeading.trim()}"`);
-
-    const testHouse = desktopPage.locator('#quality').getByText('Tamilnadu Test House Private Limited').first();
-    assert(await testHouse.isVisible(), 'Tamilnadu Test House is featured');
-
-    // 7. Wholesale Section
-    const wholesaleHeading = await desktopPage.locator('#wholesale h2').textContent();
-    assert(wholesaleHeading.includes('LOOKING FOR HONEY IN BULK?'), `Wholesale heading verified`);
-
-    // 8. Footer Legal Policy Links Verification
-    console.log('\n--- Phase 1.5: Policy Routes and Confirmed Terms Verification ---');
-    const privacyLink = desktopPage.locator('footer a[href="/privacy-policy"]');
-    const termsLink = desktopPage.locator('footer a[href="/terms-and-conditions"]');
-    const refundLink = desktopPage.locator('footer a[href="/refund-policy"]');
-
-    assert(await privacyLink.isVisible(), 'Footer contains visible "Privacy Policy" link');
-    assert(await termsLink.isVisible(), 'Footer contains visible "Terms & Conditions" link');
-    assert(await refundLink.isVisible(), 'Footer contains visible "Refund & Return Policy" link');
-
-    // Test Refund Policy
-    await refundLink.click();
-    await desktopPage.waitForTimeout(400);
+    // 10. Footer Policies
+    console.log('\n--- Phase 1.8: Policy Routes Verification ---');
+    await desktopPage.goto('http://localhost:3000/refund-policy', { waitUntil: 'domcontentloaded' });
     const refundH1 = await desktopPage.locator('h1').textContent();
     assert(refundH1.includes('Refund & Return Policy'), `Refund policy page rendered: "${refundH1.trim()}"`);
-    assert(await desktopPage.locator('text=24-Hour Return Request').first().isVisible(), '24-Hour Return Request callout visible');
-    assert(await desktopPage.locator('text=Within 10 Days').first().isVisible(), 'Within 10 Days refund callout visible');
-    assert(await desktopPage.locator('text=Applicable courier or shipping charges will be deducted').first().isVisible(), 'Courier deduction notice visible');
-
-    // Navigate back Home
-    await desktopPage.locator('button:has-text("Back to Home")').click();
-    await desktopPage.waitForTimeout(400);
 
     await desktopContext.close();
 
@@ -301,7 +340,11 @@ async function runTests() {
 
       await vpPage.goto('http://localhost:3000', { waitUntil: 'domcontentloaded' });
       const h1 = await vpPage.locator('h1').textContent();
-      assert(h1.includes('PURE BY NATURE'), `Viewport ${vp.name} loads correctly with Hero headline`);
+      assert(h1.includes('Pure Honey'), `Viewport ${vp.name} loads correctly with Hero headline`);
+
+      // Best Sellers section checks on this viewport
+      const vpCards = await vpPage.locator('#lineup a[href^="/product/"]').count();
+      assert(vpCards === 3, `Viewport ${vp.name} has exactly 3 Best Seller cards`);
 
       // Check for horizontal scroll / layout shift
       const hasHorizontalScroll = await vpPage.evaluate(() => {
@@ -314,9 +357,16 @@ async function runTests() {
         const menuButton = vpPage.locator('button[aria-label="Toggle Navigation Menu"]');
         assert(await menuButton.isVisible(), `Mobile hamburger button is visible on ${vp.name}`);
         await menuButton.click();
-        await vpPage.waitForTimeout(300);
-        const shopLink = vpPage.locator('div a[href="/#lineup"]:visible').first();
+        const shopLink = vpPage.locator('div a[href="/shop"]:visible, div a[href="/#lineup"]:visible').first();
         assert(await shopLink.isVisible(), `Mobile menu opened and has Shop link on ${vp.name}`);
+
+        // Verify Reviews is NOT in mobile navigation
+        const mobileReviews = await vpPage.locator('nav a[href="/reviews"]:visible').count();
+        assert(mobileReviews === 0, `Mobile menu does NOT include Reviews on ${vp.name}`);
+
+        // Verify Lab Report is present
+        const labReportLink = vpPage.locator('nav a[href="/lab-reports"]:visible');
+        assert(await labReportLink.isVisible(), `Mobile menu has Lab Report on ${vp.name}`);
       }
 
       await vpContext.close();

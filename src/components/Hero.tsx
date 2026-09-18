@@ -1,126 +1,223 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+
+import WarpText from './WarpText';
 
 interface HeroProps {
   onShopClick?: () => void;
+  onNavigate?: (path: string) => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onShopClick }) => {
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
+export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
-  // Subtle scroll-linked movement: image y = 0 -> -40
-  const imageY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
 
-  // Easing curve: expo.out / power3.out
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const startVideo = () => {
+      if (video.paused) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Autoplay policy fallback
+          });
+        }
+      }
+    };
+
+    try {
+      video.currentTime = 0;
+    } catch {
+      // ignore
+    }
+
+    // Start immediately
+    startVideo();
+
+    // Also trigger as soon as initial frame data or buffer is ready
+    video.addEventListener('loadeddata', startVideo, { once: true });
+    video.addEventListener('canplay', startVideo, { once: true });
+
+    return () => {
+      video.removeEventListener('loadeddata', startVideo);
+      video.removeEventListener('canplay', startVideo);
+    };
+  }, []);
+
+  // Luxury easing curve
   const transitionEase = [0.16, 1, 0.3, 1];
+
+  const handleShop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onShopClick) {
+      onShopClick();
+    } else if (onNavigate) {
+      onNavigate('/shop');
+    }
+  };
 
   return (
     <section
-      ref={containerRef}
-      className="relative w-full bg-[#08291F] text-[#FAF8F0] overflow-hidden py-14 sm:py-16 md:py-20 lg:py-24 border-b border-[#123C2D]"
+      className="relative w-full bg-[#08291F] text-[#FAF8F0] overflow-hidden py-16 sm:py-20 md:py-24 lg:py-28 min-h-[600px] lg:min-h-[680px] flex items-center border-b border-[#123C2D]"
     >
-      {/* Subtle organic ambient glow accents */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-[#D6A83A]/[0.08] blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-[#123C2D]/40 blur-3xl pointer-events-none" />
+      {/* 1. Background Video */}
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        poster="/images/himalayan-honey-hero.jpg"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        aria-hidden="true"
+      >
+        <source
+          src="/videos/himalayan-honey-hero.mp4"
+          type="video/mp4"
+        />
+      </video>
 
-      <div className="max-w-[1240px] mx-auto px-6 md:px-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
-          {/* Left: Copy Column */}
-          <div className="w-full lg:max-w-[540px] flex flex-col items-start space-y-6">
-            {/* 3. Hero eyebrow reveals */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: transitionEase }}
-              className="flex items-center gap-2"
+      {/* 2. Very Subtle Dark-Green Gradient Overlay (Bright & Natural Video) */}
+      <div
+        className="absolute inset-0 pointer-events-none hidden lg:block"
+        style={{
+          background:
+            'linear-gradient(90deg, rgba(0, 35, 25, 0.48) 0%, rgba(0, 35, 25, 0.22) 40%, rgba(0, 35, 25, 0.05) 70%, rgba(0, 35, 25, 0.00) 100%)',
+        }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none lg:hidden"
+        style={{
+          background:
+            'linear-gradient(180deg, rgba(0, 35, 25, 0.52) 0%, rgba(0, 35, 25, 0.32) 45%, rgba(0, 35, 25, 0.12) 100%)',
+        }}
+      />
+
+      {/* 3. Hero Content Layer */}
+      <div className="relative z-10 w-full max-w-[1240px] mx-auto px-6 md:px-10">
+        <div className="w-full lg:max-w-[580px] flex flex-col items-start space-y-6">
+          {/* Eyebrow / Label (0.2s) */}
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: transitionEase }}
+            className="flex items-center gap-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]"
+          >
+            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
+            <span className="font-mono text-[12px] sm:text-[13px] uppercase tracking-[0.1em] text-[#D6A83A] font-medium leading-[18px]">
+              100% PURE & RAW
+            </span>
+          </motion.div>
+
+          {/* Main Headline (0.4s) with WarpText */}
+          <motion.h1
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: transitionEase }}
+            className="w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
+          >
+            <WarpText
+              text="Pure Honey."
+              color="#F5F1E6"
+              warpStrength={0.08}
+              warpScale={1.7}
+              speed={0.55}
+              pointerInfluence={0.42}
+              pointerStrength={0.38}
+              refraction={0.018}
+              ripple
+              fontSize={116}
+              fontWeight={800}
+              style={{
+                width: "100%",
+                height: "320px"
+              }}
+              fontFamily="inherit"
+              letterSpacing={-0.06}
+              lineHeight={0.9}
+            />
+          </motion.h1>
+
+          {/* Subheading (0.7s) */}
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.7, ease: transitionEase }}
+            className="flex items-center gap-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+          >
+            <span className="w-6 sm:w-8 h-[1.5px] bg-[#D6A83A] inline-block" />
+            <span className="font-serif text-[22px] sm:text-[28px] md:text-[34px] font-medium text-[#D6A83A] tracking-[-0.01em] select-text">
+              From the Himalayas.
+            </span>
+          </motion.div>
+
+          {/* Description (1.0s) */}
+          <motion.p
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.0, ease: transitionEase }}
+            className="font-sans text-[17px] sm:text-[19px] lg:text-[20px] font-normal text-[#F5F1E6] leading-[1.55] max-w-[500px] select-text drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
+          >
+            Discover Himalayan Harvest Honey — naturally sourced raw honey presented with the pride and purity of four generations of harvesting tradition.
+          </motion.p>
+
+          {/* CTA Buttons (1.3s) */}
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.3, ease: transitionEase }}
+            className="pt-2 flex flex-wrap items-center gap-3.5"
+          >
+            <a
+              href="/shop"
+              onClick={handleShop}
+              className="inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-[#D6A83A] hover:bg-[#C99528] text-[#08291F] font-sans text-[15px] sm:text-[16px] font-semibold tracking-wide transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
             >
-              <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-              <span className="font-mono text-[13px] uppercase tracking-[0.08em] text-[#D6A83A] font-medium leading-[18.2px]">
-                FROM THE HIMALAYAS
+              SHOP HONEY
+            </a>
+            <a
+              href="https://wa.me/918124391725?text=Hello%20Himalayan%20Harvest%20Honey!%20%F0%9F%91%8B%0A%0AI%20would%20like%20to%20know%20more%20about%20your%20pure%20honey%20products%20and%20offers."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center h-[52px] px-7 rounded-full border border-white/25 bg-[#08291F]/40 backdrop-blur-sm hover:bg-[#08291F]/60 hover:border-[#D6A83A] text-[#FAF8F0] font-sans text-[15px] font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            >
+              ORDER ON WHATSAPP
+            </a>
+          </motion.div>
+
+          {/* Trust / Quality Badges (1.5s) */}
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 1.5, ease: transitionEase }}
+            className="pt-4 flex flex-wrap items-center gap-6 border-t border-white/20 w-full select-text drop-shadow-[0_1px_4px_rgba(0,0,0,0.65)]"
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D6A83A]" />
+              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF8F0]/85">
+                100% Raw & Unheated
               </span>
-            </motion.div>
-
-            {/* 4. Hero heading reveals line-by-line with mask / clip reveal */}
-            <h1 className="font-serif text-[42px] sm:text-[54px] lg:text-[70px] font-semibold text-[#FAF8F0] leading-[1.05] tracking-[-0.02em]">
-              <div className="overflow-hidden pb-1">
-                <motion.span
-                  className="block"
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.32, ease: transitionEase }}
-                >
-                  PURE BY NATURE.
-                </motion.span>
-              </div>
-              <div className="overflow-hidden pb-1">
-                <motion.span
-                  className="block text-white"
-                  initial={{ opacity: 0, y: 40 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.44, ease: transitionEase }}
-                >
-                  PERFECTED BY THE PEAKS.
-                </motion.span>
-              </div>
-            </h1>
-
-            {/* 5. Hero paragraph reveals */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.58, ease: transitionEase }}
-              className="font-sans text-[17px] sm:text-[19px] lg:text-[20px] font-normal text-[#F5F1E6]/85 leading-[1.55] max-w-[480px]"
-            >
-              Discover Himalayan Harvest Honey — naturally sourced honey presented with a heritage of four generations of honey harvesting.
-            </motion.p>
-
-            {/* 6. CTA buttons reveal */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.72, ease: transitionEase }}
-              className="pt-2 flex flex-wrap items-center gap-3.5"
-            >
-              <a
-                href="#lineup"
-                onClick={onShopClick}
-                className="inline-flex items-center justify-center h-[50px] px-8 rounded-full bg-[#D6A83A] hover:bg-[#C99528] text-[#08291F] font-sans text-[15px] sm:text-[16px] font-semibold tracking-wide transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
-              >
-                SHOP HONEY
-              </a>
-              <a
-                href="https://wa.me/918124391725?text=Hello%20Himalayan%20Harvest%20Honey!%20%F0%9F%91%8B%0A%0AI%20would%20like%20to%20know%20more%20about%20your%20pure%20honey%20products%20and%20offers."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center h-[50px] px-7 rounded-full border border-white/25 bg-white/5 hover:bg-white/10 hover:border-[#D6A83A] text-[#FAF8F0] font-sans text-[15px] font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              >
-                ORDER ON WHATSAPP
-              </a>
-            </motion.div>
-          </div>
-
-          {/* 7. Right: Hero Product Imagery reveals with scale/mask and scroll parallax */}
-          <div className="w-full lg:max-w-[528px] flex-shrink-0">
-            <motion.div
-              style={{ y: imageY }}
-              className="relative w-full aspect-[528/621] sm:max-h-[621px] rounded-[16px] overflow-hidden bg-[#0B3327]/60 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.35)] group"
-            >
-              <motion.img
-                src="/images/hero_honey_jar.jpg"
-                alt="Himalayan Harvest pure raw honey jar on a warm backdrop"
-                className="w-full h-full object-cover rounded-[16px] transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                style={{ objectPosition: 'center center' }}
-                loading="eager"
-                initial={{ scale: 1.08, opacity: 0.85 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 1.4, delay: 0.25, ease: transitionEase }}
-              />
-            </motion.div>
-          </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D6A83A]" />
+              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF8F0]/85">
+                4th-Gen Harvesters
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D6A83A]" />
+              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF8F0]/85">
+                Lab Certified IS 4941
+              </span>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

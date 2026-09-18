@@ -13,6 +13,8 @@ export const AnnouncementBar: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      role="region"
+      aria-label="Announcement"
       className="bg-[#08291F] text-[#FAF8F0] py-2 overflow-hidden select-none border-b border-[#123C2D]"
       style={{ height: '34px', display: 'flex', alignItems: 'center' }}
     >

@@ -5,19 +5,21 @@ import { AnnouncementBar } from './components/AnnouncementBar';
 import { Header } from './components/Header';
 import { MobileMenu } from './components/MobileMenu';
 import { CartDrawer, CartItem } from './components/CartDrawer';
-import { Hero } from './components/Hero';
-import { FeatureStrip } from './components/FeatureStrip';
-import { ProductSection } from './components/ProductSection';
-import { StorySection } from './components/StorySection';
-import { QualitySection } from './components/QualitySection';
-import { Testimonials } from './components/Testimonials';
-import { SocialGallery } from './components/SocialGallery';
-import { WholesaleSection } from './components/WholesaleSection';
-import { Newsletter } from './components/Newsletter';
 import { Footer } from './components/Footer';
+
+// Dedicated Multi-Page Architecture
+import { HomePage } from './pages/HomePage';
+import { ShopPage } from './pages/ShopPage';
+import { ProductDetailPage } from './pages/ProductDetailPage';
+import { AboutPage } from './pages/AboutPage';
+import { LabReportsPage } from './pages/LabReportsPage';
+import { ReviewsPage } from './pages/ReviewsPage';
+import { FaqPage } from './pages/FaqPage';
+import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { RefundPolicy } from './pages/RefundPolicy';
+
 import { Product } from './data/content';
 import { openWhatsAppOrder } from './utils/whatsapp';
 
@@ -41,7 +43,14 @@ export function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Initialize Lenis smooth scroll with optimal wheel & touch settings
+  // Open cart automatically if customer navigates to /cart or /checkout directly
+  useEffect(() => {
+    if (currentPath === '/cart' || currentPath === '/checkout') {
+      setIsCartOpen(true);
+    }
+  }, [currentPath]);
+
+  // Initialize Lenis smooth scroll
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -69,6 +78,11 @@ export function App() {
   const handleNavigate = (path: string) => {
     if (typeof window === 'undefined') return;
 
+    if (path === '/cart') {
+      setIsCartOpen(true);
+      return;
+    }
+
     if (path.includes('#')) {
       const [route, hash] = path.split('#');
       const targetRoute = route || '/';
@@ -78,7 +92,7 @@ export function App() {
         setTimeout(() => {
           const el = document.getElementById(hash);
           if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        }, 150);
       } else {
         const el = document.getElementById(hash);
         if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -145,47 +159,67 @@ export function App() {
 
   const totalCartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
 
-  // Render the appropriate main content based on current path
+  // Render the appropriate main page based on current path
   const renderMainContent = () => {
+    // Dynamic Product Detail Route: /product/:slug
+    if (currentPath.startsWith('/product/')) {
+      const slug = currentPath.replace('/product/', '').replace(/\/$/, '');
+      return (
+        <ProductDetailPage
+          slug={slug}
+          onAddToCart={handleAddToCart}
+          onNavigate={handleNavigate}
+        />
+      );
+    }
+
+    if (currentPath === '/shop') {
+      return (
+        <ShopPage
+          onAddToCart={handleAddToCart}
+          onNavigate={handleNavigate}
+        />
+      );
+    }
+
+    if (currentPath === '/about') {
+      return <AboutPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/lab-reports') {
+      return <LabReportsPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/reviews') {
+      return <ReviewsPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/faq') {
+      return <FaqPage onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/contact') {
+      return <ContactPage onNavigate={handleNavigate} />;
+    }
+
     if (currentPath === '/privacy-policy') {
       return <PrivacyPolicy onNavigateHome={() => handleNavigate('/')} />;
     }
+
     if (currentPath === '/terms-and-conditions') {
       return <TermsAndConditions onNavigateHome={() => handleNavigate('/')} />;
     }
+
     if (currentPath === '/refund-policy') {
       return <RefundPolicy onNavigateHome={() => handleNavigate('/')} />;
     }
 
+    // Default: Editorial Multi-Section Homepage
     return (
-      <>
-        {/* 3. Hero Section */}
-        <Hero onShopClick={() => handleNavigate('/#lineup')} />
-
-        {/* 4. Value / Feature Strip */}
-        <FeatureStrip />
-
-        {/* 5. The Lineup / Bestsellers with 400g / 700g / 1000g Size Selection */}
-        <ProductSection onAddToCart={handleAddToCart} />
-
-        {/* 6. Story Teaser */}
-        <StorySection />
-
-        {/* 7. Quality & Transparency (Lab Report) */}
-        <QualitySection />
-
-        {/* 8. Customer Testimonials Animated Carousel */}
-        <Testimonials />
-
-        {/* 9. Social UGC Gallery */}
-        <SocialGallery />
-
-        {/* 10. Wholesale & Bulk Enquiries */}
-        <WholesaleSection />
-
-        {/* 11. Email Newsletter */}
-        <Newsletter />
-      </>
+      <HomePage
+        onAddToCart={handleAddToCart}
+        onNavigate={handleNavigate}
+      />
     );
   };
 
@@ -206,6 +240,7 @@ export function App() {
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         isMobileMenuOpen={isMobileMenuOpen}
         onNavigate={handleNavigate}
+        currentPath={currentPath}
       />
 
       {/* Mobile Drawer Menu */}
@@ -213,6 +248,7 @@ export function App() {
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         onNavigate={handleNavigate}
+        currentPath={currentPath}
       />
 
       {/* Interactive Cart Slide-over */}
@@ -222,6 +258,7 @@ export function App() {
         items={cartItems}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
+        onClearCart={() => setCartItems([])}
         onCheckout={() => openWhatsAppOrder(cartItems)}
       />
 
@@ -230,7 +267,7 @@ export function App() {
         {renderMainContent()}
       </main>
 
-      {/* Footer */}
+      {/* Footer with HIMALAYAN giant typography and links */}
       <Footer
         onOpenCart={() => setIsCartOpen(true)}
         onNavigate={handleNavigate}

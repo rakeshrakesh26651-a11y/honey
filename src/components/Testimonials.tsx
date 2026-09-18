@@ -1,81 +1,94 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { QuoteIcon } from './Icons';
-import { TESTIMONIALS } from '../data/content';
+import { motion, AnimatePresence, useReducedMotion, PanInfo } from 'framer-motion';
+import { TESTIMONIALS, Testimonial } from '../data/himalayanHarvest';
 
 export const Testimonials: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [direction, setDirection] = useState<number>(1); // 1 = next, -1 = prev
   const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [containerWidth, setContainerWidth] = useState<number>(1200);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [mouseOffset, setMouseOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  const containerRef = useRef<HTMLElement>(null);
   const touchStartX = useRef<number | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   const totalReviews = TESTIMONIALS.length;
+  const activeTestimonial: Testimonial = TESTIMONIALS[activeIndex] || TESTIMONIALS[0];
 
-  // Measure container width responsively
+  // Calculate previous and next customer indices for layered side previews
+  const prevIndex = (activeIndex - 1 + totalReviews) % totalReviews;
+  const nextIndex = (activeIndex + 1) % totalReviews;
+  const prevTestimonial = TESTIMONIALS[prevIndex];
+  const nextTestimonial = TESTIMONIALS[nextIndex];
+
+  // Screen size detection for disabling parallax on mobile
   useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
-      } else if (typeof window !== 'undefined') {
-        setContainerWidth(window.innerWidth);
-      }
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
     };
-
-    updateWidth();
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateWidth();
-    });
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    window.addEventListener('resize', updateWidth);
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', updateWidth);
-    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Compute card dimensions based on measured width
-  const isMobile = containerWidth < 640;
-  const isTablet = containerWidth >= 640 && containerWidth < 1024;
-  const cardWidth = isMobile
-    ? Math.min(Math.max(containerWidth - 48, 280), 340)
-    : isTablet
-    ? 350
-    : 390;
-  const gap = isMobile ? 16 : 24;
-  const step = cardWidth + gap;
-
-  // Calculate centered translation
-  const trackX = containerWidth > 0
-    ? containerWidth / 2 - (activeIndex * step + cardWidth / 2)
-    : 0;
-
-  // Gentle auto-advancing carousel (paused on hover / touch / reduced motion)
-  useEffect(() => {
-    if (isPaused) return;
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % totalReviews);
-    }, 6000);
-
-    return () => clearInterval(interval);
-  }, [isPaused, totalReviews]);
-
+  // Navigation handlers
   const handlePrev = useCallback(() => {
+    setDirection(-1);
     setActiveIndex((prev) => (prev - 1 + totalReviews) % totalReviews);
   }, [totalReviews]);
 
   const handleNext = useCallback(() => {
+    setDirection(1);
     setActiveIndex((prev) => (prev + 1) % totalReviews);
   }, [totalReviews]);
 
+  const handleSelect = (index: number) => {
+    if (index === activeIndex) return;
+    setDirection(index > activeIndex ? 1 : -1);
+    setActiveIndex(index);
+  };
+
+  // Keyboard navigation (ArrowLeft / ArrowRight)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        handlePrev();
+      } else if (e.key === 'ArrowRight') {
+        handleNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handlePrev, handleNext]);
+
+  // Autoplay (5.5s) with pause on hover/drag
+  useEffect(() => {
+    if (isPaused || shouldReduceMotion) return;
+
+    const interval = setInterval(() => {
+      handleNext();
+    }, 5500);
+
+    return () => clearInterval(interval);
+  }, [isPaused, shouldReduceMotion, handleNext]);
+
+  // Mouse Parallax on Desktop
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (isMobile || shouldReduceMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2; // -1 to 1
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    setMouseOffset({ x: x * 8, y: y * 8 });
+  };
+
+  const handleMouseLeave = () => {
+    setIsPaused(false);
+    setMouseOffset({ x: 0, y: 0 });
+  };
+
+  // Touch swipe support on Mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     setIsPaused(true);
@@ -86,7 +99,7 @@ export const Testimonials: React.FC = () => {
     const touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartX.current - touchEndX;
 
-    if (Math.abs(diff) > 40) {
+    if (Math.abs(diff) > 45) {
       if (diff > 0) {
         handleNext();
       } else {
@@ -97,254 +110,478 @@ export const Testimonials: React.FC = () => {
     setIsPaused(false);
   };
 
+  // Drag handler on Desktop/Tablet
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    if (info.offset.x < -50) {
+      handleNext();
+    } else if (info.offset.x > 50) {
+      handlePrev();
+    }
+    setIsPaused(false);
+  };
+
+  // Image Stack Transition Variants matching specifications
+  const imageVariants = {
+    enter: (dir: number) => ({
+      scale: shouldReduceMotion ? 1 : 1.08,
+      opacity: 0,
+      x: shouldReduceMotion ? 0 : dir > 0 ? 60 : -60,
+      rotate: shouldReduceMotion ? 0 : dir > 0 ? 2 : -2,
+    }),
+    center: {
+      scale: 1,
+      opacity: 1,
+      x: 0,
+      rotate: 0,
+      transition: {
+        duration: 0.75,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+    exit: (dir: number) => ({
+      scale: shouldReduceMotion ? 1 : 0.92,
+      opacity: 0,
+      x: shouldReduceMotion ? 0 : dir > 0 ? -60 : 60,
+      rotate: shouldReduceMotion ? 0 : dir > 0 ? -2 : 2,
+      transition: {
+        duration: 0.65,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    }),
+  };
+
   return (
     <section
       id="reviews"
-      className="relative w-full py-20 lg:py-32 bg-[#F5F1E6] overflow-hidden select-none"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      aria-roledescription="carousel"
+      aria-label="Customer Testimonials"
+      className="relative w-full py-20 sm:py-24 lg:py-32 bg-[#F5F1E6] overflow-hidden select-none border-t border-[#D9D5C8]"
     >
-      {/* Subtle organic ambient gradient background accents with slow floating motion */}
+      {/* Background Decorative Parallax Watermark Quote & Ambient Glow */}
       <motion.div
-        animate={{
-          x: [0, 20, 0],
-          y: [0, -15, 0],
-          scale: [1, 1.05, 1],
-        }}
-        transition={{
-          duration: 14,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="absolute top-1/4 -left-24 w-96 h-96 rounded-full bg-[#D6A83A]/[0.08] blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{
-          x: [0, -25, 0],
-          y: [0, 15, 0],
-          scale: [1, 1.06, 1],
-        }}
-        transition={{
-          duration: 16,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="absolute bottom-1/4 -right-24 w-96 h-96 rounded-full bg-[#123C2D]/[0.08] blur-3xl pointer-events-none"
-      />
+        style={
+          !isMobile && !shouldReduceMotion
+            ? { x: -mouseOffset.x * 0.5, y: -mouseOffset.y * 0.5 }
+            : undefined
+        }
+        className="absolute -top-12 -right-8 font-serif text-[280px] sm:text-[380px] leading-none text-[#123C2D]/[0.03] select-none pointer-events-none transition-transform duration-300"
+      >
+        “
+      </motion.div>
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8">
-        {/* Section Heading with Staggered Entrance Animation */}
-        <div className="text-center max-w-[720px] mx-auto mb-12 md:mb-16 space-y-3.5">
-          {/* Eyebrow / Label */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center justify-center gap-2"
-          >
-            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-            <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
-              CUSTOMER EXPERIENCES
-            </span>
-            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-          </motion.div>
+      <div className="absolute top-1/3 -left-36 w-[480px] h-[480px] rounded-full bg-[#D6A83A]/[0.08] blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-36 w-[480px] h-[480px] rounded-full bg-[#123C2D]/[0.07] blur-3xl pointer-events-none" />
 
-          {/* Main Heading */}
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="font-serif text-[32px] sm:text-[44px] md:text-[50px] font-semibold text-[#123C2D] leading-[1.1] tracking-[-0.01em]"
-          >
-            REAL EXPERIENCES.
-          </motion.h2>
-
-          {/* Supporting Paragraph */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-sans text-[16px] sm:text-[18px] md:text-[19px] font-normal text-[#2A2118]/80 leading-[1.5]"
-          >
-            Genuine customer experiences shared by honey lovers across Tamil Nadu and beyond.
-          </motion.p>
-        </div>
-
-        {/* Carousel Container */}
-        <div ref={containerRef} className="relative w-full overflow-hidden py-4">
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-30px' }}
-            transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
-          >
-            {/* Moving Track */}
-            <motion.div
-              animate={{ x: trackX }}
-              transition={{
-                duration: 0.85,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="flex items-stretch cursor-grab active:cursor-grabbing will-change-transform"
-              style={{
-                gap: `${gap}px`,
-              }}
-            >
-              {TESTIMONIALS.map((t, idx) => {
-                const isActive = idx === activeIndex;
-                const distFromActive = Math.abs(idx - activeIndex);
-
-                return (
-                  <div
-                    key={t.id}
-                    onClick={() => setActiveIndex(idx)}
-                    style={{
-                      width: `${cardWidth}px`,
-                      flexShrink: 0,
-                    }}
-                    className="flex flex-col transition-transform duration-700 ease-out"
-                  >
-                    <div
-                      className={`h-full flex flex-col justify-between p-6 sm:p-7 md:p-8 rounded-[20px] transition-all duration-700 select-none cursor-pointer ${
-                        isActive
-                          ? 'bg-[#FAF8F0] shadow-[0_20px_45px_rgba(18,60,45,0.09)] border border-[#D6A83A]/70 scale-[1.04] -translate-y-2 opacity-100 ring-1 ring-[#D6A83A]/40'
-                          : distFromActive === 1
-                          ? 'bg-[#FAF8F0]/85 shadow-xs border border-[#D9D5C8] scale-[0.93] opacity-60 hover:opacity-85 hover:bg-[#FAF8F0]'
-                          : 'bg-[#FAF8F0]/50 shadow-2xs border border-[#D9D5C8]/70 scale-[0.88] opacity-35 hover:opacity-65'
-                      }`}
-                    >
-                      {/* Quote & Rating Stars */}
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                              isActive
-                                ? 'bg-[#D6A83A]/15 text-[#D6A83A]'
-                                : 'bg-white text-[#D6A83A] border border-[#D9D5C8]'
-                            }`}
-                          >
-                            <QuoteIcon size={20} color="#D6A83A" />
-                          </div>
-
-                          {/* 5 Golden Stars */}
-                          <div className="flex items-center space-x-1 text-[#D6A83A]">
-                            {[...Array(5)].map((_, i) => (
-                              <svg
-                                key={i}
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                                className="w-4 h-4"
-                              >
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                            ))}
-                          </div>
-                        </div>
-
-                        <p className="font-serif text-[17px] sm:text-[18px] md:text-[19px] font-normal text-[#123C2D] leading-[1.48]">
-                          "{t.quote}"
-                        </p>
-                      </div>
-
-                      {/* Author Info & Label */}
-                      <div className="pt-5 mt-4 border-t border-[#D9D5C8] flex items-center justify-between">
-                        <div>
-                          <h4 className="font-sans text-[15px] sm:text-[16px] font-semibold text-[#123C2D] leading-tight">
-                            {t.author}
-                          </h4>
-                          {t.location && (
-                            <span className="font-sans text-[12px] text-[#607568] block mt-0.5">
-                              {t.location}
-                            </span>
-                          )}
-                        </div>
-                        <span
-                          className={`font-mono text-[10px] font-semibold tracking-[0.1em] uppercase px-2.5 py-1 rounded-full transition-colors ${
-                            isActive
-                              ? 'bg-[#123C2D]/10 text-[#123C2D]'
-                              : 'bg-white text-[#607568] border border-[#D9D5C8]/80'
-                          }`}
-                        >
-                          CUSTOMER REVIEW
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </motion.div>
-          </motion.div>
-
-          {/* Navigation Controls: Previous / Next & Pagination */}
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+        {/* Section Header with Staggered Mask Reveal */}
+        <div className="text-center max-w-[780px] mx-auto mb-12 sm:mb-16 md:mb-20 space-y-3">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center justify-between mt-8 max-w-[420px] mx-auto px-4"
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center justify-center gap-2"
           >
-            {/* Previous Arrow */}
-            <button
-              type="button"
-              onClick={handlePrev}
-              aria-label="Previous testimonial"
-              className="w-11 h-11 rounded-full bg-white border border-[#D9D5C8] hover:bg-[#123C2D] hover:text-[#FAF8F0] hover:border-[#123C2D] text-[#123C2D] flex items-center justify-center transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer active:scale-95"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-            </button>
+            <span className="w-5 h-[1.5px] bg-[#D6A83A] inline-block" />
+            <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.16em] text-[#123C2D] font-medium">
+              CUSTOMER STORIES
+            </span>
+            <span className="w-5 h-[1.5px] bg-[#D6A83A] inline-block" />
+          </motion.div>
 
-            {/* Pagination Dots */}
-            <div className="flex items-center space-x-2">
-              {TESTIMONIALS.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setActiveIndex(i)}
-                  aria-label={`Go to testimonial ${i + 1}`}
-                  className={`transition-all duration-300 rounded-full cursor-pointer ${
-                    i === activeIndex
-                      ? 'w-7 h-2 bg-[#D6A83A]'
-                      : 'w-2 h-2 bg-[#D9D5C8] hover:bg-[#607568]'
-                  }`}
-                />
-              ))}
+          <div className="overflow-hidden">
+            <motion.h2
+              initial={{ y: 40, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+              className="font-serif text-[34px] sm:text-[46px] md:text-[54px] font-semibold text-[#123C2D] leading-[1.08] tracking-[-0.015em]"
+            >
+              WHAT OUR CUSTOMERS
+              <br />
+              SAY ABOUT US.
+            </motion.h2>
+          </div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="font-sans text-[15.5px] sm:text-[17.5px] md:text-[18.5px] font-normal text-[#2A2118]/80 leading-[1.5] max-w-[620px] mx-auto pt-1"
+          >
+            Genuine reflections from families across South India embracing the unprocessed purity of high-altitude harvesting.
+          </motion.p>
+        </div>
+
+        {/* Cinematic Testimonial Showcase Stage */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center max-w-[1240px] mx-auto">
+          {/* ====================================================
+              LEFT: LAYERED IMAGE STACK WITH SIDE PREVIEWS
+              ==================================================== */}
+          <div className="lg:col-span-5 relative flex justify-center items-center">
+            {/* Stage wrapper with parallax offset */}
+            <motion.div
+              style={
+                !isMobile && !shouldReduceMotion
+                  ? { x: mouseOffset.x * 0.9, y: mouseOffset.y * 0.9 }
+                  : undefined
+              }
+              className="relative w-full max-w-[340px] sm:max-w-[380px] aspect-[4/5] flex items-center justify-center transition-transform duration-200"
+            >
+              {/* Subtle Decorative Circular Border Accent behind active image */}
+              <div className="absolute inset-0 -m-3 sm:-m-4 rounded-[32px] border border-[#D6A83A]/30 pointer-events-none scale-102" />
+
+              {/* Behind Stage 1: Previous Customer Portrait Preview (Left/Top) */}
+              {prevTestimonial && (
+                <div
+                  onClick={handlePrev}
+                  title={`View ${prevTestimonial.author}'s review`}
+                  className="hidden sm:block absolute top-0 -left-6 sm:-left-9 w-[86%] h-[86%] rounded-[22px] overflow-hidden opacity-35 hover:opacity-55 transition-all duration-500 cursor-pointer filter blur-[1.5px] -rotate-4 z-0 shadow-sm"
+                >
+                  <img
+                    src={prevTestimonial.image}
+                    alt={prevTestimonial.author}
+                    className="w-full h-full object-cover grayscale-[20%]"
+                  />
+                  <div className="absolute inset-0 bg-[#08291F]/30" />
+                </div>
+              )}
+
+              {/* Behind Stage 2: Next Customer Portrait Preview (Right/Bottom) */}
+              {nextTestimonial && (
+                <div
+                  onClick={handleNext}
+                  title={`View ${nextTestimonial.author}'s review`}
+                  className="hidden sm:block absolute bottom-0 -right-6 sm:-right-9 w-[86%] h-[86%] rounded-[22px] overflow-hidden opacity-40 hover:opacity-60 transition-all duration-500 cursor-pointer filter blur-[1px] rotate-4 z-0 shadow-sm"
+                >
+                  <img
+                    src={nextTestimonial.image}
+                    alt={nextTestimonial.author}
+                    className="w-full h-full object-cover grayscale-[15%]"
+                  />
+                  <div className="absolute inset-0 bg-[#08291F]/25" />
+                </div>
+              )}
+
+              {/* Active Customer Portrait Card (Foreground z-20) */}
+              <div className="relative w-full h-full z-20">
+                <AnimatePresence custom={direction} mode="popLayout">
+                  <motion.div
+                    key={`active-portrait-${activeTestimonial.id}`}
+                    custom={direction}
+                    variants={imageVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.25}
+                    onDragEnd={handleDragEnd}
+                    className="w-full h-full rounded-[24px] overflow-hidden shadow-[0_25px_60px_rgba(18,60,45,0.18)] border-2 border-[#D6A83A]/70 bg-[#EDE8DC] relative cursor-grab active:cursor-grabbing"
+                  >
+                    {/* Character Image Motion: Subtle continuous breathing life */}
+                    <motion.img
+                      src={activeTestimonial.image}
+                      alt={`Fictional editorial portrait representing ${activeTestimonial.author}`}
+                      animate={
+                        shouldReduceMotion
+                          ? undefined
+                          : { scale: [1, 1.025, 1] }
+                      }
+                      transition={{
+                        duration: 5.5,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      }}
+                      className="w-full h-full object-cover object-center will-change-transform"
+                      loading="eager"
+                    />
+
+                    {/* Rich Cinematic Vignette Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#08291F]/60 via-[#08291F]/15 to-transparent pointer-events-none" />
+
+                    {/* Location Badge (Top Left) */}
+                    {activeTestimonial.location && (
+                      <div className="absolute top-4 left-4 z-30">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#08291F]/80 backdrop-blur-md text-[#FAF8F0] font-mono text-[11px] uppercase tracking-wider shadow-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#D6A83A]" />
+                          {activeTestimonial.location}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* 5-Star Rating Overlay (Bottom Left) */}
+                    <div className="absolute bottom-4 left-4 z-30 flex items-center space-x-1 text-[#D6A83A]">
+                      {[...Array(5)].map((_, i) => (
+                        <svg
+                          key={i}
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="w-4 h-4 drop-shadow-md"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+
+                    {/* Verification Pill (Bottom Right) */}
+                    <div className="absolute bottom-4 right-4 z-30 hidden sm:block">
+                      <span className="font-mono text-[10px] font-semibold text-[#FAF8F0]/90 uppercase tracking-widest bg-black/35 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10">
+                        VERIFIED
+                      </span>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ====================================================
+              RIGHT: LARGE TESTIMONIAL QUOTE & DETAILS
+              ==================================================== */}
+          <div className="lg:col-span-7 flex flex-col justify-center text-left space-y-6 lg:pl-4">
+            {/* Animated Large Quote with Blur & Slide Transitions */}
+            <div className="relative min-h-[140px] sm:min-h-[160px] flex items-center">
+              <span className="font-serif text-[60px] sm:text-[80px] leading-none text-[#D6A83A]/25 absolute -top-8 sm:-top-10 -left-6 select-none pointer-events-none">
+                “
+              </span>
+
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={`quote-${activeTestimonial.id}`}
+                  initial={
+                    shouldReduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, y: 30, filter: 'blur(5px)' }
+                  }
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    filter: 'blur(0px)',
+                  }}
+                  exit={
+                    shouldReduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, y: -25, filter: 'blur(5px)' }
+                  }
+                  transition={{
+                    duration: 0.8,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  style={
+                    !isMobile && !shouldReduceMotion
+                      ? { x: mouseOffset.x * 0.35, y: mouseOffset.y * 0.35 }
+                      : undefined
+                  }
+                  className="font-serif text-[22px] sm:text-[28px] md:text-[32px] lg:text-[34px] font-normal text-[#123C2D] leading-[1.35] tracking-[-0.01em] relative z-10"
+                >
+                  "{activeTestimonial.quote}"
+                </motion.p>
+              </AnimatePresence>
             </div>
 
-            {/* Next Arrow */}
-            <button
-              type="button"
-              onClick={handleNext}
-              aria-label="Next testimonial"
-              className="w-11 h-11 rounded-full bg-white border border-[#D9D5C8] hover:bg-[#123C2D] hover:text-[#FAF8F0] hover:border-[#123C2D] text-[#123C2D] flex items-center justify-center transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer active:scale-95"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
-            </button>
-          </motion.div>
+            {/* Separately Animated Customer Name & Role */}
+            <div className="pt-6 border-t border-[#D9D5C8]/80">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`name-${activeTestimonial.id}`}
+                  initial={
+                    shouldReduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, y: 15 }
+                  }
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={
+                    shouldReduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, y: -10 }
+                  }
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.12,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="flex items-center justify-between gap-4"
+                >
+                  <div>
+                    <h4 className="font-sans text-[20px] sm:text-[23px] font-bold text-[#123C2D] tracking-tight">
+                      {activeTestimonial.author}
+                    </h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="font-sans text-[13px] sm:text-[14px] text-[#607568]">
+                        {activeTestimonial.location || 'South India'}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-[#D6A83A]" />
+                      <span className="font-mono text-[11px] font-semibold text-[#123C2D] uppercase tracking-wider">
+                        {activeTestimonial.role || 'VERIFIED EXPERIENCE'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Botanical Quality Insignia */}
+                  <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#123C2D]/5 border border-[#123C2D]/10">
+                    <span className="w-2 h-2 rounded-full bg-[#D6A83A]" />
+                    <span className="font-mono text-[10.5px] font-semibold tracking-wider text-[#123C2D] uppercase">
+                      Himalayan Harvest
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* ====================================================
+                BOTTOM CONTROLS: PREVIOUS, PROGRESS & NEXT
+                ==================================================== */}
+            <div className="pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+              {/* Previous / Next Circular Arrow Controls */}
+              <div className="flex items-center gap-3">
+                {/* Previous Arrow */}
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  aria-label="Previous testimonial"
+                  className="group w-12 h-12 rounded-full bg-[#FAF8F0] border border-[#D9D5C8] hover:bg-[#123C2D] hover:text-[#FAF8F0] hover:border-[#123C2D] text-[#123C2D] flex items-center justify-center transition-all duration-300 shadow-xs cursor-pointer active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#D6A83A]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
+                </button>
+
+                {/* Next Arrow */}
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  aria-label="Next testimonial"
+                  className="group w-12 h-12 rounded-full bg-[#FAF8F0] border border-[#D9D5C8] hover:bg-[#123C2D] hover:text-[#FAF8F0] hover:border-[#123C2D] text-[#123C2D] flex items-center justify-center transition-all duration-300 shadow-xs cursor-pointer active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#D6A83A]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Progress Bar & Jump Dots */}
+              <div className="flex-1 max-w-[320px] flex flex-col gap-2">
+                {/* Autoplay Animated Progress Bar */}
+                <div className="w-full h-1 bg-[#D9D5C8]/80 rounded-full overflow-hidden">
+                  <motion.div
+                    key={`progress-${activeIndex}-${isPaused}`}
+                    initial={{ width: '0%' }}
+                    animate={{ width: isPaused ? '0%' : '100%' }}
+                    transition={{
+                      duration: 5.5,
+                      ease: 'linear',
+                    }}
+                    className="h-full bg-[#123C2D]"
+                  />
+                </div>
+
+                {/* Jump Dots with active index indicator */}
+                <div className="flex items-center justify-between pt-1">
+                  <div className="flex items-center gap-2">
+                    {TESTIMONIALS.map((_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => handleSelect(i)}
+                        aria-label={`Go to testimonial ${i + 1}`}
+                        aria-current={i === activeIndex ? 'true' : 'false'}
+                        className={`transition-all duration-300 rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#D6A83A] ${
+                          i === activeIndex
+                            ? 'w-6 h-2 bg-[#123C2D]'
+                            : 'w-2 h-2 bg-[#D9D5C8] hover:bg-[#123C2D]/50'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  <span className="font-mono text-[11px] text-[#607568] tracking-wider">
+                    0{activeIndex + 1} / 0{totalReviews}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ====================================================
+            CUSTOMER SELECTOR STRIP: ALL 6 PORTRAITS & NAMES
+            ==================================================== */}
+        <div className="mt-16 sm:mt-20 pt-10 border-t border-[#D9D5C8]/70">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            {TESTIMONIALS.map((t, idx) => {
+              const isItemActive = idx === activeIndex;
+
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => handleSelect(idx)}
+                  className={`group p-2.5 sm:p-3 rounded-[16px] text-left transition-all duration-300 flex items-center gap-3 cursor-pointer border ${
+                    isItemActive
+                      ? 'bg-[#FAF8F0] border-[#D6A83A] shadow-xs ring-1 ring-[#D6A83A]/40'
+                      : 'bg-[#FAF8F0]/60 border-[#D9D5C8]/70 hover:bg-[#FAF8F0] hover:border-[#D9D5C8]'
+                  }`}
+                >
+                  {/* Small Portrait Thumbnail */}
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden flex-shrink-0 bg-[#EDE8DC] border border-[#D9D5C8]">
+                    <img
+                      src={t.image}
+                      alt={t.author}
+                      className={`w-full h-full object-cover transition-all duration-300 ${
+                        isItemActive ? 'scale-105' : 'grayscale-[25%] group-hover:grayscale-0'
+                      }`}
+                      loading="lazy"
+                    />
+                  </div>
+
+                  {/* Customer Name & Location */}
+                  <div className="min-w-0 flex-1">
+                    <h4
+                      className={`font-sans text-[13.5px] sm:text-[14.5px] font-bold leading-tight truncate transition-colors ${
+                        isItemActive ? 'text-[#123C2D]' : 'text-[#2A2118]/85 group-hover:text-[#123C2D]'
+                      }`}
+                    >
+                      {t.author}
+                    </h4>
+                    <span className="font-sans text-[11px] text-[#607568] block truncate mt-0.5">
+                      {t.location || 'South India'}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Authenticity Disclaimer Note */}
+          <p className="text-center font-sans text-[11.5px] text-[#607568]/80 mt-6 tracking-wide">
+            Illustrative customer lifestyle portraits representing genuine community feedback.
+          </p>
         </div>
       </div>
     </section>

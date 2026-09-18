@@ -42,6 +42,7 @@ export interface Testimonial {
   author: string;
   role: string;
   location?: string;
+  image?: string;
 }
 
 export interface LabTestParameter {
@@ -385,6 +386,80 @@ export const HERO_CONTENT = {
   secondaryCta: "ORDER ON WHATSAPP",
 };
 
+export interface FaqItem {
+  id: string;
+  number: string;
+  question: string;
+  answer: string;
+  category?: 'product' | 'ordering' | 'shipping' | 'quality';
+}
+
+export const FAQS: FaqItem[] = [
+  {
+    id: 'faq-1',
+    number: '01',
+    question: 'What makes Himalayan Harvest Honey different?',
+    answer: 'Carried through four generations of harvesting tradition, our honey is harvested directly from wild native mountain flora at high altitudes. It is completely raw, unheated, unpasteurized, and rigorously tested by Tamilnadu Test House to exceed IS 4941 Special Grade standards.',
+    category: 'product',
+  },
+  {
+    id: 'faq-2',
+    number: '02',
+    question: 'What sizes are available?',
+    answer: 'Our raw honey and cultured ghee are available in three calibrated glass jars: 400g (daily trial / introductory jar), 700g (household favorite), and 1000g (1 kg bulk reserve jar). You can select your preferred size directly on any product card.',
+    category: 'product',
+  },
+  {
+    id: 'faq-3',
+    number: '03',
+    question: 'How do I place an order?',
+    answer: 'Simply choose your desired jar size (400g, 700g, or 1000g), click "Add to Cart", and proceed to checkout with our secure online Razorpay payment system (UPI, Cards, NetBanking). Alternatively, you can click "Order on WhatsApp" to place your order directly with our customer desk.',
+    category: 'ordering',
+  },
+  {
+    id: 'faq-4',
+    number: '04',
+    question: 'Can I order through WhatsApp?',
+    answer: 'Yes! Every product and your shopping cart includes a direct "Order on WhatsApp" button that prepares an itemized order message sent to our official customer desk (+91 81243 91725).',
+    category: 'ordering',
+  },
+  {
+    id: 'faq-5',
+    number: '05',
+    question: 'What payment methods are available?',
+    answer: 'We support all major payment methods through our official Razorpay checkout integration: UPI (Google Pay, PhonePe, Paytm, BHIM), Credit & Debit Cards (Visa, MasterCard, RuPay), and NetBanking across all leading Indian banks.',
+    category: 'ordering',
+  },
+  {
+    id: 'faq-6',
+    number: '06',
+    question: 'What is the shipping charge?',
+    answer: 'Shipping is determined by delivery state: For orders under ₹1,000, shipping is ₹50 within Tamil Nadu and ₹100 for all other Indian states. All orders of ₹1,000 or above receive 100% FREE shipping nationwide.',
+    category: 'shipping',
+  },
+  {
+    id: 'faq-7',
+    number: '07',
+    question: 'What is the return policy?',
+    answer: 'We offer a 24-hour return request window upon parcel delivery for damaged, defective, or incorrect items. Please reach out to our WhatsApp support (+91 81243 91725) with opening photos/video to arrange an immediate replacement or refund.',
+    category: 'shipping',
+  },
+  {
+    id: 'faq-8',
+    number: '08',
+    question: 'Can I return an opened honey bottle?',
+    answer: 'Because honey and ghee are consumable food items, opened bottles with broken tamper-evident seals cannot be returned in compliance with FSSAI health and safety standards.',
+    category: 'quality',
+  },
+  {
+    id: 'faq-9',
+    number: '09',
+    question: 'How long does shipping take?',
+    answer: 'Orders are securely packed and dispatched within 24 to 48 hours. Shipments within Tamil Nadu typically arrive in 2 to 3 business days, while deliveries to other states take 4 to 6 business days. Tracking details are shared via SMS and WhatsApp upon dispatch.',
+    category: 'shipping',
+  },
+];
+
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: "1",
@@ -392,6 +467,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: "Kavitha R.",
     role: "CUSTOMER FEEDBACK",
     location: "Chennai",
+    image: "/images/reviews/kavitha-r.jpg",
   },
   {
     id: "2",
@@ -399,6 +475,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: "Senthil M.",
     role: "CUSTOMER REVIEW",
     location: "Madurai",
+    image: "/images/reviews/senthil-m.jpg",
   },
   {
     id: "3",
@@ -406,6 +483,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: "Deepak N.",
     role: "CUSTOMER FEEDBACK",
     location: "Coimbatore",
+    image: "/images/reviews/deepak-n.jpg",
   },
   {
     id: "4",
@@ -413,6 +491,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: "Ravi",
     role: "CUSTOMER REVIEW",
     location: "Salem",
+    image: "/images/reviews/ravi.jpg",
   },
   {
     id: "5",
@@ -420,6 +499,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: "Chandra",
     role: "CUSTOMER FEEDBACK",
     location: "Trichy",
+    image: "/images/reviews/chandra.jpg",
   },
   {
     id: "6",
@@ -427,6 +507,7 @@ export const TESTIMONIALS: Testimonial[] = [
     author: "Tarun Naik",
     role: "CUSTOMER REVIEW",
     location: "Bengaluru",
+    image: "/images/reviews/tarun-naik.jpg",
   },
 ];
 

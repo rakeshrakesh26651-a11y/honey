@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CloseIcon } from './Icons';
 import { LAB_REPORT, QUALITY_CONTENT } from '../data/content';
 
 export const QualitySection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsModalOpen(false);
+      }
+    };
+    if (isModalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isModalOpen]);
 
   return (
     <section id="quality" className="w-full py-20 lg:py-32 bg-[#FAF8F0] border-t border-[#D9D5C8]">
@@ -18,6 +30,15 @@ export const QualitySection: React.FC = () => {
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="w-full lg:max-w-[520px] flex-shrink-0 cursor-pointer group"
+            role="button"
+            tabIndex={0}
+            aria-label="View official laboratory test report documentation"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setIsModalOpen(true);
+              }
+            }}
             onClick={() => setIsModalOpen(true)}
           >
             <div className="relative w-full rounded-[20px] bg-white border border-[#D9D5C8] p-7 sm:p-9 shadow-[0_4px_20px_rgba(18,60,45,0.05)] hover:shadow-[0_12px_32px_rgba(18,60,45,0.1)] transition-all duration-300 transform group-hover:scale-[1.01]">
@@ -187,6 +208,9 @@ export const QualitySection: React.FC = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="lab-report-title"
               className="relative w-full max-w-[760px] bg-[#FAF8F0] rounded-[24px] p-6 sm:p-10 shadow-2xl z-10 border border-[#D9D5C8] max-h-[90vh] overflow-y-auto space-y-6 my-auto"
             >
               {/* Modal Header */}
@@ -195,7 +219,7 @@ export const QualitySection: React.FC = () => {
                   <span className="font-mono text-[11px] text-[#D6A83A] tracking-widest uppercase font-semibold block mb-1">
                     Official Analysis Certificate
                   </span>
-                  <h3 className="font-serif text-[24px] sm:text-[28px] font-semibold text-[#123C2D]">
+                  <h3 id="lab-report-title" className="font-serif text-[24px] sm:text-[28px] font-semibold text-[#123C2D]">
                     {LAB_REPORT.laboratory}
                   </h3>
                   <p className="font-sans text-[13px] text-[#607568] mt-1">

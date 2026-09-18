@@ -1,60 +1,198 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { UGC_IMAGES } from '../data/content';
+import { AnimatedHeading } from './motion/AnimatedHeading';
+import { InstagramIcon } from './Icons';
+
+interface GalleryItem {
+  src: string;
+  alt: string;
+  caption: string;
+  tag: string;
+  aspect: string; // Tailwind aspect ratio or span
+  colSpan?: string;
+  rowSpan?: string;
+}
 
 export const SocialGallery: React.FC = () => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  // Curate lifestyle editorial captions
+  const galleryItems: GalleryItem[] = [
+    {
+      src: UGC_IMAGES[5]?.src || '/images/ugc_6.jpg',
+      alt: UGC_IMAGES[5]?.alt || 'Honey jar overlooking Himalayan peaks',
+      caption: 'High-altitude raw harvest overlooking mountain peaks',
+      tag: 'ORIGIN HARVEST',
+      aspect: 'aspect-[4/5]',
+      colSpan: 'md:col-span-2 lg:col-span-1',
+      rowSpan: 'lg:row-span-2',
+    },
+    {
+      src: UGC_IMAGES[0]?.src || '/images/ugc_1.jpg',
+      alt: UGC_IMAGES[0]?.alt || 'Artisanal toast with honey drizzle',
+      caption: 'Artisanal breakfast toast with natural floral drizzle',
+      tag: 'DAILY RITUAL',
+      aspect: 'aspect-square',
+    },
+    {
+      src: UGC_IMAGES[3]?.src || '/images/ugc_4.jpg',
+      alt: UGC_IMAGES[3]?.alt || 'Raw honey dripping from wooden dipper',
+      caption: 'Slow-poured raw honey preserving living enzymes',
+      tag: '100% UNHEATED',
+      aspect: 'aspect-square',
+    },
+    {
+      src: '/images/story_apiary.jpg',
+      alt: 'Himalayan mountain apiary surrounded by wild native flora',
+      caption: 'Four generations of bee stewardship in high-altitude forests',
+      tag: 'HERITAGE APIARY',
+      aspect: 'aspect-[16/10]',
+      colSpan: 'md:col-span-2 lg:col-span-2',
+    },
+    {
+      src: UGC_IMAGES[2]?.src || '/images/ugc_3.jpg',
+      alt: UGC_IMAGES[2]?.alt || 'Greek yogurt bowl with walnuts and honey swirl',
+      caption: 'Morning bowl with roasted walnuts, figs, and wildflower nectar',
+      tag: 'NUTRITION',
+      aspect: 'aspect-square',
+    },
+    {
+      src: UGC_IMAGES[1]?.src || '/images/ugc_2.jpg',
+      alt: UGC_IMAGES[1]?.alt || 'Mountain herbal tea with honey and lemon',
+      caption: 'Evening wellness infusion with citrus and mountain comb',
+      tag: 'WELLNESS',
+      aspect: 'aspect-square',
+    },
+  ];
+
   return (
-    <section id="wild" className="w-full py-16 md:py-24 bg-[#F5F1E6]">
-      <div className="max-w-[1200px] mx-auto px-6 md:px-10">
-        {/* Header Block */}
-        <div className="text-center max-w-[640px] mx-auto mb-10 md:mb-12 space-y-3.5">
-          <div className="flex items-center justify-center gap-2">
+    <section id="wild" className="relative w-full py-20 lg:py-28 bg-[#F5F1E6] overflow-hidden border-t border-[#D9D5C8]">
+      {/* Subtle organic ambient background accent */}
+      <div className="absolute top-1/2 -right-32 w-96 h-96 rounded-full bg-[#D6A83A]/[0.06] blur-3xl pointer-events-none" />
+
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
+        {/* Editorial Section Header */}
+        <div className="text-center max-w-[680px] mx-auto mb-14 md:mb-18 space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center justify-center gap-2"
+          >
             <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-            <span className="font-mono text-[12px] uppercase tracking-[0.1em] text-[#123C2D] font-medium block leading-[18.2px]">
+            <span className="font-mono text-[11.5px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
               @himalayanharvesthoney • 9,592 FOLLOWERS
             </span>
             <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-          </div>
-          <h2 className="font-serif text-[36px] md:text-[48px] font-semibold text-[#123C2D] leading-[1.1] tracking-[-0.01em]">
-            FROM OUR COMMUNITY
-          </h2>
-          <p className="font-sans text-[16px] md:text-[18px] font-normal text-[#2A2118]/80 leading-[1.5]">
-            Follow Himalayan Harvest Honey for product updates, customer experiences and special offers.
-          </p>
-          <div className="pt-2">
+          </motion.div>
+
+          <AnimatedHeading
+            text="FROM OUR COMMUNITY"
+            as="h2"
+            animateOnMount={true}
+            className="font-serif text-[34px] sm:text-[46px] md:text-[52px] font-semibold text-[#123C2D] leading-[1.08] tracking-[-0.015em]"
+          />
+
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="font-sans text-[16px] sm:text-[18px] md:text-[19px] font-normal text-[#2A2118]/80 leading-[1.55]"
+          >
+            Living moments from mountain kitchens, morning breakfast tables, and community honey rituals.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="pt-2"
+          >
             <a
               href="https://www.instagram.com/himalayanharvesthoney/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center h-[46px] px-8 rounded-full bg-[#123C2D] hover:bg-[#08291F] text-white font-sans text-sm font-medium transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 h-[48px] px-8 rounded-full bg-[#123C2D] hover:bg-[#D6A83A] text-white hover:text-[#08291F] font-sans text-sm font-semibold tracking-wide transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
             >
-              FOLLOW US ON INSTAGRAM
+              <InstagramIcon size={16} color="currentColor" />
+              <span>FOLLOW US ON INSTAGRAM</span>
             </a>
-          </div>
+          </motion.div>
         </div>
 
-        {/* 6-Photo Grid with 16px gap matching original */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-[1120px] mx-auto"
-        >
-          {UGC_IMAGES.map((img, index) => (
-            <div
-              key={index}
-              className="relative aspect-square rounded-[16px] overflow-hidden bg-white border border-[#D9D5C8] group shadow-2xs"
-            >
-              <img
-                src={img.src}
-                alt={img.alt}
-                className="w-full h-full object-cover rounded-[16px] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </motion.div>
+        {/* Asymmetrical Editorial Masonry Gallery */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-[1240px] mx-auto">
+          {galleryItems.map((item, index) => {
+            const isHovered = hoveredIndex === index;
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{
+                  duration: 0.7,
+                  delay: index * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className={`relative rounded-[20px] overflow-hidden bg-white border border-[#D9D5C8] group shadow-[0_4px_18px_rgba(18,60,45,0.04)] hover:shadow-[0_16px_38px_rgba(18,60,45,0.12)] hover:border-[#D6A83A]/70 transition-all duration-500 cursor-pointer ${
+                  item.colSpan || ''
+                } ${item.rowSpan || ''} ${item.aspect}`}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                {/* Background Image with Cinematic Zoom */}
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  className="w-full h-full object-cover rounded-[20px] transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                  loading="lazy"
+                />
+
+                {/* Ambient Soft Dark Gradient Overlay on Hover */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-t from-[#08291F]/85 via-[#08291F]/25 to-transparent transition-opacity duration-300 ${
+                    isHovered ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+
+                {/* Permanent subtle tag pill (top right) */}
+                <div className="absolute top-3.5 right-3.5 z-10">
+                  <span className="inline-block px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-[#FAF8F0] font-mono text-[10px] font-bold uppercase tracking-wider border border-white/15 shadow-xs">
+                    {item.tag}
+                  </span>
+                </div>
+
+                {/* Reveal on Hover: Bottom Caption & Instagram Handle */}
+                <div
+                  className={`absolute bottom-0 inset-x-0 p-5 sm:p-6 text-[#FAF8F0] z-10 transition-all duration-300 ${
+                    isHovered
+                      ? 'translate-y-0 opacity-100'
+                      : 'translate-y-3 opacity-0 pointer-events-none'
+                  }`}
+                >
+                  <p className="font-serif text-[15px] sm:text-[17px] font-normal leading-[1.35] mb-2 text-[#FAF8F0]">
+                    {item.caption}
+                  </p>
+                  <div className="flex items-center justify-between pt-2 border-t border-white/20 text-[11px] font-mono text-[#D6A83A]">
+                    <span className="flex items-center gap-1.5 font-semibold tracking-wider">
+                      <InstagramIcon size={12} color="#D6A83A" />
+                      @himalayanharvesthoney
+                    </span>
+                    <span className="text-white/80 uppercase tracking-widest text-[10px]">
+                      VIEW POST ↗
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

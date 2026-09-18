@@ -4,9 +4,10 @@ import { Product } from '../data/content';
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product, size: string, quantity: number) => void;
+  onNavigate?: (path: string) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onNavigate }) => {
   const [selectedSize, setSelectedSize] = useState<string>(
     product.variants && product.variants.length > 0 ? product.variants[0].size : '400g'
   );
@@ -15,6 +16,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
   // Derive current price based on selected size variant
   const currentVariant = product.variants?.find((v) => v.size === selectedSize);
   const currentPrice = currentVariant ? currentVariant.price : product.price;
+
+  const handleProductClick = (e: React.MouseEvent) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate(`/product/${product.slug}`);
+    }
+  };
 
   const handleDecreaseQty = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -38,7 +46,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
     <div className="group flex flex-col justify-between w-full h-full bg-[#FAF8F0] rounded-[14px] md:rounded-[16px] border border-[#D9D5C8] p-3 sm:p-3.5 shadow-[0_2px_12px_rgba(18,60,45,0.04)] hover:shadow-[0_8px_26px_rgba(18,60,45,0.08)] hover:border-[#123C2D]/40 transition-all duration-300">
       {/* Top Half: Image & Badges */}
       <div>
-        <div className="relative w-full aspect-[4/3] sm:aspect-square rounded-[10px] md:rounded-[12px] overflow-hidden bg-white mb-3">
+        <a
+          href={`/product/${product.slug}`}
+          onClick={handleProductClick}
+          className="block relative w-full aspect-[4/3] sm:aspect-square rounded-[10px] md:rounded-[12px] overflow-hidden bg-white mb-3 cursor-pointer"
+        >
           <img
             src={product.image}
             alt={product.alt}
@@ -70,13 +82,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }
               </span>
             </div>
           )}
-        </div>
+        </a>
 
         {/* Product Details */}
         <div className="flex flex-col text-left px-0.5">
-          <h4 className="font-serif text-[15px] sm:text-[16px] md:text-[17px] font-semibold text-[#123C2D] leading-[1.25] mb-1 group-hover:text-[#D6A83A] transition-colors line-clamp-1">
-            {product.name}
-          </h4>
+          <a
+            href={`/product/${product.slug}`}
+            onClick={handleProductClick}
+            className="cursor-pointer"
+          >
+            <h4 className="font-serif text-[15px] sm:text-[16px] md:text-[17px] font-semibold text-[#123C2D] leading-[1.25] mb-1 group-hover:text-[#D6A83A] transition-colors line-clamp-1">
+              {product.name}
+            </h4>
+          </a>
           <p className="font-sans text-[11px] sm:text-[11.5px] md:text-[12px] text-[#607568] leading-tight mb-2.5 line-clamp-1">
             {product.subtitle}
           </p>
