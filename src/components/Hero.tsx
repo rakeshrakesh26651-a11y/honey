@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { WarpText } from './WarpText';
 
 interface HeroProps {
   onShopClick?: () => void;
@@ -115,35 +114,16 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
             </span>
           </motion.div>
 
-          {/* Main Headline with WarpText */}
+          {/* Main Headline */}
           <motion.div
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: transitionEase }}
             className="w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
           >
-            <h1 className="sr-only">Pure Honey.</h1>
-            <WarpText
-              text="Pure Honey."
-              color="#FAF9F5"
-              warpStrength={0.08}
-              warpScale={1.7}
-              speed={0.55}
-              pointerInfluence={0.42}
-              pointerStrength={0.38}
-              refraction={0.018}
-              ripple
-              fontSize={108}
-              fontWeight={700}
-              style={{
-                width: '100%',
-                height: '135px',
-                maxWidth: '580px',
-              }}
-              fontFamily="Recia, 'Recia Placeholder', serif"
-              letterSpacing={-0.03}
-              lineHeight={1.02}
-            />
+            <h1 className="font-serif text-[48px] sm:text-[68px] md:text-[84px] lg:text-[100px] font-bold text-[#FAF9F5] leading-[1.02] tracking-[-0.03em] select-text">
+              Pure Honey.
+            </h1>
           </motion.div>
 
           {/* Subheading (0.7s) */}

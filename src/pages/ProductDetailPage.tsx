@@ -81,11 +81,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 bg-[#FAF9F5] border border-[#D9D7D0] rounded-[24px] p-6 sm:p-8 md:p-12 mb-16 shadow-[0_4px_24px_rgba(36, 36, 36,0.04)]">
             {/* Left: Product Image */}
             <div className="lg:col-span-6">
-              <div className="relative aspect-square w-full rounded-[18px] overflow-hidden bg-white border border-[#D9D7D0] shadow-sm">
+              <div className="relative aspect-square w-full rounded-[18px] overflow-hidden bg-white border border-[#D9D7D0] shadow-sm flex items-center justify-center p-6 sm:p-8 md:p-10">
                 <img
                   src={product.image}
                   alt={product.alt}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain object-center drop-shadow-[0_8px_20px_rgba(0,0,0,0.06)]"
                 />
 
                 {product.badge && (
