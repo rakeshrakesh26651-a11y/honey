@@ -4,12 +4,12 @@ import { motion } from 'framer-motion';
 import { AnnouncementBar } from './components/AnnouncementBar';
 import { Header } from './components/Header';
 import { MobileMenu } from './components/MobileMenu';
-import { CartDrawer, CartItem } from './components/CartDrawer';
 import { Footer } from './components/Footer';
 
 // Dedicated Multi-Page Architecture
 import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
+import { CartPage, CartItem } from './pages/CartPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { AboutPage } from './pages/AboutPage';
 import { LabReportsPage } from './pages/LabReportsPage';
@@ -22,11 +22,9 @@ import { RefundPolicy } from './pages/RefundPolicy';
 import { AccountPage } from './pages/AccountPage';
 
 import { Product } from './data/content';
-import { openWhatsAppOrder } from './utils/whatsapp';
 
 export function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [currentPath, setCurrentPath] = useState<string>(() => {
     if (typeof window !== 'undefined') {
@@ -43,13 +41,6 @@ export function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-
-  // Open cart automatically if customer navigates to /cart or /checkout directly
-  useEffect(() => {
-    if (currentPath === '/cart' || currentPath === '/checkout') {
-      setIsCartOpen(true);
-    }
-  }, [currentPath]);
 
   // Initialize Lenis smooth scroll
   useEffect(() => {
@@ -79,11 +70,6 @@ export function App() {
   const handleNavigate = (path: string) => {
     if (typeof window === 'undefined') return;
 
-    if (path === '/cart' || path === '/checkout') {
-      setIsCartOpen(true);
-      return;
-    }
-
     if (path.includes('#')) {
       const [route, hash] = path.split('#');
       const targetRoute = route || '/';
@@ -110,7 +96,7 @@ export function App() {
    * Add to Cart handler:
    * 1. Stores selected variant size (400g / 700g / 1000g)
    * 2. Different sizes of the same product remain separate line items
-   * 3. Opens cart drawer WITHOUT redirecting or opening WhatsApp
+   * 3. CRITICAL: Navigates directly to full /cart page (NO DRAWER)
    */
   const handleAddToCart = (product: Product, size: string = '400g', quantity: number = 1) => {
     const itemId = `${product.id}-${size}`;
@@ -138,8 +124,8 @@ export function App() {
       ];
     });
 
-    // Open Cart Drawer (WITHOUT WhatsApp redirect)
-    setIsCartOpen(true);
+    // Navigate directly to /cart full page
+    handleNavigate('/cart');
   };
 
   const handleUpdateQuantity = (itemId: string, quantity: number) => {
@@ -178,6 +164,19 @@ export function App() {
       return (
         <ShopPage
           onAddToCart={handleAddToCart}
+          onNavigate={handleNavigate}
+        />
+      );
+    }
+
+    // Full Cart & Checkout Page (Reproducing Dribbble Reference)
+    if (currentPath === '/cart' || currentPath === '/checkout') {
+      return (
+        <CartPage
+          items={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+          onClearCart={() => setCartItems([])}
           onNavigate={handleNavigate}
         />
       );
@@ -231,15 +230,6 @@ export function App() {
       return <AccountPage initialMode="account" onNavigate={handleNavigate} />;
     }
 
-    if (currentPath === '/checkout') {
-      // Direct checkout view automatically displays the drawer
-      return (
-        <HomePage
-          onNavigate={handleNavigate}
-        />
-      );
-    }
-
     // Default or /home: Editorial Multi-Section Homepage
     return (
       <HomePage
@@ -261,7 +251,7 @@ export function App() {
       {/* 2. Header */}
       <Header
         cartCount={totalCartCount}
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={() => handleNavigate('/cart')}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         isMobileMenuOpen={isMobileMenuOpen}
         onNavigate={handleNavigate}
@@ -276,17 +266,6 @@ export function App() {
         currentPath={currentPath}
       />
 
-      {/* Interactive Cart Slide-over */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        items={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-        onClearCart={() => setCartItems([])}
-        onCheckout={() => openWhatsAppOrder(cartItems)}
-      />
-
       {/* Main Page Content */}
       <main className="flex-1 w-full">
         {renderMainContent()}
@@ -294,7 +273,7 @@ export function App() {
 
       {/* Footer with HIMALAYAN giant typography and links */}
       <Footer
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={() => handleNavigate('/cart')}
         onNavigate={handleNavigate}
       />
     </motion.div>

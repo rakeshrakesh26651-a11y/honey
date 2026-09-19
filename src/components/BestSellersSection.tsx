@@ -20,7 +20,7 @@ export interface BestSellerProduct {
  * Exactly the 3 Best Seller products:
  * 1. Forest Honey (Original: honeycomb + dipper; Alternate: product_multifloral.jpg)
  * 2. Kombu Honey (Original: glass jar + dipper; Alternate: product_wildflower.jpg)
- * 3. Gulkand Honey (Original: golden bowl + dipper; Alternate: product_gulkand.jpg)
+ * 3. Gulkand Honey (Original: golden bowl + dipper; Alternate: product_gulkand_clean.jpg)
  */
 const BEST_SELLERS: BestSellerProduct[] = [
   {
@@ -47,7 +47,7 @@ const BEST_SELLERS: BestSellerProduct[] = [
     slug: 'gulkand-honey',
     price: 699,
     alt: 'Gulkand Honey natural blend in golden bowl with dipper',
-    images: ['/images/gulkand_honey_best.jpg', '/images/product_gulkand.jpg'],
+    images: ['/images/gulkand_honey_best.jpg', '/images/product_gulkand_clean.jpg'],
     objectPositions: ['center 45%', 'center center'],
   },
 ];

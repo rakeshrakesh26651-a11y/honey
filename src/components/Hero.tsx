@@ -48,7 +48,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
     };
   }, []);
 
-  // Luxury easing curve
+  // Senior art-directed luxury easing curve
   const transitionEase = [0.16, 1, 0.3, 1];
 
   const handleShop = (e: React.MouseEvent) => {
@@ -62,9 +62,12 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
 
   return (
     <section
-      className="relative w-full bg-[#242424] text-[#FAF9F5] overflow-hidden py-16 sm:py-20 md:py-24 lg:py-28 min-h-[600px] lg:min-h-[680px] flex items-center border-b border-[#333333]"
+      aria-label="Himalayan Harvest Honey Hero"
+      className="relative w-full bg-[#242424] text-[#FAF9F5] overflow-hidden py-16 sm:py-20 md:py-24 lg:py-28 min-h-[600px] lg:min-h-[700px] flex items-center border-b border-[#333333]"
     >
-      {/* 1. Background Video */}
+      {/* =========================================================================
+          1. LOCKED BACKGROUND VIDEO LAYER (PRESERVED EXACTLY AS APPROVED)
+          ========================================================================= */}
       <video
         ref={videoRef}
         autoPlay
@@ -73,7 +76,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
         playsInline
         preload="auto"
         poster="/images/himalayan-honey-hero.jpg"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
         aria-hidden="true"
       >
         <source
@@ -82,121 +85,136 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
         />
       </video>
 
-      {/* 2. Warm Espresso Overlay (Preserving Video Clarity) */}
+      {/* =========================================================================
+          2. ATMOSPHERIC OVERLAYS (PRESERVING COMPLETE VIDEO CLARITY ON RIGHT)
+          ========================================================================= */}
+      {/* Desktop overlay: subtle warm espresso gradient on left behind editorial column, transparent across center & right */}
       <div
         className="absolute inset-0 pointer-events-none hidden lg:block"
         style={{
           background:
-            'linear-gradient(90deg, rgba(36, 36, 36, 0.65) 0%, rgba(36, 36, 36, 0.38) 40%, rgba(36, 36, 36, 0.10) 70%, rgba(36, 36, 36, 0.00) 100%)',
+            'linear-gradient(90deg, rgba(20, 18, 15, 0.88) 0%, rgba(20, 18, 15, 0.70) 28%, rgba(20, 18, 15, 0.35) 46%, rgba(20, 18, 15, 0.00) 64%)',
         }}
       />
+
+      {/* Mobile/Tablet overlay: subtle vertical vignette for text readability */}
       <div
         className="absolute inset-0 pointer-events-none lg:hidden"
         style={{
           background:
-            'linear-gradient(180deg, rgba(36, 36, 36, 0.68) 0%, rgba(36, 36, 36, 0.42) 45%, rgba(36, 36, 36, 0.18) 100%)',
+            'linear-gradient(180deg, rgba(20, 18, 15, 0.88) 0%, rgba(20, 18, 15, 0.65) 48%, rgba(20, 18, 15, 0.38) 100%)',
         }}
       />
 
-      {/* 3. Hero Content Layer */}
-      <div className="relative z-10 w-full max-w-[1240px] mx-auto px-6 md:px-10">
-        <div className="w-full lg:max-w-[580px] flex flex-col items-start space-y-6">
-          {/* Eyebrow / Label (0.2s) */}
+      {/* =========================================================================
+          3. FOREGROUND EDITORIAL CONTENT (LEFT-ALIGNED COLUMN ONLY)
+          ========================================================================= */}
+      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="w-full lg:max-w-[500px] xl:max-w-[540px] flex flex-col items-start text-left">
+          
+          {/* Eyebrow: NATURE'S FINEST */}
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: transitionEase }}
+            className="flex items-center gap-3 mb-6 sm:mb-7 select-none drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]"
+          >
+            <span className="font-mono text-[12px] sm:text-[13px] uppercase tracking-[0.16em] text-[#DDAA55] font-semibold">
+              NATURE'S FINEST
+            </span>
+            <span className="w-8 sm:w-12 h-[1px] bg-[#C9892E]/70 inline-block" />
+          </motion.div>
+
+          {/* Main Heading: Pure Honey. */}
           <motion.div
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: transitionEase }}
-            className="flex items-center gap-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]"
+            className="w-full mb-3 sm:mb-4 drop-shadow-[0_2px_14px_rgba(0,0,0,0.6)]"
           >
-            <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
-            <span className="font-mono text-[12px] sm:text-[13px] uppercase tracking-[0.1em] text-[#DDAA55] font-medium leading-[18px]">
-              100% PURE & RAW
-            </span>
-          </motion.div>
-
-          {/* Main Headline */}
-          <motion.div
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: transitionEase }}
-            className="w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
-          >
-            <h1 className="font-serif text-[40px] xs:text-[46px] sm:text-[60px] md:text-[76px] lg:text-[88px] xl:text-[92px] font-bold text-[#FAF9F5] leading-[1.06] tracking-normal select-text">
+            <h1 className="font-serif font-bold text-[#FAF9F5] text-[44px] xs:text-[52px] sm:text-[66px] md:text-[76px] lg:text-[84px] xl:text-[88px] leading-[1.04] tracking-[-0.02em] select-text">
               Pure Honey.
             </h1>
           </motion.div>
 
-          {/* Subheading (0.7s) */}
+          {/* Subheading: From the Himalayas. */}
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.7, ease: transitionEase }}
-            className="flex items-center gap-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+            transition={{ duration: 0.7, delay: 0.3, ease: transitionEase }}
+            className="w-full mb-6 sm:mb-7 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
           >
-            <span className="w-6 sm:w-8 h-[1.5px] bg-[#C9892E] inline-block" />
-            <span className="font-serif text-[22px] sm:text-[28px] md:text-[34px] font-medium text-[#DDAA55] tracking-[-0.01em] select-text">
+            <h2 className="font-serif italic text-[22px] sm:text-[28px] md:text-[34px] lg:text-[36px] text-[#DDAA55] font-normal tracking-[-0.01em] select-text leading-tight">
               From the Himalayas.
-            </span>
+            </h2>
           </motion.div>
 
-          {/* Description (1.0s) */}
+          {/* Body Paragraph */}
           <motion.p
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0, ease: transitionEase }}
-            className="font-sans text-[17px] sm:text-[19px] lg:text-[20px] font-normal text-[#F4F1EA] leading-[1.55] max-w-[500px] select-text drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
+            transition={{ duration: 0.7, delay: 0.4, ease: transitionEase }}
+            className="font-sans text-[16px] sm:text-[17px] lg:text-[18px] font-normal text-[#F4F1EA]/90 leading-[1.62] max-w-[460px] mb-8 sm:mb-9 select-text drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
           >
             Discover Himalayan Harvest Honey — naturally sourced raw honey presented with the pride and purity of four generations of harvesting tradition.
           </motion.p>
 
-          {/* CTA Buttons (1.3s) */}
+          {/* CTA Buttons: Horizontal on desktop, stacked on mobile */}
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.3, ease: transitionEase }}
-            className="pt-2 flex flex-wrap items-center gap-3.5"
+            transition={{ duration: 0.7, delay: 0.5, ease: transitionEase }}
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-8 sm:mb-10 w-full sm:w-auto"
           >
+            {/* Primary CTA: SHOP HONEY → */}
             <a
               href="/shop"
               onClick={handleShop}
-              className="inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#242424] font-sans text-[15px] sm:text-[16px] font-bold tracking-wide transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
+              className="inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#242424] font-sans text-[15px] sm:text-[16px] font-bold tracking-wide transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 shadow-md cursor-pointer group text-center whitespace-nowrap"
             >
-              SHOP HONEY
+              <span>SHOP HONEY</span>
+              <span className="ml-2 transform transition-transform duration-200 group-hover:translate-x-1">→</span>
             </a>
+
+            {/* Secondary CTA: ORDER ON WHATSAPP */}
             <a
               href="https://wa.me/918124391725?text=Hello%20Himalayan%20Harvest%20Honey!%20%F0%9F%91%8B%0A%0AI%20would%20like%20to%20know%20more%20about%20your%20pure%20honey%20products%20and%20offers."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center h-[52px] px-7 rounded-full border border-white/25 bg-[#242424]/50 backdrop-blur-sm hover:bg-[#242424]/75 hover:border-[#DDAA55] text-[#FAF9F5] font-sans text-[15px] font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center justify-center h-[52px] px-7 rounded-full border border-[#FAF9F5]/40 bg-[#242424]/60 backdrop-blur-sm hover:bg-[#242424]/85 hover:border-[#DDAA55] text-[#FAF9F5] font-sans text-[15px] font-medium transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer text-center whitespace-nowrap"
             >
               ORDER ON WHATSAPP
             </a>
           </motion.div>
 
-          {/* Trust / Quality Badges (1.5s) */}
+          {/* Trust Row: Clean and aligned on desktop, wraps naturally on mobile */}
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 1.5, ease: transitionEase }}
-            className="pt-4 flex flex-wrap items-center gap-6 border-t border-white/20 w-full select-text drop-shadow-[0_1px_4px_rgba(0,0,0,0.65)]"
+            transition={{ duration: 0.7, delay: 0.6, ease: transitionEase }}
+            className="w-full max-w-[620px] pt-5 sm:pt-6 border-t border-white/20 select-text"
           >
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DDAA55]" />
-              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF9F5]/85">
-                100% Raw & Unheated
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DDAA55]" />
-              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF9F5]/85">
-                4th-Gen Harvesters
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DDAA55]" />
-              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF9F5]/85">
-                Lab Certified IS 4941
-              </span>
+            <div className="inline-flex flex-wrap lg:flex-nowrap items-center gap-x-4 sm:gap-x-5 gap-y-2 py-2 px-3.5 sm:px-4 lg:p-0 rounded-xl lg:rounded-none bg-black/40 lg:bg-transparent backdrop-blur-sm lg:backdrop-blur-none text-[#FAF9F5]">
+              <div className="flex items-center gap-2 whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)]">
+                <span className="text-[#DDAA55] text-[10px] leading-none select-none">○</span>
+                <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.08em] text-[#FAF9F5] font-medium">
+                  100% RAW &amp; UNHEATED
+                </span>
+              </div>
+              <span className="hidden sm:inline-block w-[1px] h-3.5 bg-white/30" />
+              <div className="flex items-center gap-2 whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)]">
+                <span className="text-[#DDAA55] text-[10px] leading-none select-none">○</span>
+                <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.08em] text-[#FAF9F5] font-medium">
+                  4TH-GEN HARVESTERS
+                </span>
+              </div>
+              <span className="hidden sm:inline-block w-[1px] h-3.5 bg-white/30" />
+              <div className="flex items-center gap-2 whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)]">
+                <span className="text-[#DDAA55] text-[10px] leading-none select-none">○</span>
+                <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.08em] text-[#FAF9F5] font-medium">
+                  LAB CERTIFIED IS 4941
+                </span>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -204,4 +222,3 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
     </section>
   );
 };
-
