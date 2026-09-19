@@ -281,7 +281,7 @@ export const CartPage: React.FC<CartPageProps> = ({
   // ---------------------------------------------------------------------------
   if (items.length === 0 && step !== 'success') {
     return (
-      <div className="w-full bg-[#F4F1EA] py-16 sm:py-24 px-4 sm:px-6">
+      <div className="w-full bg-[#F4F1EA] py-10 sm:py-24 px-3.5 sm:px-6">
         <div className="max-w-[1280px] mx-auto text-center">
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2 mb-3">
@@ -291,15 +291,15 @@ export const CartPage: React.FC<CartPageProps> = ({
             </span>
           </div>
 
-          <h1 className="font-serif text-[40px] sm:text-[54px] lg:text-[64px] text-[#242424] font-normal tracking-[-0.02em] mb-4">
+          <h1 className="font-serif text-[32px] sm:text-[54px] lg:text-[64px] text-[#242424] font-normal tracking-[-0.02em] mb-3">
             Your selection is ready.
           </h1>
 
-          <p className="font-sans text-[17px] text-[#686863] max-w-[500px] mx-auto mb-10">
+          <p className="font-sans text-[15px] sm:text-[17px] text-[#686863] max-w-[500px] mx-auto mb-8">
             Review your selection before checkout.
           </p>
 
-          <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[20px] p-12 max-w-[560px] mx-auto shadow-sm flex flex-col items-center">
+          <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[20px] p-6 sm:p-12 max-w-[560px] mx-auto shadow-sm flex flex-col items-center">
             <div className="w-16 h-16 rounded-full bg-[#F4F1EA] border border-[#D9D7D0] flex items-center justify-center text-[#C9892E] mb-6">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -425,13 +425,13 @@ export const CartPage: React.FC<CartPageProps> = ({
   // MAIN CART PAGE VIEW (MATCHING DRIBBLE REFERENCE LAYOUT & STRUCTURE)
   // ---------------------------------------------------------------------------
   return (
-    <div className="w-full bg-[#F4F1EA] text-[#242424] py-10 sm:py-14 lg:py-16">
-      <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-[#F4F1EA] text-[#242424] py-8 sm:py-14 lg:py-16">
+      <div className="max-w-[1320px] mx-auto px-3.5 sm:px-6 lg:px-8">
 
         {/* ===================================================================
             1. CART PAGE HERO / INTRO (EDITORIAL HEADLINE AREA)
             =================================================================== */}
-        <div className="mb-10 sm:mb-12">
+        <div className="mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-[#C9892E]" />
             <span className="font-mono text-[12px] uppercase tracking-[0.16em] text-[#686863] font-semibold">
@@ -439,11 +439,11 @@ export const CartPage: React.FC<CartPageProps> = ({
             </span>
           </div>
 
-          <h1 className="font-serif text-[38px] sm:text-[48px] lg:text-[56px] text-[#242424] font-normal tracking-[-0.02em] leading-[1.08] mb-2">
+          <h1 className="font-serif text-[32px] sm:text-[48px] lg:text-[56px] text-[#242424] font-normal tracking-[-0.02em] leading-[1.1] mb-2">
             Your selection is ready.
           </h1>
 
-          <p className="font-sans text-[16px] sm:text-[17px] text-[#686863]">
+          <p className="font-sans text-[15px] sm:text-[17px] text-[#686863]">
             Review your selection before checkout.
           </p>
         </div>
@@ -451,7 +451,7 @@ export const CartPage: React.FC<CartPageProps> = ({
         {/* ===================================================================
             2. MAIN TWO-COLUMN LAYOUT: PRODUCTS TABLE (LEFT) & SUMMARY (RIGHT)
             =================================================================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
           {/* -----------------------------------------------------------------
               LEFT COLUMN: CART TABLE + COUPON AREA (~65% WIDTH)
@@ -460,7 +460,7 @@ export const CartPage: React.FC<CartPageProps> = ({
 
             {/* CHECKOUT STEP 2 FORM (WHEN CHECKOUT IS ACTIVE) */}
             {step === 'checkout' ? (
-              <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-6 sm:p-8 shadow-sm">
+              <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-4 sm:p-8 shadow-sm">
                 <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#D9D7D0]">
                   <div>
                     <h2 className="font-serif text-[24px] sm:text-[28px] font-medium text-[#242424]">
@@ -626,7 +626,7 @@ export const CartPage: React.FC<CartPageProps> = ({
               </div>
             ) : (
               /* CART PRODUCT TABLE CARD (MATCHING REFERENCE TABLE DESIGN) */
-              <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-6 sm:p-8 shadow-sm">
+              <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-4 sm:p-6 lg:p-8 shadow-sm">
                 
                 {/* TABLE HEADER (HIDDEN ON VERY SMALL MOBILE, VISIBLE ON SM+) */}
                 <div className="hidden sm:grid grid-cols-12 gap-4 pb-4 border-b border-[#D9D7D0] font-sans text-[12px] uppercase tracking-wider text-[#686863] font-semibold">
@@ -647,21 +647,21 @@ export const CartPage: React.FC<CartPageProps> = ({
                     return (
                       <div
                         key={item.id}
-                        className="py-5 flex flex-col sm:grid sm:grid-cols-12 gap-4 items-center"
+                        className="py-4 sm:py-5 flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-4 items-start sm:items-center"
                       >
                         {/* COLUMN 1: DELETE ICON + IMAGE + PRODUCT DETAILS */}
-                        <div className="w-full sm:col-span-6 flex items-center gap-3.5">
+                        <div className="w-full sm:col-span-6 flex items-center gap-3">
                           {/* Understated Remove Action (×) */}
                           <button
                             onClick={() => onRemoveItem(item.id)}
-                            className="w-7 h-7 rounded-full flex items-center justify-center text-[#686863] hover:text-[#242424] hover:bg-[#ECEAE3] transition-colors cursor-pointer"
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-[#686863] hover:text-[#242424] hover:bg-[#ECEAE3] transition-colors cursor-pointer flex-shrink-0"
                             aria-label={`Remove ${item.product.name} from cart`}
                           >
                             <span className="text-[18px] leading-none select-none">×</span>
                           </button>
 
                           {/* Product Thumbnail (Clean, rounded, contained) */}
-                          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-white border border-[#D9D7D0] p-1.5 flex items-center justify-center overflow-hidden flex-shrink-0">
+                          <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-xl bg-white border border-[#D9D7D0] p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
                             <img
                               src={imageSrc}
                               alt={item.product.name}
@@ -671,8 +671,8 @@ export const CartPage: React.FC<CartPageProps> = ({
                           </div>
 
                           {/* Product Info */}
-                          <div className="flex flex-col min-w-0">
-                            <h3 className="font-serif text-[16px] sm:text-[17px] font-medium text-[#242424] truncate">
+                          <div className="flex flex-col min-w-0 flex-1">
+                            <h3 className="font-serif text-[15px] sm:text-[17px] font-medium text-[#242424] truncate">
                               {item.product.name}
                             </h3>
                             <div className="flex items-center gap-2 mt-1">
@@ -726,7 +726,7 @@ export const CartPage: React.FC<CartPageProps> = ({
                 </div>
 
                 {/* BOTTOM OF TABLE CARD: ACTIONS */}
-                <div className="pt-6 mt-4 border-t border-[#D9D7D0] flex flex-wrap items-center justify-between gap-4">
+                <div className="pt-5 mt-4 border-t border-[#D9D7D0] flex flex-wrap items-center justify-between gap-3">
                   <button
                     onClick={() => onNavigate('/shop')}
                     className="font-sans text-[14px] text-[#686863] hover:text-[#242424] font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
@@ -748,7 +748,7 @@ export const CartPage: React.FC<CartPageProps> = ({
             )}
 
             {/* COUPON SECTION CARD (DIRECTLY BELOW TABLE LIKE REFERENCE) */}
-            <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-6 sm:p-7 shadow-sm">
+            <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-4 sm:p-6 lg:p-7 shadow-sm">
               <form
                 onSubmit={handleApplyCoupon}
                 className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5"
@@ -786,8 +786,8 @@ export const CartPage: React.FC<CartPageProps> = ({
           {/* -----------------------------------------------------------------
               RIGHT COLUMN: ORDER SUMMARY / CART TOTALS (~35% WIDTH)
               ----------------------------------------------------------------- */}
-          <div className="lg:col-span-4 sticky top-28">
-            <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-6 sm:p-8 shadow-sm">
+          <div className="lg:col-span-4 lg:sticky lg:top-28">
+            <div className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[16px] p-4 sm:p-6 lg:p-8 shadow-sm">
               
               {/* CARD TITLE (EXACT REFERENCE: "Cart Totals") */}
               <h2 className="font-serif text-[22px] font-medium text-[#242424] pb-4 mb-5 border-b border-[#D9D7D0]">

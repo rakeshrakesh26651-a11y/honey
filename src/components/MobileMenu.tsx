@@ -17,6 +17,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 }) => {
   const mainLinks = [
     { label: 'Shop', href: '/shop' },
+    { label: 'Cart', href: '/cart' },
     { label: 'Our Story', href: '/about' },
     { label: 'Lab Report', href: '/lab-reports' },
     { label: 'FAQ', href: '/faq' },
