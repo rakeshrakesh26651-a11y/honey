@@ -121,7 +121,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
             transition={{ duration: 0.8, delay: 0.4, ease: transitionEase }}
             className="w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
           >
-            <h1 className="font-serif text-[48px] sm:text-[68px] md:text-[84px] lg:text-[100px] font-bold text-[#FAF9F5] leading-[1.02] tracking-[-0.03em] select-text">
+            <h1 className="font-serif text-[40px] xs:text-[46px] sm:text-[60px] md:text-[76px] lg:text-[88px] xl:text-[92px] font-bold text-[#FAF9F5] leading-[1.06] tracking-normal select-text">
               Pure Honey.
             </h1>
           </motion.div>
