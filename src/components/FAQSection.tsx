@@ -23,7 +23,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
   };
 
   return (
-    <section id="faq" className="relative w-full py-20 lg:py-28 bg-[#FAF8F0] border-t border-[#D9D5C8]">
+    <section id="faq" className="relative w-full py-20 lg:py-28 bg-[#FAF9F5] border-t border-[#D9D7D0]">
       <div className="max-w-[1080px] mx-auto px-6 md:px-10">
         {/* Editorial Eyebrow & Masked Heading */}
         <div className="text-center max-w-[700px] mx-auto mb-14 md:mb-18 space-y-4">
@@ -34,18 +34,18 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-center justify-center gap-2"
           >
-            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-            <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
+            <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
+            <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#242424] font-medium">
               COMMON INQUIRIES
             </span>
-            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
+            <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
           </motion.div>
 
           <AnimatedHeading
             text="FREQUENTLY ASKED QUESTIONS"
             as="h2"
             animateOnMount={true}
-            className="font-serif text-[32px] sm:text-[44px] md:text-[50px] font-semibold text-[#123C2D] leading-[1.1] tracking-[-0.01em]"
+            className="font-serif text-[32px] sm:text-[44px] md:text-[50px] font-semibold text-[#242424] leading-[1.1] tracking-[-0.01em]"
           />
 
           <motion.p
@@ -53,21 +53,21 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="font-sans text-[16px] sm:text-[18px] text-[#2A2118]/80 leading-[1.5]"
+            className="font-sans text-[16px] sm:text-[18px] text-[#686863] leading-[1.5]"
           >
             Clear, transparent answers about our high-altitude harvests, testing protocols, and delivery across India.
           </motion.p>
         </div>
 
         {/* Accordion List */}
-        <div className="divide-y divide-[#D9D5C8] border-y border-[#D9D5C8]">
+        <div className="divide-y divide-[#D9D7D0] border-y border-[#D9D7D0]">
           {displayedFaqs.map((faq) => {
             const isOpen = openId === faq.id;
 
             return (
               <div
                 key={faq.id}
-                className="transition-colors duration-200 hover:bg-[#F5F1E6]/50"
+                className="transition-colors duration-200 hover:bg-[#F4F1EA]/50"
               >
                 <button
                   type="button"
@@ -76,10 +76,10 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
                   className="w-full py-6 sm:py-7 flex items-start justify-between gap-6 text-left cursor-pointer group"
                 >
                   <div className="flex items-start gap-4 sm:gap-6">
-                    <span className="font-mono text-[13px] sm:text-[14px] text-[#D6A83A] font-semibold tracking-wider pt-1 flex-shrink-0">
+                    <span className="font-mono text-[13px] sm:text-[14px] text-[#C9892E] font-semibold tracking-wider pt-1 flex-shrink-0">
                       {faq.number}
                     </span>
-                    <h3 className="font-serif text-[18px] sm:text-[21px] md:text-[23px] text-[#123C2D] font-medium leading-[1.3] group-hover:text-[#D6A83A] transition-colors">
+                    <h3 className="font-serif text-[18px] sm:text-[21px] md:text-[23px] text-[#242424] font-medium leading-[1.3] group-hover:text-[#C9892E] transition-colors">
                       {faq.question}
                     </h3>
                   </div>
@@ -88,8 +88,8 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
                   <div
                     className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
                       isOpen
-                        ? 'bg-[#123C2D] text-[#FAF8F0]'
-                        : 'bg-white text-[#123C2D] border border-[#D9D5C8] group-hover:border-[#123C2D]'
+                        ? 'bg-[#242424] text-[#FAF9F5]'
+                        : 'bg-white text-[#242424] border border-[#D9D7D0] group-hover:border-[#242424]'
                     }`}
                   >
                     <motion.svg
@@ -135,7 +135,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
                       className="overflow-hidden"
                     >
                       <div className="pb-7 pl-10 sm:pl-12 pr-4 sm:pr-14">
-                        <p className="font-sans text-[15px] sm:text-[16px] text-[#2A2118]/85 leading-[1.65]">
+                        <p className="font-sans text-[15px] sm:text-[16px] text-[#686863] leading-[1.65]">
                           {faq.answer}
                         </p>
                       </div>
@@ -159,7 +159,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
                   window.location.href = '/faq';
                 }
               }}
-              className="inline-flex items-center gap-2 font-sans text-[14px] font-semibold tracking-wide text-[#123C2D] hover:text-[#D6A83A] transition-colors cursor-pointer border-b border-[#123C2D] pb-0.5 hover:border-[#D6A83A]"
+              className="inline-flex items-center gap-2 font-sans text-[14px] font-semibold tracking-wide text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer border-b border-[#242424] pb-0.5 hover:border-[#C9892E]"
             >
               <span>EXPLORE COMPLETE KNOWLEDGE BASE</span>
               <svg

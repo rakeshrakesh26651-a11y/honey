@@ -28,9 +28,9 @@ export const CustomerAvatar: React.FC<CustomerAvatarProps> = ({
   // Deterministic subtle tint variant based on name
   const colorIndex = name.length % 3;
   const palettes = [
-    { bg: 'bg-[#123C2D]', text: 'text-[#D6A83A]', ring: 'border-[#D6A83A]/30' },
-    { bg: 'bg-[#08291F]', text: 'text-[#FAF8F0]', ring: 'border-[#123C2D]/40' },
-    { bg: 'bg-[#2A2118]', text: 'text-[#D6A83A]', ring: 'border-[#C99528]/30' },
+    { bg: 'bg-[#242424]', text: 'text-[#DDAA55]', ring: 'border-[#C9892E]/30' },
+    { bg: 'bg-[#242424]', text: 'text-[#FAF9F5]', ring: 'border-[#242424]/40' },
+    { bg: 'bg-[#242424]', text: 'text-[#C9892E]', ring: 'border-[#DDAA55]/30' },
   ];
   const activePalette = palettes[colorIndex];
 
@@ -38,7 +38,7 @@ export const CustomerAvatar: React.FC<CustomerAvatarProps> = ({
     return (
       <div
         style={{ width: size, height: size }}
-        className={`relative rounded-full overflow-hidden border border-[#D6A83A]/40 shadow-xs flex-shrink-0 select-none bg-[#EDE8DC] ${className}`}
+        className={`relative rounded-full overflow-hidden border border-[#C9892E]/40 shadow-xs flex-shrink-0 select-none bg-[#FAF9F5] ${className}`}
       >
         <img
           src={image}
@@ -61,8 +61,8 @@ export const CustomerAvatar: React.FC<CustomerAvatarProps> = ({
         {initials}
       </span>
       {/* Subtle gold botanical honeycomb icon accent */}
-      <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FAF8F0] border border-[#D9D5C8] flex items-center justify-center shadow-2xs">
-        <svg className="w-2.5 h-2.5 text-[#D6A83A]" viewBox="0 0 24 24" fill="currentColor">
+      <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#FAF9F5] border border-[#D9D7D0] flex items-center justify-center shadow-2xs">
+        <svg className="w-2.5 h-2.5 text-[#C9892E]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z" />
         </svg>
       </span>

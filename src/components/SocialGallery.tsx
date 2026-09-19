@@ -67,9 +67,9 @@ export const SocialGallery: React.FC = () => {
   ];
 
   return (
-    <section id="wild" className="relative w-full py-20 lg:py-28 bg-[#F5F1E6] overflow-hidden border-t border-[#D9D5C8]">
+    <section id="wild" className="relative w-full py-20 lg:py-28 bg-[#F4F1EA] overflow-hidden border-t border-[#D9D7D0]">
       {/* Subtle organic ambient background accent */}
-      <div className="absolute top-1/2 -right-32 w-96 h-96 rounded-full bg-[#D6A83A]/[0.06] blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-32 w-96 h-96 rounded-full bg-[#C9892E]/[0.06] blur-3xl pointer-events-none" />
 
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
         {/* Editorial Section Header */}
@@ -81,18 +81,18 @@ export const SocialGallery: React.FC = () => {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-center justify-center gap-2"
           >
-            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-            <span className="font-mono text-[11.5px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
+            <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
+            <span className="font-mono text-[11.5px] sm:text-[12px] uppercase tracking-[0.14em] text-[#242424] font-medium">
               @himalayanharvesthoney • 9,592 FOLLOWERS
             </span>
-            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
+            <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
           </motion.div>
 
           <AnimatedHeading
             text="FROM OUR COMMUNITY"
             as="h2"
             animateOnMount={true}
-            className="font-serif text-[34px] sm:text-[46px] md:text-[52px] font-semibold text-[#123C2D] leading-[1.08] tracking-[-0.015em]"
+            className="font-serif text-[34px] sm:text-[46px] md:text-[52px] font-semibold text-[#242424] leading-[1.08] tracking-[-0.015em]"
           />
 
           <motion.p
@@ -100,7 +100,7 @@ export const SocialGallery: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="font-sans text-[16px] sm:text-[18px] md:text-[19px] font-normal text-[#2A2118]/80 leading-[1.55]"
+            className="font-sans text-[16px] sm:text-[18px] md:text-[19px] font-normal text-[#686863] leading-[1.55]"
           >
             Living moments from mountain kitchens, morning breakfast tables, and community honey rituals.
           </motion.p>
@@ -116,7 +116,7 @@ export const SocialGallery: React.FC = () => {
               href="https://www.instagram.com/himalayanharvesthoney/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 h-[48px] px-8 rounded-full bg-[#123C2D] hover:bg-[#D6A83A] text-white hover:text-[#08291F] font-sans text-sm font-semibold tracking-wide transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 h-[48px] px-8 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#242424] font-sans text-sm font-bold tracking-wide transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-sm cursor-pointer"
             >
               <InstagramIcon size={16} color="currentColor" />
               <span>FOLLOW US ON INSTAGRAM</span>
@@ -140,7 +140,7 @@ export const SocialGallery: React.FC = () => {
                   delay: index * 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className={`relative rounded-[20px] overflow-hidden bg-white border border-[#D9D5C8] group shadow-[0_4px_18px_rgba(18,60,45,0.04)] hover:shadow-[0_16px_38px_rgba(18,60,45,0.12)] hover:border-[#D6A83A]/70 transition-all duration-500 cursor-pointer ${
+                className={`relative rounded-[20px] overflow-hidden bg-white border border-[#D9D7D0] group shadow-[0_4px_18px_rgba(36, 36, 36,0.04)] hover:shadow-[0_16px_38px_rgba(36, 36, 36,0.12)] hover:border-[#C9892E]/70 transition-all duration-500 cursor-pointer ${
                   item.colSpan || ''
                 } ${item.rowSpan || ''} ${item.aspect}`}
                 onMouseEnter={() => setHoveredIndex(index)}
@@ -156,32 +156,32 @@ export const SocialGallery: React.FC = () => {
 
                 {/* Ambient Soft Dark Gradient Overlay on Hover */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-t from-[#08291F]/85 via-[#08291F]/25 to-transparent transition-opacity duration-300 ${
+                  className={`absolute inset-0 bg-gradient-to-t from-[#242424]/90 via-[#242424]/30 to-transparent transition-opacity duration-300 ${
                     isHovered ? 'opacity-100' : 'opacity-0'
                   }`}
                 />
 
                 {/* Permanent subtle tag pill (top right) */}
                 <div className="absolute top-3.5 right-3.5 z-10">
-                  <span className="inline-block px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-[#FAF8F0] font-mono text-[10px] font-bold uppercase tracking-wider border border-white/15 shadow-xs">
+                  <span className="inline-block px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-[#FAF9F5] font-mono text-[10px] font-bold uppercase tracking-wider border border-white/15 shadow-xs">
                     {item.tag}
                   </span>
                 </div>
 
                 {/* Reveal on Hover: Bottom Caption & Instagram Handle */}
                 <div
-                  className={`absolute bottom-0 inset-x-0 p-5 sm:p-6 text-[#FAF8F0] z-10 transition-all duration-300 ${
+                  className={`absolute bottom-0 inset-x-0 p-5 sm:p-6 text-[#FAF9F5] z-10 transition-all duration-300 ${
                     isHovered
                       ? 'translate-y-0 opacity-100'
                       : 'translate-y-3 opacity-0 pointer-events-none'
                   }`}
                 >
-                  <p className="font-serif text-[15px] sm:text-[17px] font-normal leading-[1.35] mb-2 text-[#FAF8F0]">
+                  <p className="font-serif text-[15px] sm:text-[17px] font-normal leading-[1.35] mb-2 text-[#FAF9F5]">
                     {item.caption}
                   </p>
-                  <div className="flex items-center justify-between pt-2 border-t border-white/20 text-[11px] font-mono text-[#D6A83A]">
+                  <div className="flex items-center justify-between pt-2 border-t border-white/20 text-[11px] font-mono text-[#DDAA55]">
                     <span className="flex items-center gap-1.5 font-semibold tracking-wider">
-                      <InstagramIcon size={12} color="#D6A83A" />
+                      <InstagramIcon size={12} color="#DDAA55" />
                       @himalayanharvesthoney
                     </span>
                     <span className="text-white/80 uppercase tracking-widest text-[10px]">

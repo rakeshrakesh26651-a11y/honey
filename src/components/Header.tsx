@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="sticky top-0 z-40 w-full bg-[#F5F1E6] border-b border-[#D9D5C8] transition-colors duration-200"
+      className="sticky top-0 z-40 w-full bg-[#F4F1EA] border-b border-[#D9D7D0] transition-colors duration-200"
     >
       <div className="max-w-[1440px] mx-auto h-[58px] px-4 sm:px-6 md:px-10 flex items-center justify-between">
         {/* Brand Logo */}
@@ -66,15 +66,15 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={(e) => handleLinkClick(e, link.href)}
                 className={`font-sans text-[14.5px] font-medium tracking-wide transition-colors py-1 relative ${
                   isActive
-                    ? 'text-[#D6A83A] font-semibold'
-                    : 'text-[#123C2D] hover:text-[#D6A83A]'
+                    ? 'text-[#C9892E] font-semibold'
+                    : 'text-[#242424] hover:text-[#C9892E]'
                 }`}
               >
                 {link.label}
                 {isActive && (
                   <motion.span
                     layoutId="activeNavIndicator"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D6A83A] rounded-full"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#C9892E] rounded-full"
                   />
                 )}
               </a>
@@ -86,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center space-x-4 lg:space-x-6">
           <button
             onClick={onOpenCart}
-            className="flex items-center space-x-2 text-[#123C2D] hover:text-[#D6A83A] transition-colors cursor-pointer"
+            className="flex items-center space-x-2 text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer"
             aria-label="View Shopping Cart"
           >
             <CartIcon size={20} color="currentColor" />
@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Mobile Menu Hamburger Button */}
           <button
             onClick={onToggleMobileMenu}
-            className="p-1 text-[#123C2D] hover:text-[#D6A83A] transition-colors lg:hidden cursor-pointer"
+            className="p-1 text-[#242424] hover:text-[#C9892E] transition-colors lg:hidden cursor-pointer"
             aria-label="Toggle Navigation Menu"
           >
             <MenuIcon size={24} color="currentColor" />

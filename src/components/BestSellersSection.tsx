@@ -77,7 +77,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
   };
 
   return (
-    <section id="lineup" className="w-full py-16 md:py-24 bg-[#F5F1E6] overflow-hidden">
+    <section id="lineup" className="w-full py-16 md:py-24 bg-[#F4F1EA] overflow-hidden">
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
         {/* Section Header Row — Editorial Heading */}
         <motion.div
@@ -90,8 +90,8 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
           {/* Left: Eyebrow + Heading */}
           <div className="space-y-1.5 md:space-y-2 text-left">
             <div className="flex items-center gap-2">
-              <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
+              <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
+              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#242424] font-medium">
                 THE LINEUP
               </span>
             </div>
@@ -99,19 +99,19 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
               text="MEET THE BEST SELLERS"
               as="h2"
               animateOnMount={true}
-              className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#123C2D] leading-[1.15] tracking-[-0.01em]"
+              className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#242424] leading-[1.15] tracking-[-0.01em]"
             />
           </div>
 
           {/* Right: Tagline + Shop Action */}
           <div className="flex items-center justify-between md:justify-end gap-5 sm:gap-8 pt-2 md:pt-0">
-            <span className="font-sans text-[13px] sm:text-[14px] md:text-[15px] text-[#607568] font-normal tracking-wide hidden sm:inline">
+            <span className="font-sans text-[13px] sm:text-[14px] md:text-[15px] text-[#686863] font-normal tracking-wide hidden sm:inline">
               Pure, raw, and harvested straight from high-altitude peaks.
             </span>
             <a
               href="/shop"
               onClick={handleShopAllClick}
-              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-medium text-[#123C2D] hover:text-[#D6A83A] transition-colors cursor-pointer"
+              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-medium text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer"
             >
               <span>Shop everything</span>
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
@@ -140,15 +140,15 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
                     handleToggle(product.id);
                   }
                 }}
-                className="group flex flex-col cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#D6A83A] rounded-[20px]"
+                className="group flex flex-col cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#C9892E] rounded-[20px]"
               >
                 {/* Rounded Image Container with constant 3:4 Proportions and 16px Radius */}
-                <div className="relative aspect-[3/4] w-full rounded-[16px] overflow-hidden bg-[#EDE8DC] shadow-[0_4px_16px_rgba(18,60,45,0.04)] transition-shadow duration-300 group-hover:shadow-[0_8px_24px_rgba(18,60,45,0.08)]">
+                <div className="relative aspect-[3/4] w-full rounded-[16px] overflow-hidden bg-[#FAF9F5] shadow-[0_4px_16px_rgba(36, 36, 36,0.04)] transition-shadow duration-300 group-hover:shadow-[0_8px_24px_rgba(36, 36, 36,0.08)]">
                   {/* Top-left BEST SELLER badge */}
                   <div className="absolute top-3.5 left-3.5 z-20 pointer-events-none">
                     <span
                       data-testid="bestseller-badge"
-                      className="inline-flex items-center px-3 py-1 rounded-full bg-[#D6A83A] text-[#08291F] font-mono text-[11px] font-bold tracking-wider uppercase shadow-xs"
+                      className="inline-flex items-center px-3 py-1 rounded-full bg-[#C9892E] text-[#242424] font-mono text-[11px] font-bold tracking-wider uppercase shadow-xs"
                     >
                       BEST SELLER
                     </span>
@@ -197,19 +197,19 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
                   />
 
                   {/* Subtle 2-dot indicator pill at bottom-right */}
-                  <div className="absolute bottom-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#123C2D]/60 backdrop-blur-md transition-opacity duration-300 pointer-events-none">
+                  <div className="absolute bottom-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#242424]/70 backdrop-blur-md transition-opacity duration-300 pointer-events-none">
                     <span
                       className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                         !isAlternate
-                          ? 'bg-[#F5F1E6] scale-125'
-                          : 'bg-[#F5F1E6]/40 scale-100'
+                          ? 'bg-[#FAF9F5] scale-125'
+                          : 'bg-[#FAF9F5]/40 scale-100'
                       }`}
                     />
                     <span
                       className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                         isAlternate
-                          ? 'bg-[#F5F1E6] scale-125'
-                          : 'bg-[#F5F1E6]/40 scale-100'
+                          ? 'bg-[#FAF9F5] scale-125'
+                          : 'bg-[#FAF9F5]/40 scale-100'
                       }`}
                     />
                   </div>
@@ -217,10 +217,10 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
 
                 {/* Product Meta: Name and Price below image */}
                 <div className="mt-4 px-1 flex items-baseline justify-between gap-3">
-                  <h3 className="font-serif text-[19px] sm:text-[21px] font-semibold text-[#123C2D] group-hover:text-[#D6A83A] transition-colors leading-snug">
+                  <h3 className="font-serif text-[19px] sm:text-[21px] font-semibold text-[#242424] group-hover:text-[#C9892E] transition-colors leading-snug">
                     {product.name}
                   </h3>
-                  <span className="font-sans font-bold text-[17px] sm:text-[18px] text-[#2A2118] whitespace-nowrap">
+                  <span className="font-sans font-bold text-[17px] sm:text-[18px] text-[#242424] whitespace-nowrap">
                     ₹{product.price}
                   </span>
                 </div>

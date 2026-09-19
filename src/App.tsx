@@ -19,6 +19,7 @@ import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { RefundPolicy } from './pages/RefundPolicy';
+import { AccountPage } from './pages/AccountPage';
 
 import { Product } from './data/content';
 import { openWhatsAppOrder } from './utils/whatsapp';
@@ -78,7 +79,7 @@ export function App() {
   const handleNavigate = (path: string) => {
     if (typeof window === 'undefined') return;
 
-    if (path === '/cart') {
+    if (path === '/cart' || path === '/checkout') {
       setIsCartOpen(true);
       return;
     }
@@ -182,11 +183,11 @@ export function App() {
       );
     }
 
-    if (currentPath === '/about') {
+    if (currentPath === '/about' || currentPath === '/our-story' || currentPath === '/our-heritage') {
       return <AboutPage onNavigate={handleNavigate} />;
     }
 
-    if (currentPath === '/lab-reports') {
+    if (currentPath === '/lab-reports' || currentPath === '/lab-report') {
       return <LabReportsPage onNavigate={handleNavigate} />;
     }
 
@@ -214,10 +215,34 @@ export function App() {
       return <RefundPolicy onNavigateHome={() => handleNavigate('/')} />;
     }
 
-    // Default: Editorial Multi-Section Homepage
+    if (currentPath === '/login') {
+      return <AccountPage initialMode="login" onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/signup') {
+      return <AccountPage initialMode="signup" onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/forgot-password') {
+      return <AccountPage initialMode="forgot-password" onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/account') {
+      return <AccountPage initialMode="account" onNavigate={handleNavigate} />;
+    }
+
+    if (currentPath === '/checkout') {
+      // Direct checkout view automatically displays the drawer
+      return (
+        <HomePage
+          onNavigate={handleNavigate}
+        />
+      );
+    }
+
+    // Default or /home: Editorial Multi-Section Homepage
     return (
       <HomePage
-        onAddToCart={handleAddToCart}
         onNavigate={handleNavigate}
       />
     );
@@ -228,7 +253,7 @@ export function App() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="min-h-screen bg-[#F5F1E6] flex flex-col selection:bg-[#D6A83A] selection:text-[#08291F]"
+      className="min-h-screen bg-[#F4F1EA] text-[#242424] font-sans flex flex-col selection:bg-[#C9892E] selection:text-[#242424]"
     >
       {/* 1. Announcement Bar */}
       <AnnouncementBar />

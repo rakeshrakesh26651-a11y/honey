@@ -53,33 +53,50 @@
 }
 
 :root {
-  --bg-cream: #F5F1E6;
-  --text-espresso: #123C2D;
-  --accent-forest: #123C2D;
-  --accent-honey: #D6A83A;
-  --badge-butter: #D6A83A;
-  --white: #ffffff;
-  --primary-forest: #123C2D;
-  --dark-forest: #08291F;
-  --deep-green: #0B3327;
-  --light-cream: #FAF8F0;
-  --warm-honey: #C99528;
-  --dark-brown: #2A2118;
-  --muted-green: #607568;
-  --light-border: #D9D5C8;
-  --token-1974469e-4601-4e12-a16e-16421811598c: #F5F1E6;
-  --token-cd62a7dd-ff16-4091-8c01-602c7bd35178: #123C2D;
-  --token-6226a574-2110-4960-9a2f-d52a6002e23b: #123C2D;
-  --token-87abc887-083b-4c56-8642-c84aa1a13bdf: #D6A83A;
-  --token-86798048-8202-49ef-ae17-441f2eeeb0b1: #D6A83A;
-  --token-d782bb97-dc9e-44a3-a092-893cfc4a9fbf: #ffffff;
+  /* Global Typography System */
+  --font-display: 'Recia', 'Recia Placeholder', serif;
+  --font-body: 'General Sans', 'General Sans Placeholder', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  /* Global Color System — Neutral, Warm, Premium OLIO-Inspired Palette */
+  --bg-primary: #F4F1EA;
+  --bg-light: #FAF9F5;
+  --bg-soft: #ECEAE3;
+  --text-primary: #242424;
+  --text-secondary: #686863;
+  --border-color: #D9D7D0;
+  --accent-honey: #C9892E;
+  --soft-honey: #DDAA55;
+  --dark: #242424;
+  --white: #FFFFFF;
+
+  /* Compatibility alias mappings */
+  --bg-cream: #F4F1EA;
+  --light-cream: #FAF9F5;
+  --text-espresso: #242424;
+  --dark-brown: #242424;
+  --accent-forest: #242424;
+  --primary-forest: #242424;
+  --dark-forest: #242424;
+  --deep-green: #242424;
+  --muted-brown: #686863;
+  --muted-green: #686863;
+  --light-border: #D9D7D0;
+  --badge-butter: #C9892E;
+  --warm-honey: #DDAA55;
+  --token-1974469e-4601-4e12-a16e-16421811598c: #F4F1EA;
+  --token-cd62a7dd-ff16-4091-8c01-602c7bd35178: #242424;
+  --token-6226a574-2110-4960-9a2f-d52a6002e23b: #242424;
+  --token-87abc887-083b-4c56-8642-c84aa1a13bdf: #C9892E;
+  --token-86798048-8202-49ef-ae17-441f2eeeb0b1: #C9892E;
+  --token-d782bb97-dc9e-44a3-a092-893cfc4a9fbf: #FFFFFF;
 }
 
 html,
 body {
-  background-color: var(--bg-cream);
-  color: var(--text-espresso);
-  font-family: 'General Sans', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -107,10 +124,10 @@ body {
   animation-play-state: paused;
 }
 
-/* Custom transitions and scrollbar */
+/* Custom transitions and selection */
 ::selection {
-  background: #D6A83A;
-  color: #08291F;
+  background: #C9892E;
+  color: #242424;
 }
 
 /* Custom scrollbar styling */
@@ -118,12 +135,12 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F5F1E6;
+  background: #F4F1EA;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(18, 60, 45, 0.25);
+  background: rgba(36, 36, 36, 0.22);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(18, 60, 45, 0.45);
+  background: rgba(36, 36, 36, 0.42);
 }

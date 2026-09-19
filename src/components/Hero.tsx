@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-
-import WarpText from './WarpText';
+import { WarpText } from './WarpText';
 
 interface HeroProps {
   onShopClick?: () => void;
@@ -64,7 +63,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
 
   return (
     <section
-      className="relative w-full bg-[#08291F] text-[#FAF8F0] overflow-hidden py-16 sm:py-20 md:py-24 lg:py-28 min-h-[600px] lg:min-h-[680px] flex items-center border-b border-[#123C2D]"
+      className="relative w-full bg-[#242424] text-[#FAF9F5] overflow-hidden py-16 sm:py-20 md:py-24 lg:py-28 min-h-[600px] lg:min-h-[680px] flex items-center border-b border-[#333333]"
     >
       {/* 1. Background Video */}
       <video
@@ -84,19 +83,19 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
         />
       </video>
 
-      {/* 2. Very Subtle Dark-Green Gradient Overlay (Bright & Natural Video) */}
+      {/* 2. Warm Espresso Overlay (Preserving Video Clarity) */}
       <div
         className="absolute inset-0 pointer-events-none hidden lg:block"
         style={{
           background:
-            'linear-gradient(90deg, rgba(0, 35, 25, 0.48) 0%, rgba(0, 35, 25, 0.22) 40%, rgba(0, 35, 25, 0.05) 70%, rgba(0, 35, 25, 0.00) 100%)',
+            'linear-gradient(90deg, rgba(36, 36, 36, 0.65) 0%, rgba(36, 36, 36, 0.38) 40%, rgba(36, 36, 36, 0.10) 70%, rgba(36, 36, 36, 0.00) 100%)',
         }}
       />
       <div
         className="absolute inset-0 pointer-events-none lg:hidden"
         style={{
           background:
-            'linear-gradient(180deg, rgba(0, 35, 25, 0.52) 0%, rgba(0, 35, 25, 0.32) 45%, rgba(0, 35, 25, 0.12) 100%)',
+            'linear-gradient(180deg, rgba(36, 36, 36, 0.68) 0%, rgba(36, 36, 36, 0.42) 45%, rgba(36, 36, 36, 0.18) 100%)',
         }}
       />
 
@@ -110,22 +109,23 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
             transition={{ duration: 0.7, delay: 0.2, ease: transitionEase }}
             className="flex items-center gap-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]"
           >
-            <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-            <span className="font-mono text-[12px] sm:text-[13px] uppercase tracking-[0.1em] text-[#D6A83A] font-medium leading-[18px]">
+            <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
+            <span className="font-mono text-[12px] sm:text-[13px] uppercase tracking-[0.1em] text-[#DDAA55] font-medium leading-[18px]">
               100% PURE & RAW
             </span>
           </motion.div>
 
-          {/* Main Headline (0.4s) with WarpText */}
-          <motion.h1
+          {/* Main Headline with WarpText */}
+          <motion.div
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: transitionEase }}
             className="w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
           >
+            <h1 className="sr-only">Pure Honey.</h1>
             <WarpText
               text="Pure Honey."
-              color="#F5F1E6"
+              color="#FAF9F5"
               warpStrength={0.08}
               warpScale={1.7}
               speed={0.55}
@@ -133,17 +133,18 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
               pointerStrength={0.38}
               refraction={0.018}
               ripple
-              fontSize={116}
-              fontWeight={800}
+              fontSize={108}
+              fontWeight={700}
               style={{
-                width: "100%",
-                height: "320px"
+                width: '100%',
+                height: '135px',
+                maxWidth: '580px',
               }}
-              fontFamily="inherit"
-              letterSpacing={-0.06}
-              lineHeight={0.9}
+              fontFamily="Recia, 'Recia Placeholder', serif"
+              letterSpacing={-0.03}
+              lineHeight={1.02}
             />
-          </motion.h1>
+          </motion.div>
 
           {/* Subheading (0.7s) */}
           <motion.div
@@ -152,8 +153,8 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
             transition={{ duration: 0.75, delay: 0.7, ease: transitionEase }}
             className="flex items-center gap-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
           >
-            <span className="w-6 sm:w-8 h-[1.5px] bg-[#D6A83A] inline-block" />
-            <span className="font-serif text-[22px] sm:text-[28px] md:text-[34px] font-medium text-[#D6A83A] tracking-[-0.01em] select-text">
+            <span className="w-6 sm:w-8 h-[1.5px] bg-[#C9892E] inline-block" />
+            <span className="font-serif text-[22px] sm:text-[28px] md:text-[34px] font-medium text-[#DDAA55] tracking-[-0.01em] select-text">
               From the Himalayas.
             </span>
           </motion.div>
@@ -163,7 +164,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0, ease: transitionEase }}
-            className="font-sans text-[17px] sm:text-[19px] lg:text-[20px] font-normal text-[#F5F1E6] leading-[1.55] max-w-[500px] select-text drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
+            className="font-sans text-[17px] sm:text-[19px] lg:text-[20px] font-normal text-[#F4F1EA] leading-[1.55] max-w-[500px] select-text drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
           >
             Discover Himalayan Harvest Honey — naturally sourced raw honey presented with the pride and purity of four generations of harvesting tradition.
           </motion.p>
@@ -178,7 +179,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
             <a
               href="/shop"
               onClick={handleShop}
-              className="inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-[#D6A83A] hover:bg-[#C99528] text-[#08291F] font-sans text-[15px] sm:text-[16px] font-semibold tracking-wide transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
+              className="inline-flex items-center justify-center h-[52px] px-8 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#242424] font-sans text-[15px] sm:text-[16px] font-bold tracking-wide transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
             >
               SHOP HONEY
             </a>
@@ -186,7 +187,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
               href="https://wa.me/918124391725?text=Hello%20Himalayan%20Harvest%20Honey!%20%F0%9F%91%8B%0A%0AI%20would%20like%20to%20know%20more%20about%20your%20pure%20honey%20products%20and%20offers."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center h-[52px] px-7 rounded-full border border-white/25 bg-[#08291F]/40 backdrop-blur-sm hover:bg-[#08291F]/60 hover:border-[#D6A83A] text-[#FAF8F0] font-sans text-[15px] font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center justify-center h-[52px] px-7 rounded-full border border-white/25 bg-[#242424]/50 backdrop-blur-sm hover:bg-[#242424]/75 hover:border-[#DDAA55] text-[#FAF9F5] font-sans text-[15px] font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
               ORDER ON WHATSAPP
             </a>
@@ -200,20 +201,20 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
             className="pt-4 flex flex-wrap items-center gap-6 border-t border-white/20 w-full select-text drop-shadow-[0_1px_4px_rgba(0,0,0,0.65)]"
           >
             <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D6A83A]" />
-              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF8F0]/85">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DDAA55]" />
+              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF9F5]/85">
                 100% Raw & Unheated
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D6A83A]" />
-              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF8F0]/85">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DDAA55]" />
+              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF9F5]/85">
                 4th-Gen Harvesters
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D6A83A]" />
-              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF8F0]/85">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#DDAA55]" />
+              <span className="font-mono text-[12px] uppercase tracking-wider text-[#FAF9F5]/85">
                 Lab Certified IS 4941
               </span>
             </div>
@@ -223,3 +224,4 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
     </section>
   );
 };
+

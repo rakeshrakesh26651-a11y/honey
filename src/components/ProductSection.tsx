@@ -20,7 +20,7 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart, onN
   };
 
   return (
-    <section id="lineup" className="w-full py-16 md:py-24 bg-[#F5F1E6] overflow-hidden">
+    <section id="lineup" className="w-full py-16 md:py-24 bg-[#F4F1EA] overflow-hidden">
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
         {/* Section Header Row */}
         <motion.div
@@ -28,46 +28,46 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart, onN
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12 pb-2"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 md:mb-14 pb-2"
         >
           {/* Left: Eyebrow + Editorial Heading */}
           <div className="space-y-1.5 md:space-y-2 text-left">
             <div className="flex items-center gap-2">
-              <span className="w-4 h-[1.5px] bg-[#D6A83A] inline-block" />
-              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#123C2D] font-medium">
-                OUR HONEY COLLECTION
+              <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
+              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#242424] font-semibold">
+                PURE HIGH-ALTITUDE HARVESTS
               </span>
             </div>
             <AnimatedHeading
-              text="FIND YOUR PERFECT HONEY"
+              text="EXPLORE OUR HONEY COLLECTION"
               as="h2"
-              className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#123C2D] leading-[1.15] tracking-[-0.01em]"
+              className="font-serif text-[28px] sm:text-[36px] md:text-[42px] lg:text-[46px] font-semibold text-[#242424] leading-[1.15] tracking-[-0.01em]"
             />
           </div>
 
           {/* Right: Tagline + View All Action */}
           <div className="flex items-center justify-between md:justify-end gap-5 sm:gap-8 pt-2 md:pt-0">
-            <span className="font-sans text-[13px] sm:text-[14px] md:text-[15px] text-[#607568] font-normal tracking-wide">
-              Pure. Rare. Powerful.
+            <span className="font-sans text-[13px] sm:text-[14px] md:text-[15px] text-[#686863] font-normal tracking-wide hidden sm:inline">
+              100% pure, unpasteurized, and laboratory certified.
             </span>
             <a
               href="/shop"
               onClick={handleViewAll}
-              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-medium text-[#123C2D] hover:text-[#D6A83A] transition-colors cursor-pointer"
+              className="group inline-flex items-center gap-1.5 font-sans text-[13px] sm:text-[14px] font-semibold text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer"
             >
-              <span>Explore All</span>
+              <span>View Full Catalogue</span>
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
             </a>
           </div>
         </motion.div>
 
-        {/* 5-Product Card Presentation Grid */}
+        {/* 6-Product Presentation Grid: Desktop 3 cols, Tablet 2 cols, Mobile 1 col */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 md:gap-4.5 lg:gap-4 xl:gap-5"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8"
         >
           {PRODUCTS.map((product) => (
             <ProductCard

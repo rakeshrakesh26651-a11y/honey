@@ -36,3 +36,4 @@ dist-ssr
 playwright-report/
 test-results/
 scripts/*.png
+.playwright-mcp/

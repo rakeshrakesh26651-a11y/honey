@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onNavigate }) => {
   const [selectedSize, setSelectedSize] = useState<string>(
-    product.variants && product.variants.length > 0 ? product.variants[0].size : '400g'
+    product.variants && product.variants.length > 0 ? product.variants[0].size : (product.weight || '400g')
   );
   const [quantity, setQuantity] = useState<number>(1);
 
@@ -39,79 +39,89 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (product.available === false) return;
     onAddToCart(product, selectedSize, quantity);
   };
 
+  // Badge text matching BeeFresh pill style (e.g. Natural Harvest, Raw Reserve, etc.)
+  const badgeText = product.badge || (product.category === 'Ghee' ? 'Cultured Artisanal' : 'Pure Raw Honey');
+
   return (
-    <div className="group flex flex-col justify-between w-full h-full bg-[#FAF8F0] rounded-[14px] md:rounded-[16px] border border-[#D9D5C8] p-3 sm:p-3.5 shadow-[0_2px_12px_rgba(18,60,45,0.04)] hover:shadow-[0_8px_26px_rgba(18,60,45,0.08)] hover:border-[#123C2D]/40 transition-all duration-300">
-      {/* Top Half: Image & Badges */}
-      <div>
+    <div className="group flex flex-col justify-between w-full h-full bg-[#FAF9F5] rounded-[24px] sm:rounded-[28px] border border-[#D9D7D0] p-5 sm:p-6 shadow-[0_4px_24px_rgba(36, 36, 36,0.03)] hover:shadow-[0_12px_36px_rgba(36, 36, 36,0.07)] hover:border-[#C9892E]/40 transition-all duration-300">
+      {/* Top Half: Tag, Isolated Jar Image, Product Title, Subtitle, Description, Size Selector */}
+      <div className="flex flex-col">
+        {/* Top Header Pill Badge */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#242424] text-[#FAF9F5] text-[11px] font-medium tracking-wide shadow-xs">
+            {badgeText}
+          </span>
+          {product.category && (
+            <span className="text-[11px] font-mono uppercase tracking-wider text-[#686863]">
+              {product.category}
+            </span>
+          )}
+        </div>
+
+        {/* Spacious Product Image Area — Centered Isolated Jar with transparent background */}
         <a
           href={`/product/${product.slug}`}
           onClick={handleProductClick}
-          className="block relative w-full aspect-[4/3] sm:aspect-square rounded-[10px] md:rounded-[12px] overflow-hidden bg-white mb-3 cursor-pointer"
+          aria-label={`View details of ${product.name}`}
+          className="relative w-full h-56 sm:h-64 flex items-center justify-center p-2 mb-3 cursor-pointer group-hover:scale-[1.02] transition-transform duration-300 ease-out overflow-visible"
         >
           <img
             src={product.image}
-            alt={product.alt}
-            className="w-full h-full object-cover rounded-[10px] md:rounded-[12px] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+            alt={product.alt || `${product.name} pure harvest jar`}
+            className="max-h-full w-auto max-w-[85%] object-contain drop-shadow-[0_16px_28px_rgba(36, 36, 36,0.14)] select-none transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
-
-          {/* Badges matching reference placement */}
-          {product.badge === 'BEST SELLER' && (
-            <div className="absolute top-2 left-2 z-10">
-              <span className="inline-block px-2 py-0.5 md:px-2.5 md:py-1 rounded-[4px] md:rounded-[6px] bg-[#D6A83A] text-[#08291F] font-sans text-[9px] md:text-[10px] font-bold uppercase tracking-wider shadow-xs">
-                BEST SELLER
-              </span>
-            </div>
-          )}
-
-          {product.badge === 'RARE' && (
-            <div className="absolute top-2 right-2 z-10">
-              <span className="inline-block px-2 py-0.5 md:px-2.5 md:py-1 rounded-[4px] md:rounded-[6px] bg-[#08291F] text-white font-sans text-[9px] md:text-[10px] font-bold uppercase tracking-wider shadow-xs">
-                RARE
-              </span>
-            </div>
-          )}
-
-          {product.badge && product.badge !== 'BEST SELLER' && product.badge !== 'RARE' && (
-            <div className="absolute top-2 left-2 z-10">
-              <span className="inline-block px-2 py-0.5 md:px-2.5 md:py-1 rounded-[4px] md:rounded-[6px] bg-[#123C2D] text-white font-sans text-[9px] md:text-[10px] font-bold uppercase tracking-wider shadow-xs">
-                {product.badge}
-              </span>
-            </div>
-          )}
         </a>
 
-        {/* Product Details */}
-        <div className="flex flex-col text-left px-0.5">
+        {/* Product Title and Header Price Row */}
+        <div className="flex items-start justify-between gap-2 mb-1">
           <a
             href={`/product/${product.slug}`}
             onClick={handleProductClick}
-            className="cursor-pointer"
+            className="cursor-pointer text-left flex-1"
           >
-            <h4 className="font-serif text-[15px] sm:text-[16px] md:text-[17px] font-semibold text-[#123C2D] leading-[1.25] mb-1 group-hover:text-[#D6A83A] transition-colors line-clamp-1">
+            <h3 className="font-serif text-[20px] sm:text-[22px] font-semibold text-[#242424] group-hover:text-[#C9892E] transition-colors leading-tight">
               {product.name}
-            </h4>
+            </h3>
           </a>
-          <p className="font-sans text-[11px] sm:text-[11.5px] md:text-[12px] text-[#607568] leading-tight mb-2.5 line-clamp-1">
-            {product.subtitle}
-          </p>
+          <div className="text-right whitespace-nowrap pt-0.5">
+            <span className="text-[13px] font-medium text-[#242424] align-top mr-0.5">₹</span>
+            <span className="font-sans font-bold text-[19px] sm:text-[21px] text-[#242424] tracking-tight">
+              {currentPrice}
+            </span>
+          </div>
         </div>
 
-        {/* Size Selector: 400g / 700g / 1000g */}
-        <div className="my-2.5 px-0.5">
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#607568] mb-1.5">
-            <span className="font-medium uppercase tracking-wider">Select Size</span>
-            <span className="font-semibold text-[#123C2D]">{selectedSize}</span>
+        {/* Short Subtitle / Category */}
+        <p className="font-sans text-[12.5px] sm:text-[13px] text-[#C9892E] font-medium tracking-wide mb-2 text-left leading-snug">
+          {product.subtitle || '100% Pure Natural Harvest'}
+        </p>
+
+        {/* Individual Product Description */}
+        <p className="font-sans text-[12.5px] sm:text-[13px] text-[#686863] leading-[1.55] min-h-[56px] line-clamp-3 mb-4 text-left">
+          {product.description}
+        </p>
+
+        {/* SELECT SIZE Section with Rounded Pills */}
+        <div className="mb-3 text-left">
+          <div className="flex items-center justify-between text-[11px] font-mono text-[#686863] uppercase tracking-wider mb-2">
+            <span className="font-semibold">Select Size</span>
+            <span className="text-[#242424] font-bold">{selectedSize}</span>
           </div>
-          <div className="grid grid-cols-3 gap-1.5">
-            {(product.variants || [
-              { size: '400g', price: product.price },
-              { size: '700g', price: Math.round(product.price * 1.4) },
-              { size: '1000g', price: Math.round(product.price * 1.8) },
-            ]).map((variant) => {
+
+          <div className="flex items-center flex-wrap gap-2">
+            {(product.variants && product.variants.length > 0
+              ? product.variants
+              : [
+                  { size: '400g', price: product.price },
+                  { size: '700g', price: Math.round(product.price * 1.4) },
+                  { size: '1000g', price: Math.round(product.price * 1.8) },
+                ]
+            ).map((variant) => {
               const isSelected = selectedSize === variant.size;
               return (
                 <button
@@ -122,10 +132,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
                     e.stopPropagation();
                     setSelectedSize(variant.size);
                   }}
-                  className={`py-1 px-1 rounded-md text-[11px] font-mono transition-all text-center cursor-pointer ${
+                  className={`px-4 py-1.5 rounded-full text-[12px] font-mono transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? 'bg-[#123C2D] text-white font-bold shadow-xs'
-                      : 'bg-[#FAF8F0] text-[#123C2D] hover:bg-[#F5F1E6] border border-[#D9D5C8]'
+                      ? 'bg-[#242424] text-[#FAF9F5] font-bold shadow-xs scale-[1.02]'
+                      : 'bg-white/90 text-[#242424] border border-[#D9D7D0] hover:border-[#242424]/60 hover:bg-white'
                   }`}
                   aria-label={`Select ${variant.size} for ${product.name}`}
                 >
@@ -137,69 +147,70 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
         </div>
       </div>
 
-      {/* Bottom Section: Quantity & Price / Add to Cart Row */}
-      <div className="pt-2 border-t border-[#D9D5C8] mt-2 px-0.5 space-y-2.5">
-        {/* Quantity and Price Row */}
-        <div className="flex items-center justify-between">
-          {/* Price display */}
+      {/* Bottom Section: Price & Quantity Controls + Add to Cart Button */}
+      <div className="pt-3 border-t border-[#D9D7D0] mt-2">
+        {/* Price & Quantity Row — Visually aligned */}
+        <div className="flex items-center justify-between mb-3.5">
+          {/* Price display with total / unit calculation */}
           <div className="flex flex-col text-left">
-            <span className="font-sans font-bold text-[16px] sm:text-[17px] text-[#2A2118] leading-none">
-              ₹{currentPrice * quantity}
-            </span>
-            {quantity > 1 && (
-              <span className="font-sans text-[10px] text-[#607568] leading-none mt-1">
-                ₹{currentPrice} each
+            <div className="flex items-baseline gap-1">
+              <span className="font-sans font-extrabold text-[20px] sm:text-[22px] text-[#242424] leading-none">
+                ₹{currentPrice * quantity}
               </span>
-            )}
+              {quantity > 1 && (
+                <span className="font-sans text-[11px] text-[#686863] leading-none">
+                  (₹{currentPrice} × {quantity})
+                </span>
+              )}
+            </div>
+            <span className="font-mono text-[10px] text-[#686863] uppercase tracking-wider mt-1">
+              {selectedSize} Pack
+            </span>
           </div>
 
-          {/* Quantity Selector: − 1 + */}
-          <div className="flex items-center border border-[#D9D5C8] rounded-full px-1.5 py-0.5 bg-white">
+          {/* Quantity Controls [ −  1  + ] */}
+          <div className="flex items-center bg-white border border-[#D9D7D0] rounded-full p-0.5 shadow-2xs">
             <button
               type="button"
               onClick={handleDecreaseQty}
               aria-label={`Decrease quantity of ${product.name}`}
-              className="w-5 h-5 flex items-center justify-center text-xs font-mono text-[#123C2D] hover:bg-[#F5F1E6] rounded-full transition-colors cursor-pointer"
+              className="w-7 h-7 flex items-center justify-center rounded-full text-[#242424] hover:bg-[#F4F1EA] text-sm font-bold transition-colors cursor-pointer"
             >
               −
             </button>
-            <span className="px-2 text-xs font-mono font-medium text-[#123C2D] select-none">
+            <span className="w-7 text-center text-xs font-mono font-bold text-[#242424] select-none">
               {quantity}
             </span>
             <button
               type="button"
               onClick={handleIncreaseQty}
               aria-label={`Increase quantity of ${product.name}`}
-              className="w-5 h-5 flex items-center justify-center text-xs font-mono text-[#123C2D] hover:bg-[#F5F1E6] rounded-full transition-colors cursor-pointer"
+              className="w-7 h-7 flex items-center justify-center rounded-full text-[#242424] hover:bg-[#F4F1EA] text-sm font-bold transition-colors cursor-pointer"
             >
               +
             </button>
           </div>
         </div>
 
-        {/* Add to Cart Button */}
-        <button
-          type="button"
-          onClick={handleAdd}
-          aria-label={`Add ${product.name} (${selectedSize}) to cart`}
-          className="w-full py-2.5 rounded-full bg-[#123C2D] hover:bg-[#D6A83A] hover:text-[#08291F] active:scale-[0.98] text-white flex items-center justify-center gap-2 font-sans text-[13px] font-semibold transition-all duration-200 shadow-sm cursor-pointer"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-3.5 h-3.5"
+        {/* Add to Cart Button — Honey Gold pill */}
+        {product.available !== false ? (
+          <button
+            type="button"
+            onClick={handleAdd}
+            aria-label={`Add ${product.name} (${selectedSize}) to cart`}
+            className="w-full py-3.5 px-6 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] active:scale-[0.98] text-[#242424] font-sans text-[14px] sm:text-[15px] font-bold tracking-wide flex items-center justify-center gap-2 transition-all duration-200 shadow-xs hover:shadow-sm cursor-pointer"
           >
-            <circle cx="8" cy="21" r="1" />
-            <circle cx="19" cy="21" r="1" />
-            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-          </svg>
-          <span>Add to Cart</span>
-        </button>
+            <span>Add to Cart</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="w-full py-3.5 px-6 rounded-full bg-[#D9D7D0]/60 text-[#686863] font-sans text-[14px] sm:text-[15px] font-semibold cursor-not-allowed flex items-center justify-center"
+          >
+            Out of stock
+          </button>
+        )}
       </div>
     </div>
   );

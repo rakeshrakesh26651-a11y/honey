@@ -111,6 +111,27 @@ export const OFFERS: Offer[] = [
  * 4. KURINJI HONEY (Honey) — 400g (₹799), 700g (₹1199), 1000g (₹1599)
  * 5. GHEE (Ghee - separate category) — 400g (₹699), 700g (₹999), 1000g (₹1299)
  */
+export const MOUNTAIN_HONEY_PRODUCT: Product = {
+  id: "mountain-honey",
+  name: "Mountain Honey",
+  category: "Honey",
+  subtitle: "High-Altitude • Raw Harvest",
+  description: "Mountain honey harvested from high altitudes in a rich golden harvest.",
+  weight: "1000g",
+  price: 900,
+  badge: "HARVEST SPECIAL",
+  offer: "1000g — ₹900",
+  image: "/images/product_mountain_nobg.png",
+  alt: "Mountain Honey 1000g pure high-altitude harvest",
+  slug: "mountain-honey",
+  available: true,
+  variants: [
+    { size: "400g", price: 699 },
+    { size: "700g", price: 999 },
+    { size: "1000g", price: 900 },
+  ],
+};
+
 export const PRODUCTS: Product[] = [
   {
     id: "forest-honey",
@@ -122,7 +143,7 @@ export const PRODUCTS: Product[] = [
     weight: "400g",
     badge: "BEST SELLER",
     offer: "₹699",
-    image: "/images/product_multifloral.jpg",
+    image: "/images/product_multifloral_nobg.png",
     alt: "Forest Honey pure natural harvest jar",
     slug: "forest-honey",
     available: true,
@@ -142,7 +163,7 @@ export const PRODUCTS: Product[] = [
     weight: "400g",
     badge: "RARE",
     offer: "₹799 ONLY",
-    image: "/images/product_wildflower.jpg",
+    image: "/images/product_wildflower_nobg.png",
     alt: "Kombu Honey pure mountain comb jar",
     slug: "kombu-honey",
     available: true,
@@ -160,9 +181,9 @@ export const PRODUCTS: Product[] = [
     description: "Pure natural honey blended with traditional gulkand prepared from aromatic rose petals.",
     price: 699,
     weight: "400g",
-    badge: undefined,
+    badge: "ARTISANAL",
     offer: "₹699",
-    image: "/images/product_gulkand.jpg",
+    image: "/images/product_gulkand_nobg.png",
     alt: "Gulkand Honey jar with rose petal preserve",
     slug: "gulkand-honey",
     available: true,
@@ -180,9 +201,9 @@ export const PRODUCTS: Product[] = [
     description: "Rare high-altitude honey harvested from blooming wild mountain kurinji flora.",
     price: 799,
     weight: "400g",
-    badge: undefined,
+    badge: "LIMITED HARVEST",
     offer: "₹799 ONLY",
-    image: "/images/product_raw_reserve.jpg",
+    image: "/images/product_raw_reserve_nobg.png",
     alt: "Kurinji Honey rare high-altitude reserve jar",
     slug: "kurinji-honey",
     available: true,
@@ -200,9 +221,9 @@ export const PRODUCTS: Product[] = [
     description: "Traditional artisanal cultured ghee crafted using time-honored methods.",
     price: 699,
     weight: "400g",
-    badge: undefined,
+    badge: "TRADITIONAL",
     offer: "ARTISANAL",
-    image: "/images/product_ghee.jpg",
+    image: "/images/product_ghee_nobg.png",
     alt: "Traditional artisanal cultured ghee jar",
     slug: "ghee",
     available: true,
@@ -212,31 +233,10 @@ export const PRODUCTS: Product[] = [
       { size: "1000g", price: 1299 },
     ],
   },
+  MOUNTAIN_HONEY_PRODUCT,
 ];
 
-/**
- * Additional Confirmed Visible Products
- */
-export const MOUNTAIN_HONEY_PRODUCT: Product = {
-  id: "mountain-honey",
-  name: "Mountain Honey",
-  category: "Honey",
-  subtitle: "High-Altitude Harvest — 1000g",
-  description: "Mountain honey harvested from high altitudes in a 1000g pack.",
-  weight: "1000g",
-  price: 900,
-  badge: "₹900 ONLY",
-  offer: "1000g — ₹900",
-  image: "/images/product_wildflower.jpg",
-  alt: "Mountain Honey 1000g pure high-altitude harvest",
-  slug: "mountain-honey",
-  available: true,
-  variants: [
-    { size: "400g", price: 699 },
-    { size: "700g", price: 999 },
-    { size: "1000g", price: 900 },
-  ],
-};
+export const ALL_PRODUCTS: Product[] = PRODUCTS;
 
 /**
  * Trust Features
