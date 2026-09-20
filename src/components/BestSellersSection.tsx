@@ -11,6 +11,8 @@ export interface BestSellerProduct {
   name: string;
   slug: string;
   price: number;
+  price400g: number;
+  price1kg: number;
   category: string;
   badge: string;
   alt: string;
@@ -20,11 +22,11 @@ export interface BestSellerProduct {
 }
 
 /**
- * Exactly 4 products kept per customer voice-note instructions:
- * 1. Forest Honey (₹399)
- * 2. Mountain Honey (₹449)
- * 3. Kombu Honey (₹499)
- * 4. Stingless Bee Honey (₹749)
+ * EXACTLY 4 PRODUCTS:
+ * 1. Forest Honey — ₹399 / ₹699
+ * 2. Mountain Honey — ₹449 / ₹899
+ * 3. Kombu Honey — ₹499 / ₹999
+ * 4. Stingless Bee Honey — ₹749 / ₹1499
  */
 export const BEST_SELLERS: BestSellerProduct[] = [
   {
@@ -32,48 +34,56 @@ export const BEST_SELLERS: BestSellerProduct[] = [
     name: 'Forest Honey',
     slug: 'forest-honey',
     price: 399,
+    price400g: 399,
+    price1kg: 699,
     category: 'WILD MOUNTAIN FLORA',
     badge: 'BEST SELLER',
     alt: 'Forest Honey pure natural harvest glass jar',
     image: '/images/product_multifloral_nobg.png',
     subtitle: 'Raw • Unheated • Pollen-Preserved',
-    description: 'Suitable for daily use, this raw forest honey is minimally processed, unheated, pollen-preserved, and cloth-filtered. Customer describes it as an ideal natural alternative to sugar in foods and snacks.',
+    description: 'Minimally processed, unheated, and pollen-preserved from native flora. An ideal natural sweet for the whole family.',
   },
   {
     id: 'mountain-honey',
     name: 'Mountain Honey',
     slug: 'mountain-honey',
     price: 449,
+    price400g: 449,
+    price1kg: 899,
     category: 'HIGH-ALTITUDE FLORA',
     badge: 'HARVEST SPECIAL',
     alt: 'Mountain Honey pure high-altitude harvest glass jar',
     image: '/images/product_mountain_nobg.png',
     subtitle: 'High-Altitude • Raw Harvest',
-    description: 'Harvested from high-altitude flora and suitable for daily use. Customer describes it as traditionally valued for supporting natural digestion and healthy weight-management routines.',
+    description: 'Harvested from high-altitude flora and suitable for daily use. Traditionally valued for natural vitality and daily wellness.',
   },
   {
     id: 'kombu-honey',
     name: 'Kombu Honey',
     slug: 'kombu-honey',
     price: 499,
+    price400g: 499,
+    price1kg: 999,
     category: 'SMALL BEE WILD COMB',
     badge: 'RARE HARVEST',
     alt: 'Kombu Honey pure mountain comb glass jar',
     image: '/images/product_wildflower_nobg.png',
     subtitle: 'Small Bee • Wild Comb • Pure',
-    description: 'Traditional small bee wild comb honey harvested through generations of harvesting practice. 100% pure, raw, and unpasteurized from high-altitude wild combs.',
+    description: 'Traditional small bee wild comb honey harvested through generations of sustainable forest foraging.',
   },
   {
     id: 'stingless-bee-honey',
     name: 'Stingless Bee Honey',
     slug: 'stingless-bee-honey',
     price: 749,
+    price400g: 749,
+    price1kg: 1499,
     category: 'RARE MOUNTAIN COMB',
     badge: 'LIMITED HARVEST',
     alt: 'Stingless Bee Honey rare high-altitude reserve glass jar',
     image: '/images/product_raw_reserve_nobg.png',
     subtitle: 'Rare • Comb • High Nutritional Value',
-    description: 'Customer describes this rare, premium honey as possessing high nutritional value and traditionally valued for time-honored medicinal use.',
+    description: 'Prized for its high nutritional density and distinct tangy floral profile, harvested in small artisanal batches.',
   },
 ];
 
@@ -99,13 +109,13 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
 
-  // Navigate to /shop
-  const handleViewProduct = (e: React.MouseEvent) => {
+  const handleViewProduct = (e: React.MouseEvent, slug?: string) => {
     e.stopPropagation();
+    const dest = slug ? `/product/${slug}` : '/shop';
     if (onNavigate) {
-      onNavigate('/shop');
+      onNavigate(dest);
     } else if (typeof window !== 'undefined') {
-      window.location.href = '/shop';
+      window.location.href = dest;
     }
   };
 
@@ -145,7 +155,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
       className="w-full py-16 md:py-24 bg-[#F4F1EA] overflow-hidden select-none"
       onKeyDown={handleKeyDown}
       tabIndex={0}
-      aria-label="Best Sellers Focus Carousel"
+      aria-label="Meet the Best Sellers"
     >
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
         {/* Section Header Row — Editorial Heading */}
@@ -154,7 +164,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
           <div className="space-y-1.5 md:space-y-2 text-left">
             <div className="flex items-center gap-2">
               <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
-              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#242424] font-semibold">
+              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#C9892E] font-semibold">
                 THE LINEUP
               </span>
             </div>
@@ -185,7 +195,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
         {/* =========================================================================
             PRODUCT FOCUS CAROUSEL CONTAINER (Centered Active Card + Partial Side Cards)
             ========================================================================= */}
-        <div className="relative w-full h-[490px] xs:h-[510px] sm:h-[540px] md:h-[580px] flex items-center justify-center overflow-hidden touch-pan-y">
+        <div className="relative w-full h-[470px] xs:h-[490px] sm:h-[530px] md:h-[560px] flex items-center justify-center overflow-hidden touch-pan-y">
           {/* Left Circular Navigation Arrow */}
           <button
             type="button"
@@ -232,7 +242,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
               // Wrapped relative difference in range [-2, 2]
               let diff = index - activeIndex;
               while (diff > total / 2) diff -= total;
-              while (diff <= -total / 2) diff += total;
+              while (diff < -total / 2) diff += total;
 
               const isActive = diff === 0;
               const isPrev = diff === -1;
@@ -338,20 +348,19 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
 
                     {/* Product Name & Details Follow Below the Bottle */}
                     <div className="flex flex-col gap-1.5 sm:gap-2 z-10 pt-2 border-t border-[#EAE6DE]">
-                      {/* Name & Price Row */}
+                      {/* Name & Dual Price Row: Forest Honey — ₹399 / ₹699 */}
                       <div className="flex items-baseline justify-between gap-2">
                         <h3 className="font-serif text-[20px] xs:text-[22px] sm:text-[25px] font-semibold text-[#242424] leading-tight tracking-[-0.01em]">
                           {product.name}
                         </h3>
                         <div className="text-right whitespace-nowrap shrink-0">
-                          <span className="text-[12px] font-medium text-[#242424] mr-0.5">₹</span>
-                          <span className="font-sans font-bold text-[19px] sm:text-[21px] text-[#242424] tracking-tight">
-                            {product.price}
+                          <span className="font-sans font-bold text-[17px] sm:text-[19px] text-[#242424] tracking-tight">
+                            ₹{product.price400g} <span className="text-[#8C827A] font-normal text-[13px] sm:text-[14px]">/</span> ₹{product.price1kg}
                           </span>
                         </div>
                       </div>
 
-                      {/* Voice-Note Information Description */}
+                      {/* Product Description */}
                       <p className="font-sans text-[12px] sm:text-[12.5px] text-[#686863] leading-[1.45] line-clamp-2 text-left">
                         {product.description}
                       </p>
@@ -360,13 +369,13 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
                       <div className="pt-2 flex items-center justify-between gap-3">
                         <button
                           type="button"
-                          onClick={handleViewProduct}
-                          className="flex-1 py-2.5 sm:py-3 px-4 rounded-full bg-[#242424] hover:bg-[#C9892E] text-[#FAF9F5] font-sans text-[12.5px] sm:text-[13px] font-semibold tracking-wide transition-colors duration-200 cursor-pointer text-center shadow-xs"
+                          onClick={(e) => handleViewProduct(e, product.slug)}
+                          className="flex-1 py-2.5 sm:py-3 px-4 rounded-full bg-[#242424] hover:bg-[#C9892E] text-[#FAF9F5] font-sans text-[12.5px] sm:text-[13px] font-semibold tracking-wide transition-colors duration-200 cursor-pointer text-center shadow-xs active:scale-95"
                         >
-                          View In Shop
+                          View Product
                         </button>
                         <span className="font-mono text-[10.5px] sm:text-[11px] text-[#8C827A] whitespace-nowrap font-medium">
-                          400g • 1000g
+                          400g • 1kg
                         </span>
                       </div>
                     </div>
