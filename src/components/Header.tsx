@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CartIcon, MenuIcon } from './Icons';
+import { CartIcon } from './Icons';
 import { BrandLogo } from './BrandLogo';
 
 interface HeaderProps {
@@ -16,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   cartCount,
   onOpenCart,
   onToggleMobileMenu,
+  isMobileMenuOpen,
   onNavigate,
   currentPath = '/',
 }) => {
@@ -41,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       className="sticky top-0 z-40 w-full bg-[#F4F1EA] border-b border-[#D9D7D0] transition-colors duration-200"
     >
-      <div className="max-w-[1440px] mx-auto h-[58px] px-4 sm:px-6 md:px-10 flex items-center justify-between">
+      <div className="max-w-[1440px] mx-auto h-[58px] px-3.5 sm:px-6 md:px-10 flex items-center justify-between">
         {/* Brand Logo */}
         <div className="flex-shrink-0">
           <a
@@ -83,25 +84,46 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Right Group: Cart and Mobile Hamburger */}
-        <div className="flex items-center space-x-4 lg:space-x-6">
+        <div className="flex items-center space-x-2.5 sm:space-x-4 lg:space-x-6 flex-shrink-0">
           <button
             onClick={onOpenCart}
-            className="flex items-center space-x-2 text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer"
+            className="flex items-center space-x-1.5 sm:space-x-2 text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer flex-shrink-0"
             aria-label="View Shopping Cart"
           >
-            <CartIcon size={20} color="currentColor" />
-            <span className="font-sans text-[15px] font-medium leading-none">
+            <CartIcon size={19} color="currentColor" />
+            <span className="font-sans text-[13.5px] sm:text-[15px] font-medium leading-none whitespace-nowrap">
               Cart ({cartCount})
             </span>
           </button>
 
-          {/* Mobile Menu Hamburger Button */}
+          {/* Mobile Menu Hamburger / X Transition Button */}
           <button
             onClick={onToggleMobileMenu}
-            className="p-1 text-[#242424] hover:text-[#C9892E] transition-colors lg:hidden cursor-pointer"
+            className="relative w-[28px] h-[18px] p-0 bg-transparent border-none cursor-pointer lg:hidden flex flex-col justify-between items-center focus:outline-none select-none"
             aria-label="Toggle Navigation Menu"
+            aria-expanded={isMobileMenuOpen}
           >
-            <MenuIcon size={24} color="currentColor" />
+            <span
+              className="absolute left-0 w-full h-[2px] bg-[#242424] rounded-full transition-all duration-400 ease-out origin-center"
+              style={{
+                top: isMobileMenuOpen ? '8px' : '0px',
+                transform: isMobileMenuOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+              }}
+            />
+            <span
+              className="absolute left-0 w-full h-[2px] bg-[#242424] rounded-full transition-all duration-300 ease-out"
+              style={{
+                top: '8px',
+                opacity: isMobileMenuOpen ? 0 : 1,
+              }}
+            />
+            <span
+              className="absolute left-0 w-full h-[2px] bg-[#242424] rounded-full transition-all duration-400 ease-out origin-center"
+              style={{
+                top: isMobileMenuOpen ? '8px' : '16px',
+                transform: isMobileMenuOpen ? 'rotate(-45deg)' : 'rotate(0deg)',
+              }}
+            />
           </button>
         </div>
       </div>

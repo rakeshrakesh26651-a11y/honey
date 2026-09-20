@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatedHeading } from './motion/AnimatedHeading';
 
@@ -11,60 +11,109 @@ export interface BestSellerProduct {
   name: string;
   slug: string;
   price: number;
+  category: string;
+  badge: string;
   alt: string;
-  images: [string, string]; // [0: Original Harvest Image, 1: Alternate Branded Jar Image]
-  objectPositions: [string, string];
+  image: string;
+  objectPosition?: string;
 }
 
 /**
- * Exactly the 3 Best Seller products:
- * 1. Forest Honey (Original: honeycomb + dipper; Alternate: product_multifloral.jpg)
- * 2. Kombu Honey (Original: glass jar + dipper; Alternate: product_wildflower.jpg)
- * 3. Gulkand Honey (Original: golden bowl + dipper; Alternate: product_gulkand_clean.jpg)
+ * 5 existing products with exact names, images, and prices:
+ * 1. Forest Honey (₹699)
+ * 2. Kombu Honey (₹799)
+ * 3. Gulkand Honey (₹699)
+ * 4. Kurinji Honey (₹799)
+ * 5. Ghee (₹699)
  */
-const BEST_SELLERS: BestSellerProduct[] = [
+export const BEST_SELLERS: BestSellerProduct[] = [
   {
     id: 'forest-honey',
     name: 'Forest Honey',
     slug: 'forest-honey',
     price: 699,
+    category: 'WILD MOUNTAIN FLORA',
+    badge: 'BEST SELLER',
     alt: 'Forest Honey pure harvest with honeycomb and honey dipper',
-    images: ['/images/forest_honey_best.jpg', '/images/product_multifloral.jpg'],
-    objectPositions: ['center 35%', 'center center'],
+    image: '/images/forest_honey_best.jpg',
+    objectPosition: 'center 35%',
   },
   {
     id: 'kombu-honey',
     name: 'Kombu Honey',
     slug: 'kombu-honey',
     price: 799,
+    category: 'SMALL BEE WILD COMB',
+    badge: 'RARE',
     alt: 'Kombu Honey wild comb harvest in glass jar with dipper',
-    images: ['/images/kombu_honey_best.jpg', '/images/product_wildflower.jpg'],
-    objectPositions: ['center center', 'center center'],
+    image: '/images/kombu_honey_best.jpg',
+    objectPosition: 'center center',
   },
   {
     id: 'gulkand-honey',
     name: 'Gulkand Honey',
     slug: 'gulkand-honey',
     price: 699,
+    category: 'ROSE PETAL BLEND',
+    badge: 'ARTISANAL',
     alt: 'Gulkand Honey natural blend in golden bowl with dipper',
-    images: ['/images/gulkand_honey_best.jpg', '/images/product_gulkand_clean.jpg'],
-    objectPositions: ['center 45%', 'center center'],
+    image: '/images/gulkand_honey_best.jpg',
+    objectPosition: 'center 45%',
+  },
+  {
+    id: 'kurinji-honey',
+    name: 'Kurinji Honey',
+    slug: 'kurinji-honey',
+    price: 799,
+    category: 'RARE MOUNTAIN BLOOM',
+    badge: 'LIMITED HARVEST',
+    alt: 'Kurinji Honey rare high-altitude reserve jar',
+    image: '/images/product_raw_reserve.jpg',
+    objectPosition: 'center center',
+  },
+  {
+    id: 'ghee',
+    name: 'Ghee',
+    slug: 'ghee',
+    price: 699,
+    category: 'TRADITIONAL ARTISANAL',
+    badge: 'CULTURED GHEE',
+    alt: 'Traditional artisanal cultured ghee jar',
+    image: '/images/product_ghee.jpg',
+    objectPosition: 'center center',
   },
 ];
 
 export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNavigate }) => {
-  // Independent image state for each card: 0 = ORIGINAL, 1 = ALTERNATE
-  const [activeIndices, setActiveIndices] = useState<Record<string, number>>({
-    'forest-honey': 0,
-    'kombu-honey': 0,
-    'gulkand-honey': 0,
-  });
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const total = BEST_SELLERS.length;
 
-  const handleToggle = (productId: string) => {
-    setActiveIndices((prev) => ({
-      ...prev,
-      [productId]: prev[productId] === 0 ? 1 : 0,
-    }));
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handlePrev = useCallback(() => {
+    setActiveIndex((prev) => (prev - 1 + total) % total);
+  }, [total]);
+
+  const handleNext = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % total);
+  }, [total]);
+
+  // Navigate directly to /shop (do NOT open product detail page)
+  const handleViewProduct = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onNavigate) {
+      onNavigate('/shop');
+    } else if (typeof window !== 'undefined') {
+      window.location.href = '/shop';
+    }
   };
 
   const handleShopAllClick = (e: React.MouseEvent) => {
@@ -76,17 +125,38 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
     }
   };
 
+  // Keyboard navigation
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handlePrev();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleNext();
+      }
+    },
+    [handlePrev, handleNext]
+  );
+
+  const springConfig = {
+    type: 'spring' as const,
+    stiffness: 300,
+    damping: 32,
+    mass: 0.8,
+  };
+
   return (
-    <section id="lineup" className="w-full py-16 md:py-24 bg-[#F4F1EA] overflow-hidden">
+    <section
+      id="lineup"
+      className="w-full py-16 md:py-24 bg-[#F4F1EA] overflow-hidden select-none"
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      aria-label="Best Sellers Focus Carousel"
+    >
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-8">
         {/* Section Header Row — Editorial Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12 pb-2"
-        >
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12 pb-2">
           {/* Left: Eyebrow + Heading */}
           <div className="space-y-1.5 md:space-y-2 text-left">
             <div className="flex items-center gap-2">
@@ -117,114 +187,204 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
               <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
             </a>
           </div>
-        </motion.div>
+        </div>
 
-        {/* 3 Equal Cards: Positions, widths, and heights remain completely stable */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {BEST_SELLERS.map((product) => {
-            const activeIndex = activeIndices[product.id] ?? 0;
-            const isAlternate = activeIndex === 1;
+        {/* =========================================================================
+            PRODUCT FOCUS CAROUSEL CONTAINER (Centered Active Card + Partial Side Cards)
+            ========================================================================= */}
+        <div className="relative w-full h-[440px] xs:h-[460px] sm:h-[490px] md:h-[540px] flex items-center justify-center overflow-hidden touch-pan-y">
+          {/* Left Circular Navigation Arrow */}
+          <button
+            type="button"
+            onClick={handlePrev}
+            aria-label="Previous product"
+            className="absolute left-2 xs:left-3 sm:left-6 md:left-8 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.14)] border border-[#EAE6DE] flex items-center justify-center text-[#242424] hover:bg-[#FAF8F5] active:scale-95 transition-all cursor-pointer focus:outline-none"
+          >
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              viewBox="0 0 24 24"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
 
+          {/* Right Circular Navigation Arrow */}
+          <button
+            type="button"
+            onClick={handleNext}
+            aria-label="Next product"
+            className="absolute right-2 xs:right-3 sm:right-6 md:right-8 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.14)] border border-[#EAE6DE] flex items-center justify-center text-[#242424] hover:bg-[#FAF8F5] active:scale-95 transition-all cursor-pointer focus:outline-none"
+          >
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              viewBox="0 0 24 24"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+
+          {/* Cards Track with Drag / Swipe support */}
+          <div className="relative w-full h-full flex items-center justify-center">
+            {BEST_SELLERS.map((product, index) => {
+              // Wrapped relative difference in range [-2, 2]
+              let diff = index - activeIndex;
+              while (diff > total / 2) diff -= total;
+              while (diff < -total / 2) diff += total;
+
+              const isActive = diff === 0;
+              const isPrev = diff === -1;
+              const isNext = diff === 1;
+              const isVisible = Math.abs(diff) <= 1;
+
+              // Responsive translation in pixels, scale, and opacity
+              let targetX = 0;
+              let targetScale = 1;
+              let targetOpacity = 1;
+              let targetZIndex = 20;
+              let shadow = '0 25px 50px -12px rgba(36, 36, 36, 0.28)';
+
+              if (diff === 0) {
+                targetX = 0;
+                targetScale = 1;
+                targetOpacity = 1;
+                targetZIndex = 20;
+                shadow = '0 25px 50px -12px rgba(36, 36, 36, 0.28)';
+              } else if (diff === 1) {
+                targetX = isMobile ? 245 : 360;
+                targetScale = isMobile ? 0.72 : 0.76;
+                targetOpacity = isMobile ? 0.6 : 0.65;
+                targetZIndex = 10;
+                shadow = '0 10px 30px -10px rgba(36, 36, 36, 0.15)';
+              } else if (diff === -1) {
+                targetX = isMobile ? -245 : -360;
+                targetScale = isMobile ? 0.72 : 0.76;
+                targetOpacity = isMobile ? 0.6 : 0.65;
+                targetZIndex = 10;
+                shadow = '0 10px 30px -10px rgba(36, 36, 36, 0.15)';
+              } else {
+                // diff === 2 or -2
+                targetX = diff > 0 ? (isMobile ? 500 : 750) : (isMobile ? -500 : -750);
+                targetScale = isMobile ? 0.5 : 0.55;
+                targetOpacity = 0;
+                targetZIndex = 1;
+                shadow = 'none';
+              }
+
+              return (
+                <motion.div
+                  key={product.id}
+                  drag={isActive ? 'x' : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={(_, info) => {
+                    const swipeThreshold = 40;
+                    if (info.offset.x < -swipeThreshold || info.velocity.x < -250) {
+                      handleNext();
+                    } else if (info.offset.x > swipeThreshold || info.velocity.x > 250) {
+                      handlePrev();
+                    }
+                  }}
+                  animate={{
+                    x: targetX,
+                    scale: targetScale,
+                    opacity: targetOpacity,
+                    zIndex: targetZIndex,
+                  }}
+                  transition={springConfig}
+                  onClick={() => {
+                    if (isPrev) handlePrev();
+                    else if (isNext) handleNext();
+                  }}
+                  style={{
+                    boxShadow: shadow,
+                    willChange: 'transform, opacity',
+                  }}
+                  className={`absolute w-[78vw] max-w-[310px] xs:max-w-[325px] sm:max-w-[350px] md:max-w-[380px] h-[390px] xs:h-[410px] sm:h-[450px] md:h-[490px] rounded-[20px] sm:rounded-[24px] overflow-hidden bg-[#FAF8F5] cursor-pointer ${
+                    !isVisible ? 'pointer-events-none' : ''
+                  }`}
+                >
+                  <div className="relative w-full h-full">
+                    {/* Full Bleed Image */}
+                    <img
+                      src={product.image}
+                      alt={product.alt}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                      style={{
+                        objectPosition: product.objectPosition || 'center center',
+                      }}
+                    />
+
+                    {/* Dark Scrim Overlay for clear text legibility */}
+                    <div
+                      className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none"
+                      aria-hidden="true"
+                    />
+
+                    {/* Bottom Card Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 md:p-7 flex flex-col gap-2 z-10">
+                      {/* Category & Badge */}
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.14em] text-white/85 font-medium">
+                          {product.category}
+                        </span>
+                        <span className="w-1 h-1 rounded-full bg-[#C9892E]" />
+                        <span className="font-sans text-[13.5px] sm:text-[14px] font-bold text-[#EADDC7]">
+                          ₹{product.price}
+                        </span>
+                      </div>
+
+                      {/* Product Name */}
+                      <h3 className="font-serif text-[22px] xs:text-[24px] sm:text-[28px] md:text-[30px] font-semibold text-white leading-tight tracking-[-0.01em]">
+                        {product.name}
+                      </h3>
+
+                      {/* VIEW PRODUCT Button (Navigates directly to /shop) */}
+                      {isActive && (
+                        <div className="pt-2">
+                          <button
+                            type="button"
+                            onClick={handleViewProduct}
+                            className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-white hover:bg-[#FAF8F5] text-[#242424] font-sans text-[13px] sm:text-[14px] font-semibold tracking-[-0.01em] shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer w-fit inline-block"
+                          >
+                            View Product
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Small Carousel Progress / Dot Indicator */}
+        <div className="flex items-center justify-center gap-2 mt-6 sm:mt-8">
+          {BEST_SELLERS.map((item, index) => {
+            const isCurrent = index === activeIndex;
             return (
-              <div
-                key={product.id}
-                role="button"
-                tabIndex={0}
-                aria-label={`${product.name} - ₹${product.price}. Currently showing ${
-                  isAlternate ? 'alternate' : 'original'
-                } image. Click to toggle image.`}
-                onClick={() => handleToggle(product.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleToggle(product.id);
-                  }
-                }}
-                className="group flex flex-col cursor-pointer select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#C9892E] rounded-[20px]"
-              >
-                {/* Rounded Image Container with constant 3:4 Proportions and 16px Radius */}
-                <div className="relative aspect-[3/4] w-full rounded-[16px] overflow-hidden bg-[#FAF9F5] shadow-[0_4px_16px_rgba(36, 36, 36,0.04)] transition-shadow duration-300 group-hover:shadow-[0_8px_24px_rgba(36, 36, 36,0.08)]">
-                  {/* Top-left BEST SELLER badge */}
-                  <div className="absolute top-3.5 left-3.5 z-20 pointer-events-none">
-                    <span
-                      data-testid="bestseller-badge"
-                      className="inline-flex items-center px-3 py-1 rounded-full bg-[#C9892E] text-[#242424] font-mono text-[11px] font-bold tracking-wider uppercase shadow-xs"
-                    >
-                      BEST SELLER
-                    </span>
-                  </div>
-
-                  {/* Dual-Layered Framer Motion Cross-Transition (Zero Blank Flash) */}
-
-                  {/* Layer 0: Original Image */}
-                  <motion.img
-                    src={product.images[0]}
-                    alt={product.alt}
-                    loading="lazy"
-                    initial={false}
-                    animate={{
-                      opacity: isAlternate ? 0 : 1,
-                      scale: isAlternate ? 1.04 : 1,
-                    }}
-                    transition={{
-                      duration: 0.6,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    style={{
-                      objectPosition: product.objectPositions[0],
-                    }}
-                    className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-                  />
-
-                  {/* Layer 1: Alternate Image */}
-                  <motion.img
-                    src={product.images[1]}
-                    alt={`${product.name} packaged jar view`}
-                    loading="lazy"
-                    initial={false}
-                    animate={{
-                      opacity: isAlternate ? 1 : 0,
-                      scale: isAlternate ? 1 : 0.96,
-                    }}
-                    transition={{
-                      duration: 0.6,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    style={{
-                      objectPosition: product.objectPositions[1],
-                    }}
-                    className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-                  />
-
-                  {/* Subtle 2-dot indicator pill at bottom-right */}
-                  <div className="absolute bottom-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#242424]/70 backdrop-blur-md transition-opacity duration-300 pointer-events-none">
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                        !isAlternate
-                          ? 'bg-[#FAF9F5] scale-125'
-                          : 'bg-[#FAF9F5]/40 scale-100'
-                      }`}
-                    />
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                        isAlternate
-                          ? 'bg-[#FAF9F5] scale-125'
-                          : 'bg-[#FAF9F5]/40 scale-100'
-                      }`}
-                    />
-                  </div>
-                </div>
-
-                {/* Product Meta: Name and Price below image */}
-                <div className="mt-4 px-1 flex items-baseline justify-between gap-3">
-                  <h3 className="font-serif text-[19px] sm:text-[21px] font-semibold text-[#242424] group-hover:text-[#C9892E] transition-colors leading-snug">
-                    {product.name}
-                  </h3>
-                  <span className="font-sans font-bold text-[17px] sm:text-[18px] text-[#242424] whitespace-nowrap">
-                    ₹{product.price}
-                  </span>
-                </div>
-              </div>
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Go to ${item.name}`}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  isCurrent
+                    ? 'w-7 bg-[#C9892E]'
+                    : 'w-2 bg-[#242424]/25 hover:bg-[#242424]/50'
+                }`}
+              />
             );
           })}
         </div>

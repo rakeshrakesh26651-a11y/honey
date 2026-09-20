@@ -92,7 +92,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ className = '', variant = 
         />
         <circle cx="12" cy="14.5" r="1.2" fill="#C9892E" />
       </svg>
-      <span className="font-serif text-[16px] xs:text-[18px] sm:text-[21px] font-semibold tracking-[-0.01em] text-[#242424] whitespace-nowrap leading-none">
+      <span className="font-serif text-[12.5px] xs:text-[16px] sm:text-[21px] font-semibold tracking-[-0.01em] text-[#242424] whitespace-nowrap leading-none">
         HIMALAYAN HARVEST HONEY
       </span>
     </div>

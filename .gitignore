@@ -36,4 +36,6 @@ dist-ssr
 playwright-report/
 test-results/
 scripts/*.png
+scripts/reference/
+public/ref_video.mp4
 .playwright-mcp/
