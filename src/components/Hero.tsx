@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { WhatsAppIcon } from './Icons';
 
 interface HeroProps {
   onShopClick?: () => void;
@@ -84,7 +85,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
     <section
       ref={containerRef}
       aria-label="Himalayan Harvest Honey Hero"
-      className="relative w-full bg-[#141210] text-[#FAF9F5] overflow-hidden min-h-[520px] sm:min-h-[600px] lg:min-h-[82vh] xl:min-h-[86vh] flex items-center border-b border-white/[0.08]"
+      className="relative w-full bg-[#141210] text-[#FAF9F5] overflow-hidden min-h-[500px] xs:min-h-[540px] sm:min-h-[620px] lg:min-h-[82vh] xl:min-h-[86vh] flex items-center border-b border-white/[0.08]"
     >
       {/* =========================================================================
           1. LOCKED BACKGROUND VIDEO LAYER WITH SCROLL PARALLAX (VIDEO SOURCE UNCHANGED)
@@ -102,7 +103,7 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
           playsInline
           preload="auto"
           poster="/images/himalayan-honey-hero.jpg"
-          className="w-full h-full object-cover pointer-events-none select-none"
+          className="w-full h-full object-cover object-[72%_center] sm:object-[65%_center] lg:object-center pointer-events-none select-none"
           aria-hidden="true"
         >
           <source
@@ -124,12 +125,12 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
         }}
       />
 
-      {/* Mobile/Tablet Overlay: Warm charcoal scrim tuned for high readability */}
+      {/* Mobile/Tablet Overlay: Strong bottom-to-top / 70% dark scrim for high contrast readability */}
       <div
         className="absolute inset-0 pointer-events-none lg:hidden"
         style={{
           background:
-            'linear-gradient(180deg, rgba(16, 14, 12, 0.86) 0%, rgba(16, 14, 12, 0.72) 42%, rgba(16, 14, 12, 0.84) 100%)',
+            'linear-gradient(180deg, rgba(18, 16, 14, 0.70) 0%, rgba(18, 16, 14, 0.65) 30%, rgba(18, 16, 14, 0.84) 75%, rgba(18, 16, 14, 0.95) 100%)',
         }}
       />
 
@@ -142,28 +143,28 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
       />
 
       {/* =========================================================================
-          3. EDITORIAL HERO CONTENT
+          3. EDITORIAL HERO CONTENT (IDENTICAL HIERARCHY & COMPOSITION)
           ========================================================================= */}
-      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-12 py-12 sm:py-16 lg:py-24">
-        <div className="w-full lg:max-w-[520px] xl:max-w-[560px] flex flex-col items-start text-left">
+      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-16 lg:py-24">
+        <div className="w-full lg:max-w-[540px] xl:max-w-[580px] flex flex-col items-start text-left">
           
-          {/* Tag: HIMALAYAN HARVEST */}
+          {/* Tag: NATURE'S FINEST */}
           <motion.div
             {...revealUp(0.08, 12)}
-            className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#181614]/60 border border-white/[0.12] backdrop-blur-md mb-3.5 sm:mb-4 select-none"
+            className="flex items-center gap-2 mb-2 sm:mb-3 select-none"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#DDAA55]" />
-            <span className="font-mono text-[10px] xs:text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.14em] text-[#FAF9F5]/90 font-medium">
-              HIMALAYAN HARVEST · 100% PURE
+            <span className="font-mono text-[10px] xs:text-[11px] sm:text-[12px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-[#DDAA55] font-semibold">
+              NATURE'S FINEST
             </span>
+            <span className="w-6 sm:w-8 h-[1px] bg-[#DDAA55]/60" />
           </motion.div>
 
           {/* Main Heading: Pure Honey. */}
           <motion.div
             {...revealUp(0.18, 22)}
-            className="w-full mb-1 sm:mb-2"
+            className="w-full mb-0.5 sm:mb-1"
           >
-            <h1 className="font-serif text-[#FAF9F5] text-[40px] xs:text-[46px] sm:text-[62px] md:text-[76px] lg:text-[88px] xl:text-[96px] leading-[0.98] sm:leading-[0.95] tracking-[-0.03em] font-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] select-text">
+            <h1 className="font-serif text-[#FAF9F5] text-[38px] xs:text-[44px] sm:text-[62px] md:text-[76px] lg:text-[88px] xl:text-[96px] leading-[0.98] sm:leading-[0.95] tracking-[-0.03em] font-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] select-text">
               Pure Honey.
             </h1>
           </motion.div>
@@ -171,83 +172,61 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
           {/* Subheading: From the Himalayas. */}
           <motion.div
             {...revealUp(0.28, 18)}
-            className="w-full mb-3 sm:mb-4"
+            className="w-full mb-2.5 sm:mb-4"
           >
-            <p className="font-serif italic text-[18px] xs:text-[20px] sm:text-[24px] md:text-[28px] lg:text-[32px] text-[#DDAA55] font-normal tracking-[-0.01em] leading-tight select-text drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+            <p className="font-serif italic text-[18px] xs:text-[21px] sm:text-[26px] md:text-[28px] lg:text-[34px] text-[#DDAA55] font-normal tracking-[-0.01em] leading-tight select-text drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               From the Himalayas.
             </p>
           </motion.div>
 
-          {/* Minimal Supporting Text */}
+          {/* Minimal Supporting Text (Max 2 lines on mobile) */}
           <motion.div
             {...revealUp(0.38, 16)}
-            className="w-full mb-5 sm:mb-7"
+            className="w-full mb-4 sm:mb-7"
           >
-            <p className="font-sans text-[13px] xs:text-[13.5px] sm:text-[15px] lg:text-[16px] text-[#FAF9F5]/75 leading-[1.6] max-w-[290px] xs:max-w-[340px] sm:max-w-[420px] lg:max-w-[460px] select-text drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)] font-normal">
-              Raw, single-origin honey harvested across four generations of Himalayan beekeepers. Unfiltered, unheated, and bottled at source.
+            <p className="font-sans text-[13px] xs:text-[13.5px] sm:text-[15px] lg:text-[16px] text-[#FAF9F5]/90 leading-[1.5] max-w-[340px] sm:max-w-[440px] lg:max-w-[480px] select-text drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)] font-normal line-clamp-2 sm:line-clamp-none">
+              Raw, unheated high-altitude honey rooted in four generations of harvesting tradition.
             </p>
           </motion.div>
 
-          {/* Compact Premium CTA Buttons */}
+          {/* Compact Premium CTA Buttons (Side-by-Side on Mobile & Desktop) */}
           <motion.div
             {...revealUp(0.48, 16)}
-            className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2.5 sm:gap-3.5 mb-6 sm:mb-8 w-full xs:w-auto max-w-[280px] xs:max-w-none"
+            className="flex flex-row flex-wrap items-center gap-2 xs:gap-3 sm:gap-3.5 mb-3 sm:mb-4"
           >
             {/* Primary CTA: SHOP HONEY → */}
             <a
               href="/shop"
               onClick={handleShop}
-              className="inline-flex items-center justify-center h-[42px] xs:h-[44px] sm:h-[46px] px-5 sm:px-6 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#1D1B18] font-sans text-[12.5px] xs:text-[13px] sm:text-[13.5px] font-semibold tracking-wider uppercase transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 shadow-[0_2px_10px_rgba(201,137,46,0.3)] hover:shadow-[0_4px_16px_rgba(201,137,46,0.4)] cursor-pointer group text-center whitespace-nowrap"
+              className="inline-flex items-center justify-center h-[38px] xs:h-[42px] sm:h-[46px] px-4 xs:px-5 sm:px-6 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#1D1B18] font-sans text-[11px] xs:text-[12px] sm:text-[13.5px] font-bold tracking-wider uppercase transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 shadow-[0_2px_10px_rgba(201,137,46,0.3)] hover:shadow-[0_4px_16px_rgba(201,137,46,0.4)] cursor-pointer group text-center whitespace-nowrap"
             >
               <span>SHOP HONEY</span>
-              <span className="ml-1.5 transform transition-transform duration-200 group-hover:translate-x-1 font-mono text-[12px]">→</span>
+              <span className="ml-1.5 transform transition-transform duration-200 group-hover:translate-x-1 font-mono text-[11px] xs:text-[12px]">→</span>
             </a>
 
-            {/* Secondary CTA: ORDER ON WHATSAPP */}
+            {/* Secondary CTA: ORDER ON WHATSAPP (Outline with WhatsApp icon) */}
             <a
               href="https://wa.me/918124391725?text=Hello%20Himalayan%20Harvest%20Honey!%20%F0%9F%91%8B%0A%0AI%20would%20like%20to%20know%20more%20about%20your%20pure%20honey%20products%20and%20offers."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center h-[40px] xs:h-[42px] sm:h-[46px] px-4.5 sm:px-5.5 rounded-full border border-white/20 bg-white/[0.06] hover:bg-white/[0.12] hover:border-white/35 backdrop-blur-md text-[#FAF9F5]/90 font-sans text-[12px] xs:text-[12.5px] sm:text-[13px] font-medium tracking-wide uppercase transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer text-center whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-1.5 h-[38px] xs:h-[42px] sm:h-[46px] px-3.5 xs:px-4.5 sm:px-5.5 rounded-full border border-white/35 bg-[#181614]/60 hover:bg-[#181614]/90 hover:border-white/60 text-[#FAF9F5] font-sans text-[10.5px] xs:text-[11.5px] sm:text-[13px] font-semibold tracking-wide uppercase transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer text-center whitespace-nowrap"
             >
-              ORDER ON WHATSAPP
+              <WhatsAppIcon size={15} color="#25D366" className="inline-block flex-shrink-0" />
+              <span>ORDER ON WHATSAPP</span>
             </a>
           </motion.div>
 
-          {/* Clean Trust Indicators */}
+          {/* Subtle Free Delivery Note */}
           <motion.div
-            {...revealUp(0.58, 14)}
-            className="w-full max-w-[560px] pt-3.5 sm:pt-4 border-t border-white/10 select-text"
+            {...revealUp(0.56, 12)}
+            className="flex items-center gap-1.5 text-[#FAF9F5]/75 text-[11px] xs:text-[12px] sm:text-[12.5px] font-sans font-normal select-text drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
           >
-            <div className="flex flex-wrap items-center gap-x-3.5 sm:gap-x-5 gap-y-1.5 text-[#FAF9F5]/75">
-              <div className="flex items-center gap-1.5 whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C9892E]" />
-                <span className="font-mono text-[9.5px] xs:text-[10px] sm:text-[11px] uppercase tracking-[0.08em] text-[#FAF9F5]/85 font-medium">
-                  100% RAW &amp; UNHEATED
-                </span>
-              </div>
-              
-              <span className="hidden xs:inline-block text-white/25 text-[10px]">•</span>
-
-              <div className="flex items-center gap-1.5 whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C9892E]" />
-                <span className="font-mono text-[9.5px] xs:text-[10px] sm:text-[11px] uppercase tracking-[0.08em] text-[#FAF9F5]/85 font-medium">
-                  4TH-GEN HARVESTERS
-                </span>
-              </div>
-
-              <span className="hidden sm:inline-block text-white/25 text-[10px]">•</span>
-
-              <div className="flex items-center gap-1.5 whitespace-nowrap drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C9892E]" />
-                <span className="font-mono text-[9.5px] xs:text-[10px] sm:text-[11px] uppercase tracking-[0.08em] text-[#FAF9F5]/85 font-medium">
-                  LAB CERTIFIED IS 4941
-                </span>
-              </div>
-            </div>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C9892E] inline-block" />
+            <span>Free delivery on orders over ₹1,000</span>
           </motion.div>
         </div>
       </div>
     </section>
   );
 };
+
