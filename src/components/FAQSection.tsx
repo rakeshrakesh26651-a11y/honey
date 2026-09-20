@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FAQS, FaqItem } from '../data/himalayanHarvest';
 import { AnimatedHeading } from './motion/AnimatedHeading';
+import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 
 interface FAQSectionProps {
   limit?: number;
@@ -57,15 +58,11 @@ export const FAQSection: React.FC<FAQSectionProps> = ({
             className="font-serif text-[30px] sm:text-[40px] md:text-[46px] font-semibold text-[#242424] leading-[1.12] tracking-[-0.01em]"
           />
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          <TextRevealOnScroll
+            text="Clear, transparent answers about our high-altitude harvests, testing protocols, and delivery across India."
+            as="p"
             className="font-sans text-[15px] sm:text-[17px] text-[#686863] leading-[1.55] max-w-[580px] mx-auto"
-          >
-            Clear, transparent answers about our high-altitude harvests, testing protocols, and delivery across India.
-          </motion.p>
+          />
         </div>
 
         {/* =========================================================================

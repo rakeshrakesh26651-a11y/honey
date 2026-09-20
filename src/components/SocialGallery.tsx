@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { AnimatedHeading } from './motion/AnimatedHeading';
+import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 import { InstagramIcon } from './Icons';
 
 interface AccordionItem {
@@ -102,15 +103,11 @@ export const SocialGallery: React.FC = () => {
             className="font-serif text-[34px] sm:text-[46px] md:text-[52px] font-semibold text-[#242424] leading-[1.08] tracking-[-0.015em]"
           />
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          <TextRevealOnScroll
+            text="Living moments from mountain kitchens, morning breakfast tables, and community honey rituals."
+            as="p"
             className="font-sans text-[16px] sm:text-[18px] md:text-[19px] font-normal text-[#686863] leading-[1.55]"
-          >
-            Living moments from mountain kitchens, morning breakfast tables, and community honey rituals.
-          </motion.p>
+          />
 
           <motion.div
             initial={{ opacity: 0, y: 15 }}

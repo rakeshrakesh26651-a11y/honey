@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 
 interface StorySectionProps {
   onNavigate?: (path: string) => void;
@@ -210,13 +211,17 @@ export const StorySection: React.FC<StorySectionProps> = ({ onNavigate }) => {
             </span>
           </div>
 
-          <h2 className="font-serif text-[36px] md:text-[48px] font-semibold text-[#242424] leading-[1.1] tracking-[-0.01em]">
-            FOUR GENERATIONS.<br className="hidden sm:inline" /> ONE TRADITION.
-          </h2>
+          <TextRevealOnScroll
+            text={'FOUR GENERATIONS.\nONE TRADITION.'}
+            as="h2"
+            className="font-serif text-[36px] md:text-[48px] font-semibold text-[#242424] leading-[1.1] tracking-[-0.01em]"
+          />
 
-          <p className="font-sans text-[17px] md:text-[19px] font-normal text-[#242424]/85 leading-[1.55]">
-            A honey harvesting tradition carried through four generations, bringing the sweetness of Himalayan honey from the high peaks to customers in Tamil Nadu and beyond.
-          </p>
+          <TextRevealOnScroll
+            text="A honey harvesting tradition carried through four generations, bringing the sweetness of Himalayan honey from the high peaks to customers in Tamil Nadu and beyond."
+            as="p"
+            className="font-sans text-[17px] md:text-[19px] font-normal text-[#242424]/85 leading-[1.55]"
+          />
 
           <p className="font-sans text-[15px] font-medium text-[#686863] italic">
             From the mountains to your table.

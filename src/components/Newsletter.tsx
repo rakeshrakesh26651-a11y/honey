@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 
 export const Newsletter: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -20,13 +21,17 @@ export const Newsletter: React.FC = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-[640px] mx-auto space-y-4"
         >
-          <h2 className="font-serif text-[32px] md:text-[48px] font-semibold text-[#F4F1EA] leading-[1.1] tracking-[-0.01em]">
-            Get the next harvest.
-          </h2>
+          <TextRevealOnScroll
+            text="Get the next harvest."
+            as="h2"
+            className="font-serif text-[32px] md:text-[48px] font-semibold text-[#F4F1EA] leading-[1.1] tracking-[-0.01em]"
+          />
 
-          <p className="font-sans text-[16px] font-normal text-[#D9D7D0] leading-[1.6] max-w-[520px] mx-auto">
-            Be the first to hear about new honey varieties, small mountain batches, and updates from Himalayan Harvest.
-          </p>
+          <TextRevealOnScroll
+            text="Be the first to hear about new honey varieties, small mountain batches, and updates from Himalayan Harvest."
+            as="p"
+            className="font-sans text-[16px] font-normal text-[#D9D7D0] leading-[1.6] max-w-[520px] mx-auto"
+          />
 
           {/* Form matching 326px input pill and 142px button pill */}
           <div className="pt-4">

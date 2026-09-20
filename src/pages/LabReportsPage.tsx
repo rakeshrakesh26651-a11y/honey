@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { LAB_REPORT } from '../data/himalayanHarvest';
 import { AnimatedHeading } from '../components/motion/AnimatedHeading';
+import { TextRevealOnScroll } from '../components/motion/TextRevealOnScroll';
 import { PageTransition } from '../components/motion/PageTransition';
 
 interface LabReportsPageProps {
@@ -46,14 +47,11 @@ export const LabReportsPage: React.FC<LabReportsPageProps> = ({ onNavigate }) =>
               className="font-serif text-[38px] sm:text-[52px] md:text-[60px] font-semibold text-[#242424] leading-[1.05] tracking-[-0.02em]"
             />
 
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.18 }}
+            <TextRevealOnScroll
+              text="Quality you can verify. Comprehensive chemical analysis performed by Tamilnadu Test House Private Limited under Indian Standard IS 4941:1994."
+              as="p"
               className="font-sans text-[17px] sm:text-[20px] text-[#242424]/85 leading-[1.55]"
-            >
-              Quality you can verify. Comprehensive chemical analysis performed by Tamilnadu Test House Private Limited under Indian Standard IS 4941:1994.
-            </motion.p>
+            />
           </div>
 
           {/* Certificate Metadata Card */}

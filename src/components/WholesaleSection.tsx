@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 import { openWhatsAppWholesale } from '../utils/whatsapp';
 
 export const WholesaleSection: React.FC = () => {
@@ -21,13 +22,17 @@ export const WholesaleSection: React.FC = () => {
             <span className="w-4 h-[1.5px] bg-[#DDAA55] inline-block" />
           </div>
 
-          <h2 className="font-serif text-[32px] md:text-[46px] font-semibold text-[#F4F1EA] leading-[1.1] tracking-[-0.01em]">
-            LOOKING FOR HONEY IN BULK?
-          </h2>
+          <TextRevealOnScroll
+            text="LOOKING FOR HONEY IN BULK?"
+            as="h2"
+            className="font-serif text-[32px] md:text-[46px] font-semibold text-[#F4F1EA] leading-[1.1] tracking-[-0.01em]"
+          />
 
-          <p className="font-sans text-[16px] md:text-[18px] font-normal text-[#D9D7D0] leading-[1.6] max-w-[500px] mx-auto">
-            For wholesale and bulk enquiries, contact Himalayan Harvest Honey directly.
-          </p>
+          <TextRevealOnScroll
+            text="For wholesale and bulk enquiries, contact Himalayan Harvest Honey directly."
+            as="p"
+            className="font-sans text-[16px] md:text-[18px] font-normal text-[#D9D7D0] leading-[1.6] max-w-[500px] mx-auto"
+          />
 
           <div className="pt-3">
             <button

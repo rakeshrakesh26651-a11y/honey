@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { BRAND_CONFIG } from '../data/himalayanHarvest';
 import { AnimatedHeading } from '../components/motion/AnimatedHeading';
+import { TextRevealOnScroll } from '../components/motion/TextRevealOnScroll';
 import { PageTransition } from '../components/motion/PageTransition';
 
 interface AboutPageProps {
@@ -46,14 +47,11 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               className="font-serif text-[38px] sm:text-[52px] md:text-[62px] font-semibold text-[#242424] leading-[1.05] tracking-[-0.02em]"
             />
 
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
+            <TextRevealOnScroll
+              text="A honey harvesting tradition carried through four generations, bringing the sweetness of Himalayan honey from the high peaks to homes in Tamil Nadu and beyond."
+              as="p"
               className="font-sans text-[17px] sm:text-[20px] text-[#242424]/85 leading-[1.6]"
-            >
-              A honey harvesting tradition carried through four generations, bringing the sweetness of Himalayan honey from the high peaks to homes in Tamil Nadu and beyond.
-            </motion.p>
+            />
           </div>
 
           {/* Two-Column Editorial Feature */}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion, PanInfo } from 'framer-motion';
+import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 import { TESTIMONIALS, Testimonial } from '../data/himalayanHarvest';
 
 export const Testimonials: React.FC = () => {
@@ -195,29 +196,17 @@ export const Testimonials: React.FC = () => {
             <span className="w-5 h-[1.5px] bg-[#C9892E] inline-block" />
           </motion.div>
 
-          <div className="overflow-hidden">
-            <motion.h2
-              initial={{ y: 40, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
-              className="font-serif text-[34px] sm:text-[46px] md:text-[54px] font-semibold text-[#242424] leading-[1.08] tracking-[-0.015em]"
-            >
-              WHAT OUR CUSTOMERS
-              <br />
-              SAY ABOUT US.
-            </motion.h2>
-          </div>
+          <TextRevealOnScroll
+            text={'WHAT OUR CUSTOMERS\nSAY ABOUT US.'}
+            as="h2"
+            className="font-serif text-[34px] sm:text-[46px] md:text-[54px] font-semibold text-[#242424] leading-[1.08] tracking-[-0.015em]"
+          />
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          <TextRevealOnScroll
+            text="Genuine reflections from families across South India embracing the unprocessed purity of high-altitude harvesting."
+            as="p"
             className="font-sans text-[15.5px] sm:text-[17.5px] md:text-[18.5px] font-normal text-[#686863] leading-[1.5] max-w-[620px] mx-auto pt-1"
-          >
-            Genuine reflections from families across South India embracing the unprocessed purity of high-altitude harvesting.
-          </motion.p>
+          />
         </div>
 
         {/* Cinematic Testimonial Showcase Stage */}

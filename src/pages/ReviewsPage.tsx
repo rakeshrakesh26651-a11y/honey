@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { TESTIMONIALS } from '../data/himalayanHarvest';
 import { CustomerAvatar } from '../components/CustomerAvatar';
 import { AnimatedHeading } from '../components/motion/AnimatedHeading';
+import { TextRevealOnScroll } from '../components/motion/TextRevealOnScroll';
 import { PageTransition } from '../components/motion/PageTransition';
 import { QuoteIcon } from '../components/Icons';
 
@@ -48,14 +49,11 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onNavigate }) => {
               className="font-serif text-[38px] sm:text-[52px] md:text-[60px] font-semibold text-[#242424] leading-[1.05] tracking-[-0.02em]"
             />
 
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.18 }}
+            <TextRevealOnScroll
+              text="Unfiltered reflections from our customers across Tamil Nadu, Karnataka, and beyond who treasure honest, raw high-altitude honey."
+              as="p"
               className="font-sans text-[17px] sm:text-[19px] text-[#242424]/85 leading-[1.55]"
-            >
-              Unfiltered reflections from our customers across Tamil Nadu, Karnataka, and beyond who treasure honest, raw high-altitude honey.
-            </motion.p>
+            />
           </div>
 
           {/* Testimonial Cards Grid */}

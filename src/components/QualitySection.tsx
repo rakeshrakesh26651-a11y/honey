@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CloseIcon } from './Icons';
 import { LAB_REPORT, QUALITY_CONTENT } from '../data/content';
+import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 
 export const QualitySection: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -139,13 +140,17 @@ export const QualitySection: React.FC = () => {
               </span>
             </div>
 
-            <h2 className="font-serif text-[36px] md:text-[48px] font-semibold text-[#242424] leading-[1.1] tracking-[-0.01em]">
-              {QUALITY_CONTENT.heading}
-            </h2>
+            <TextRevealOnScroll
+              text={QUALITY_CONTENT.heading}
+              as="h2"
+              className="font-serif text-[36px] md:text-[48px] font-semibold text-[#242424] leading-[1.1] tracking-[-0.01em]"
+            />
 
-            <p className="font-sans text-[17px] md:text-[19px] font-normal text-[#242424]/85 leading-[1.55]">
-              {QUALITY_CONTENT.body}
-            </p>
+            <TextRevealOnScroll
+              text={QUALITY_CONTENT.body}
+              as="p"
+              className="font-sans text-[17px] md:text-[19px] font-normal text-[#242424]/85 leading-[1.55]"
+            />
 
             {/* Verification Metadata Box */}
             <div className="w-full p-5 rounded-[16px] bg-white border border-[#D9D7D0] space-y-3 font-sans text-[14px] shadow-2xs">
