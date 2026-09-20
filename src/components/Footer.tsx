@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
@@ -7,9 +7,6 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
-
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     if (onNavigate && !path.startsWith('http') && !path.startsWith('tel:') && !path.startsWith('mailto:')) {
       e.preventDefault();
@@ -17,46 +14,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     }
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setIsSubscribed(true);
-    }
-  };
-
   return (
     <footer className="relative w-full bg-[#181816] text-[#FAF8F5] pt-8 sm:pt-12 pb-7 sm:pb-9 border-t border-white/10 select-none">
       <div className="max-w-[1180px] mx-auto px-5 sm:px-8 md:px-10">
         
-        {/* 1. TOP NEWSLETTER FORM (Integrated Pill Inputs) */}
-        <div className="w-full max-w-[480px] mx-auto mb-8 sm:mb-10">
-          {isSubscribed ? (
-            <div className="w-full h-[46px] rounded-full bg-[#FAF9F5] text-[#242424] font-sans font-medium text-[14.5px] flex items-center justify-center shadow-xs">
-              You're on the list! Welcome to Himalayan Harvest. 🍯
-            </div>
-          ) : (
-            <form onSubmit={handleNewsletterSubmit} className="flex flex-col gap-3">
-              <div className="w-full h-[46px] sm:h-[48px] px-5 rounded-full bg-[#FAF9F5] border border-transparent focus-within:border-[#C9892E] flex items-center shadow-xs">
-                <input
-                  type="email"
-                  required
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-transparent text-[#242424] font-sans text-[14.5px] sm:text-[15px] outline-none placeholder-[#686863]"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full h-[46px] sm:h-[48px] rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#242424] font-sans text-[14.5px] sm:text-[15px] font-bold transition-all transform active:scale-[0.98] shadow-sm cursor-pointer"
-              >
-                Join the list
-              </button>
-            </form>
-          )}
-        </div>
-
-        {/* 2. BRAND & CONTACT SECTION */}
+        {/* 1. BRAND & CONTACT SECTION */}
         <div className="space-y-4 max-w-[480px] sm:max-w-none">
           {/* Logo */}
           <div className="flex-shrink-0">

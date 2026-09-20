@@ -125,12 +125,12 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
         }}
       />
 
-      {/* Mobile/Tablet Overlay: Strong bottom-to-top / 70% dark scrim for high contrast readability */}
+      {/* Mobile/Tablet Overlay: Subtle warm charcoal gradient for clear background visibility & readable text */}
       <div
         className="absolute inset-0 pointer-events-none lg:hidden"
         style={{
           background:
-            'linear-gradient(180deg, rgba(18, 16, 14, 0.70) 0%, rgba(18, 16, 14, 0.65) 30%, rgba(18, 16, 14, 0.84) 75%, rgba(18, 16, 14, 0.95) 100%)',
+            'linear-gradient(180deg, rgba(18, 16, 14, 0.50) 0%, rgba(18, 16, 14, 0.30) 38%, rgba(18, 16, 14, 0.15) 65%, rgba(18, 16, 14, 0.45) 100%)',
         }}
       />
 
