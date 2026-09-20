@@ -94,7 +94,7 @@ export function App() {
 
   /**
    * Add to Cart handler:
-   * 1. Stores selected variant size (400g / 700g / 1000g)
+   * 1. Stores selected variant size (400g / 1000g)
    * 2. Different sizes of the same product remain separate line items
    * 3. CRITICAL: Navigates directly to full /cart page (NO DRAWER)
    */

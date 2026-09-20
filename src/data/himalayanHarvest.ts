@@ -5,7 +5,7 @@
  */
 
 export interface ProductVariant {
-  size: '400g' | '700g' | '1000g' | string;
+  size: '400g' | '1000g' | string;
   price: number;
 }
 
@@ -104,12 +104,13 @@ export const OFFERS: Offer[] = [
 ];
 
 /**
- * Complete Product Collection with 3 Selectable Size Variants:
- * 1. FOREST HONEY (Honey) — 400g (₹699), 700g (₹999), 1000g (₹1299)
- * 2. KOMBU HONEY (Honey) — 400g (₹799), 700g (₹1199), 1000g (₹1599)
- * 3. GULKAND HONEY (Honey) — 400g (₹699), 700g (₹999), 1000g (₹1299)
- * 4. KURINJI HONEY (Honey) — 400g (₹799), 700g (₹1199), 1000g (₹1599)
- * 5. GHEE (Ghee - separate category) — 400g (₹699), 700g (₹999), 1000g (₹1299)
+ * Product Collection with Calibrated Size Variants (400g & 1000g):
+ * 1. Forest Honey — 400g (₹399), 1000g (₹699)
+ * 2. Mountain Honey — 400g (₹449), 1000g (₹899)
+ * 3. Kombu Honey — 400g (₹499), 1000g (₹999)
+ * 4. Stingless Bee Honey — 400g (₹749), 1000g (₹1499)
+ * 5. Gulkand Honey — 400g (₹699), 1000g (₹1299)
+ * 6. Ghee — 400g (₹699), 1000g (₹1299)
  */
 export const MOUNTAIN_HONEY_PRODUCT: Product = {
   id: "mountain-honey",
@@ -117,18 +118,17 @@ export const MOUNTAIN_HONEY_PRODUCT: Product = {
   category: "Honey",
   subtitle: "High-Altitude • Raw Harvest",
   description: "Mountain honey harvested from high altitudes in a rich golden harvest.",
-  weight: "1000g",
-  price: 900,
+  weight: "400g",
+  price: 449,
   badge: "HARVEST SPECIAL",
-  offer: "1000g — ₹900",
+  offer: "₹449",
   image: "/images/product_mountain_nobg.png",
-  alt: "Mountain Honey 1000g pure high-altitude harvest",
+  alt: "Mountain Honey pure high-altitude harvest",
   slug: "mountain-honey",
   available: true,
   variants: [
-    { size: "400g", price: 699 },
-    { size: "700g", price: 999 },
-    { size: "1000g", price: 900 },
+    { size: "400g", price: 449 },
+    { size: "1000g", price: 899 },
   ],
 };
 
@@ -139,18 +139,17 @@ export const PRODUCTS: Product[] = [
     category: "Honey",
     subtitle: "Rich • Floral • Natural",
     description: "Natural wild forest honey harvested from native mountain flora.",
-    price: 699,
+    price: 399,
     weight: "400g",
     badge: "BEST SELLER",
-    offer: "₹699",
+    offer: "₹399",
     image: "/images/product_multifloral_nobg.png",
     alt: "Forest Honey pure natural harvest jar",
     slug: "forest-honey",
     available: true,
     variants: [
-      { size: "400g", price: 699 },
-      { size: "700g", price: 999 },
-      { size: "1000g", price: 1299 },
+      { size: "400g", price: 399 },
+      { size: "1000g", price: 699 },
     ],
   },
   {
@@ -159,18 +158,17 @@ export const PRODUCTS: Product[] = [
     category: "Honey",
     subtitle: "Rare • Comb • Natural",
     description: "Traditional small bee wild comb honey harvested through generations of harvesting practice.",
-    price: 799,
+    price: 499,
     weight: "400g",
     badge: "RARE",
-    offer: "₹799 ONLY",
+    offer: "₹499",
     image: "/images/product_wildflower_nobg.png",
     alt: "Kombu Honey pure mountain comb jar",
     slug: "kombu-honey",
     available: true,
     variants: [
-      { size: "400g", price: 799 },
-      { size: "700g", price: 1199 },
-      { size: "1000g", price: 1599 },
+      { size: "400g", price: 499 },
+      { size: "1000g", price: 999 },
     ],
   },
   {
@@ -189,28 +187,26 @@ export const PRODUCTS: Product[] = [
     available: true,
     variants: [
       { size: "400g", price: 699 },
-      { size: "700g", price: 999 },
       { size: "1000g", price: 1299 },
     ],
   },
   {
     id: "kurinji-honey",
-    name: "Kurinji Honey",
+    name: "Stingless Bee Honey",
     category: "Honey",
-    subtitle: "High-Altitude • Rare Bloom",
-    description: "Rare high-altitude honey harvested from blooming wild mountain kurinji flora.",
-    price: 799,
+    subtitle: "Rare • Comb • High-Altitude",
+    description: "Rare high-altitude honey harvested from blooming wild mountain flora and natural stingless bee combs.",
+    price: 749,
     weight: "400g",
     badge: "LIMITED HARVEST",
-    offer: "₹799 ONLY",
+    offer: "₹749",
     image: "/images/product_raw_reserve_nobg.png",
-    alt: "Kurinji Honey rare high-altitude reserve jar",
-    slug: "kurinji-honey",
+    alt: "Stingless Bee Honey rare high-altitude reserve jar",
+    slug: "stingless-bee-honey",
     available: true,
     variants: [
-      { size: "400g", price: 799 },
-      { size: "700g", price: 1199 },
-      { size: "1000g", price: 1599 },
+      { size: "400g", price: 749 },
+      { size: "1000g", price: 1499 },
     ],
   },
   {
@@ -229,7 +225,6 @@ export const PRODUCTS: Product[] = [
     available: true,
     variants: [
       { size: "400g", price: 699 },
-      { size: "700g", price: 999 },
       { size: "1000g", price: 1299 },
     ],
   },
@@ -406,14 +401,14 @@ export const FAQS: FaqItem[] = [
     id: 'faq-2',
     number: '02',
     question: 'What sizes are available?',
-    answer: 'Our raw honey and cultured ghee are available in three calibrated glass jars: 400g (daily trial / introductory jar), 700g (household favorite), and 1000g (1 kg bulk reserve jar). You can select your preferred size directly on any product card.',
+    answer: 'Our raw honey and cultured ghee are available in two calibrated glass jars: 400g (daily trial / introductory jar) and 1000g (1 kg bulk reserve jar). You can select your preferred size directly on any product card.',
     category: 'product',
   },
   {
     id: 'faq-3',
     number: '03',
     question: 'How do I place an order?',
-    answer: 'Simply choose your desired jar size (400g, 700g, or 1000g), click "Add to Cart", and proceed to checkout with our secure online Razorpay payment system (UPI, Cards, NetBanking). Alternatively, you can click "Order on WhatsApp" to place your order directly with our customer desk.',
+    answer: 'Simply choose your desired jar size (400g or 1000g), click "Add to Cart", and proceed to checkout with our secure online Razorpay payment system (UPI, Cards, NetBanking). Alternatively, you can click "Order on WhatsApp" to place your order directly with our customer desk.',
     category: 'ordering',
   },
   {

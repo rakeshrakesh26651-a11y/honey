@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion, PanInfo } from 'framer-motion';
 import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 import { TESTIMONIALS, Testimonial } from '../data/himalayanHarvest';
+import { CustomerFeedbackGallery } from './CustomerFeedbackGallery';
 
 export const Testimonials: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -152,7 +153,8 @@ export const Testimonials: React.FC = () => {
   };
 
   return (
-    <section
+    <>
+      <section
       id="reviews"
       ref={containerRef}
       onMouseMove={handleMouseMove}
@@ -580,12 +582,21 @@ export const Testimonials: React.FC = () => {
               </div>
 
               {/* Approved Customer Feedback Editorial Presentation */}
-              <div className="pt-6 sm:pt-8 border-t border-[#D9D7D0] space-y-4">
-                <p className="font-serif text-[20px] sm:text-[24px] md:text-[27px] font-normal italic text-[#242424] leading-[1.45] max-w-[760px] mx-auto">
-                  “Outstanding purity and authentic mountain aroma. You can genuinely taste the fresh high-altitude flora in every spoonful.”
+              <div className="pt-6 sm:pt-8 border-t border-[#D9D7D0] space-y-4 max-w-[760px] mx-auto text-left sm:text-center">
+                <p className="font-sans text-[16px] sm:text-[18px] text-[#242424] font-medium leading-[1.7]">
+                  இந்த Honey-யை வாங்கி பயன்படுத்தியதில் மிகவும் திருப்தியாக இருக்கிறது.
                 </p>
-                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-[#686863] leading-[1.65] max-w-[660px] mx-auto">
-                  For Kavitha, every morning begins with an authentic spoonful of pure mountain harvest. With its unheated crystalline texture and fresh high-altitude floral notes, Himalayan Harvest brings genuine forest purity directly to her family’s table.
+                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-[#555550] leading-[1.75]">
+                  Honey-யின் quality மிகவும் அருமையாக உள்ளது. சுவையும் இயற்கையானதாகவும், நல்ல மணத்துடனும் இருக்கிறது. வீட்டில் family-யில் அனைவருக்கும் மிகவும் பிடித்திருக்கிறது.
+                </p>
+                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-[#555550] leading-[1.75]">
+                  Honey-யை பார்க்கும்போதே நல்ல quality என்பதை உணர முடிகிறது. சுவை மிகவும் நன்றாக இருப்பதால் தினசரி பயன்படுத்துவதற்கும் சிறந்ததாக இருக்கிறது. குடும்பத்தில் அனைவரும் விரும்பி பயன்படுத்தக்கூடிய ஒரு நல்ல product.
+                </p>
+                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-[#555550] leading-[1.75]">
+                  Packaging மிகவும் neat-ஆகவும் பாதுகாப்பாகவும் இருந்தது. Product நல்ல condition-ல் கிடைத்தது. அதைவிட delivery மிகவும் வேகமாக இருந்தது. Order செய்த பிறகு எதிர்பார்த்ததைவிட சீக்கிரமாகவே delivery கிடைத்தது. Service-ம் மிகவும் திருப்தியாக இருந்தது.
+                </p>
+                <p className="font-sans text-[14.5px] sm:text-[15.5px] text-[#242424] font-medium leading-[1.75]">
+                  மொத்தத்தில் quality, taste, packaging, delivery அனைத்துமே மிகவும் சிறப்பாக இருந்தது. நல்ல தரமான Honey தேடுபவர்களுக்கு இந்த Honey-யை நிச்சயமாக recommend செய்வேன். மிகவும் அருமையான product. 🍯❤️⭐⭐⭐⭐⭐
                 </p>
               </div>
             </div>
@@ -593,5 +604,9 @@ export const Testimonials: React.FC = () => {
         </motion.div>
       </div>
     </section>
+
+    {/* Real WhatsApp Customer Feedback SwipeGallery Section */}
+    <CustomerFeedbackGallery />
+  </>
   );
 };

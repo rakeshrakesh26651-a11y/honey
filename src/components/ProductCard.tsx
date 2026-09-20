@@ -118,7 +118,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
               ? product.variants
               : [
                   { size: '400g', price: product.price },
-                  { size: '700g', price: Math.round(product.price * 1.4) },
                   { size: '1000g', price: Math.round(product.price * 1.8) },
                 ]
             ).map((variant) => {

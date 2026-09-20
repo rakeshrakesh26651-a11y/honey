@@ -15,7 +15,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onNavigate,
 }) => {
   const allProducts: Product[] = PRODUCTS;
-  const product = allProducts.find((p) => p.slug === slug) || PRODUCTS[0];
+  const product = allProducts.find((p) => p.slug === slug || (slug === 'kurinji-honey' && p.id === 'kurinji-honey')) || PRODUCTS[0];
 
   const [selectedSize, setSelectedSize] = useState<string>(
     product.variants && product.variants.length > 0 ? product.variants[0].size : '400g'
@@ -164,13 +164,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   </span>
                 </div>
 
-                {/* 1. Size Selector (400g / 700g / 1000g) */}
+                {/* 1. Size Selector (400g / 1000g) */}
                 <div className="space-y-2.5 mb-6">
                   <div className="flex items-center justify-between font-mono text-[12px]">
                     <span className="text-[#686863] uppercase tracking-wider font-medium">Select Size:</span>
                     <span className="text-[#242424] font-bold">{selectedSize} jar</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-3">
                     {product.variants.map((v) => {
                       const isSelected = selectedSize === v.size;
                       return (
