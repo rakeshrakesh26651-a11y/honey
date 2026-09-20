@@ -15,7 +15,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onNavigate,
 }) => {
   const allProducts: Product[] = PRODUCTS;
-  const product = allProducts.find((p) => p.slug === slug || (slug === 'kurinji-honey' && p.id === 'kurinji-honey')) || PRODUCTS[0];
+  const product = allProducts.find((p) => p.slug === slug || p.id === slug) || PRODUCTS[0];
 
   const [selectedSize, setSelectedSize] = useState<string>(
     product.variants && product.variants.length > 0 ? product.variants[0].size : '400g'

@@ -2,6 +2,226 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { CUSTOMER_FEEDBACK_ITEMS, CustomerFeedbackItem } from '../data/customerFeedback';
 
+interface CustomerVoiceNote {
+  id: string;
+  src: string;
+  title: string;
+  category: string;
+  defaultDuration: number;
+}
+
+const CUSTOMER_VOICE_NOTES: CustomerVoiceNote[] = [
+  {
+    id: 'voice-01',
+    src: '/audio/customer-voice-01.mp3',
+    title: 'Customer Voice Note 01',
+    category: 'CUSTOMER VOICE NOTE 01',
+    defaultDuration: 55,
+  },
+  {
+    id: 'voice-02',
+    src: '/audio/customer-voice-02.mp3',
+    title: 'Customer Voice Note 02',
+    category: 'CUSTOMER VOICE NOTE 02',
+    defaultDuration: 11,
+  },
+  {
+    id: 'voice-03',
+    src: '/audio/customer-voice-03.mp3',
+    title: 'Customer Voice Note 03',
+    category: 'CUSTOMER VOICE NOTE 03',
+    defaultDuration: 5,
+  },
+];
+
+const formatAudioTime = (seconds: number): string => {
+  if (!seconds || isNaN(seconds) || !isFinite(seconds)) return '0:00';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+};
+
+interface AudioPlayerCardProps {
+  note: CustomerVoiceNote;
+  isPlaying: boolean;
+  onPlay: () => void;
+  onPause: () => void;
+}
+
+const AudioPlayerCard: React.FC<AudioPlayerCardProps> = ({
+  note,
+  isPlaying,
+  onPlay,
+  onPause,
+}) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(note.defaultDuration);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.play().catch(() => {
+        onPause();
+      });
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying, onPause]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (
+      audioRef.current &&
+      isFinite(audioRef.current.duration) &&
+      audioRef.current.duration > 0
+    ) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleEnded = () => {
+    setCurrentTime(0);
+    onPause();
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+    }
+  };
+
+  const calculateSeekTime = (clientX: number) => {
+    if (!progressBarRef.current) return;
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const clickX = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const percentage = clickX / rect.width;
+    const targetDuration = duration > 0 ? duration : note.defaultDuration;
+    const newTime = percentage * targetDuration;
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
+    setCurrentTime(newTime);
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    calculateSeekTime(e.clientX);
+  };
+
+  const handleTouchSeek = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length > 0) {
+      calculateSeekTime(e.touches[0].clientX);
+    }
+  };
+
+  const progressPercent =
+    duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
+
+  return (
+    <div className="bg-white border border-[#D9D7D0] rounded-[20px] p-4 sm:p-5 shadow-2xs hover:shadow-xs transition-shadow duration-200 flex flex-col justify-between">
+      <audio
+        ref={audioRef}
+        src={note.src}
+        preload="metadata"
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onDurationChange={handleLoadedMetadata}
+        onEnded={handleEnded}
+      />
+
+      {/* Header: Tag + Mic Icon */}
+      <div className="flex items-center justify-between mb-2.5">
+        <span className="font-mono text-[10.5px] uppercase tracking-wider text-[#C9892E] font-semibold">
+          {note.category}
+        </span>
+        <div className="w-7 h-7 rounded-full bg-[#F4F1EA] flex items-center justify-center text-[#242424]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="w-3.5 h-3.5"
+          >
+            <path d="M12 2a4 4 0 0 0-4 4v6a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4Zm6.3 8a.75.75 0 0 0-1.5 0 4.8 4.8 0 0 1-9.6 0 .75.75 0 0 0-1.5 0 6.3 6.3 0 0 0 5.55 6.25v2.25h-2.5a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-2.5v-2.25A6.3 6.3 0 0 0 18.3 10Z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Title */}
+      <h4 className="font-sans text-[14px] sm:text-[15px] font-semibold text-[#242424] mb-3 line-clamp-1">
+        {note.title}
+      </h4>
+
+      {/* Player Controls: Play/Pause + Progress + Duration */}
+      <div className="flex items-center gap-3 pt-1">
+        <button
+          type="button"
+          onClick={isPlaying ? onPause : onPlay}
+          aria-label={isPlaying ? `Pause ${note.title}` : `Play ${note.title}`}
+          className="w-10 h-10 rounded-full bg-[#242424] hover:bg-[#C9892E] text-white flex items-center justify-center shrink-0 transition-colors duration-200 cursor-pointer shadow-xs active:scale-95"
+        >
+          {isPlaying ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-4 h-4 translate-x-0.5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          )}
+        </button>
+
+        <div className="flex-1 min-w-0">
+          <div
+            ref={progressBarRef}
+            onClick={handleSeek}
+            onTouchStart={handleTouchSeek}
+            onTouchMove={handleTouchSeek}
+            className="w-full h-2 bg-[#E5E3DC] rounded-full cursor-pointer relative overflow-hidden group"
+          >
+            <div
+              className="h-full bg-[#C9892E] rounded-full transition-all duration-100"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+
+          <div className="flex items-center justify-between mt-1.5 font-mono text-[11px] text-[#686863]">
+            <span>{formatAudioTime(currentTime)}</span>
+            <span>{formatAudioTime(duration)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface CustomerFeedbackGalleryProps {
   items?: CustomerFeedbackItem[];
   className?: string;
@@ -13,6 +233,7 @@ export const CustomerFeedbackGallery: React.FC<CustomerFeedbackGalleryProps> = (
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const isDraggingRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
@@ -368,6 +589,44 @@ export const CustomerFeedbackGallery: React.FC<CustomerFeedbackGalleryProps> = (
               <span className="text-[#686863] mx-1">/</span>
               <span className="text-[#686863]">{String(total).padStart(2, '0')}</span>
             </div>
+          </div>
+        </div>
+
+        {/* ====================================================
+            CUSTOMER VOICE NOTES / AUDIO FEEDBACK
+            Real WhatsApp Audio Recordings
+            ==================================================== */}
+        <div className="mt-12 sm:mt-16 pt-10 sm:pt-12 border-t border-[#D9D7D0] max-w-[1080px] mx-auto">
+          <div className="text-center mb-8 space-y-2">
+            <div className="flex items-center justify-center gap-2">
+              <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#C9892E] font-semibold">
+                AUTHENTIC VOICE NOTES
+              </span>
+              <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
+            </div>
+            <h3 className="font-serif text-[24px] sm:text-[30px] font-semibold text-[#242424] leading-tight">
+              Customer Audio Feedback
+            </h3>
+            <p className="font-sans text-[13.5px] sm:text-[14.5px] text-[#686863] max-w-[500px] mx-auto">
+              Listen to real voice feedback sent by customers on WhatsApp sharing their experience with our pure honey harvest.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+            {CUSTOMER_VOICE_NOTES.map((note) => (
+              <AudioPlayerCard
+                key={note.id}
+                note={note}
+                isPlaying={playingAudioId === note.id}
+                onPlay={() => setPlayingAudioId(note.id)}
+                onPause={() => {
+                  if (playingAudioId === note.id) {
+                    setPlayingAudioId(null);
+                  }
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>

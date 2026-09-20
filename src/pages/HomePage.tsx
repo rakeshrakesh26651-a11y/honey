@@ -25,11 +25,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       {/* 2. 4-Feature Strip */}
       <FeatureStrip />
 
-      {/* 3. Heritage Brand Storytelling: FOUR GENERATIONS. ONE TRADITION. */}
-      <StorySection onNavigate={onNavigate} />
-
-      {/* 4. Meet The Best Sellers with OLIO-Style Image Interaction */}
+      {/* 3. Meet The Best Sellers Focus Carousel */}
       <BestSellersSection onNavigate={onNavigate} />
+
+      {/* 4. Heritage Brand Storytelling: FOUR GENERATIONS. ONE TRADITION. */}
+      <StorySection onNavigate={onNavigate} />
 
       {/* 5. Customer Testimonials Carousel ("REAL PEOPLE. REAL RESULTS.") */}
       <Testimonials />

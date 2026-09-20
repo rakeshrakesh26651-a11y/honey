@@ -53,7 +53,7 @@ export const TermsAndConditions: React.FC<PolicyPageProps> = ({ onNavigateHome }
               1. About Our Website
             </h2>
             <p>
-              This website provides information about Himalayan Harvest Honey, our heritage, natural honey varieties, cultured ghee, lab testing certifications, and facilitates direct ordering.
+              This website provides information about Himalayan Harvest Honey, our heritage, natural honey varieties, lab testing certifications, and facilitates direct ordering.
             </p>
           </section>
 
@@ -63,7 +63,7 @@ export const TermsAndConditions: React.FC<PolicyPageProps> = ({ onNavigateHome }
               2. Products & Information
             </h2>
             <p>
-              We endeavor to describe and display our products, including honey and cultured ghee, as accurately as possible. Because our products are pure and naturally harvested, natural variations in aroma, color, texture, and crystallization may occur.
+              We endeavor to describe and display our products, including our natural honey varieties, as accurately as possible. Because our products are pure and naturally harvested, natural variations in aroma, color, texture, and crystallization may occur.
             </p>
           </section>
 

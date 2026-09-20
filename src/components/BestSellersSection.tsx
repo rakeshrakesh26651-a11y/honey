@@ -15,16 +15,16 @@ export interface BestSellerProduct {
   badge: string;
   alt: string;
   image: string;
-  objectPosition?: string;
+  subtitle: string;
+  description: string;
 }
 
 /**
- * 5 existing products with exact names, images, and prices:
- * 1. Forest Honey (₹699)
- * 2. Kombu Honey (₹799)
- * 3. Gulkand Honey (₹699)
- * 4. Kurinji Honey (₹799)
- * 5. Ghee (₹699)
+ * Exactly 4 products kept per customer voice-note instructions:
+ * 1. Forest Honey (₹399)
+ * 2. Mountain Honey (₹449)
+ * 3. Kombu Honey (₹499)
+ * 4. Stingless Bee Honey (₹749)
  */
 export const BEST_SELLERS: BestSellerProduct[] = [
   {
@@ -34,9 +34,22 @@ export const BEST_SELLERS: BestSellerProduct[] = [
     price: 399,
     category: 'WILD MOUNTAIN FLORA',
     badge: 'BEST SELLER',
-    alt: 'Forest Honey pure harvest with honeycomb and honey dipper',
-    image: '/images/forest_honey_best.jpg',
-    objectPosition: 'center 35%',
+    alt: 'Forest Honey pure natural harvest glass jar',
+    image: '/images/product_multifloral_nobg.png',
+    subtitle: 'Raw • Unheated • Pollen-Preserved',
+    description: 'Suitable for daily use, this raw forest honey is minimally processed, unheated, pollen-preserved, and cloth-filtered. Customer describes it as an ideal natural alternative to sugar in foods and snacks.',
+  },
+  {
+    id: 'mountain-honey',
+    name: 'Mountain Honey',
+    slug: 'mountain-honey',
+    price: 449,
+    category: 'HIGH-ALTITUDE FLORA',
+    badge: 'HARVEST SPECIAL',
+    alt: 'Mountain Honey pure high-altitude harvest glass jar',
+    image: '/images/product_mountain_nobg.png',
+    subtitle: 'High-Altitude • Raw Harvest',
+    description: 'Harvested from high-altitude flora and suitable for daily use. Customer describes it as traditionally valued for supporting natural digestion and healthy weight-management routines.',
   },
   {
     id: 'kombu-honey',
@@ -44,43 +57,23 @@ export const BEST_SELLERS: BestSellerProduct[] = [
     slug: 'kombu-honey',
     price: 499,
     category: 'SMALL BEE WILD COMB',
-    badge: 'RARE',
-    alt: 'Kombu Honey wild comb harvest in glass jar with dipper',
-    image: '/images/kombu_honey_best.jpg',
-    objectPosition: 'center center',
+    badge: 'RARE HARVEST',
+    alt: 'Kombu Honey pure mountain comb glass jar',
+    image: '/images/product_wildflower_nobg.png',
+    subtitle: 'Small Bee • Wild Comb • Pure',
+    description: 'Traditional small bee wild comb honey harvested through generations of harvesting practice. 100% pure, raw, and unpasteurized from high-altitude wild combs.',
   },
   {
-    id: 'gulkand-honey',
-    name: 'Gulkand Honey',
-    slug: 'gulkand-honey',
-    price: 699,
-    category: 'ROSE PETAL BLEND',
-    badge: 'ARTISANAL',
-    alt: 'Gulkand Honey natural blend in golden bowl with dipper',
-    image: '/images/gulkand_honey_best.jpg',
-    objectPosition: 'center 45%',
-  },
-  {
-    id: 'kurinji-honey',
+    id: 'stingless-bee-honey',
     name: 'Stingless Bee Honey',
     slug: 'stingless-bee-honey',
     price: 749,
-    category: 'RARE MOUNTAIN BLOOM',
+    category: 'RARE MOUNTAIN COMB',
     badge: 'LIMITED HARVEST',
-    alt: 'Stingless Bee Honey rare high-altitude reserve jar',
-    image: '/images/product_raw_reserve.jpg',
-    objectPosition: 'center center',
-  },
-  {
-    id: 'ghee',
-    name: 'Ghee',
-    slug: 'ghee',
-    price: 699,
-    category: 'TRADITIONAL ARTISANAL',
-    badge: 'CULTURED GHEE',
-    alt: 'Traditional artisanal cultured ghee jar',
-    image: '/images/product_ghee.jpg',
-    objectPosition: 'center center',
+    alt: 'Stingless Bee Honey rare high-altitude reserve glass jar',
+    image: '/images/product_raw_reserve_nobg.png',
+    subtitle: 'Rare • Comb • High Nutritional Value',
+    description: 'Customer describes this rare, premium honey as possessing high nutritional value and traditionally valued for time-honored medicinal use.',
   },
 ];
 
@@ -106,7 +99,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
 
-  // Navigate directly to /shop (do NOT open product detail page)
+  // Navigate to /shop
   const handleViewProduct = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (onNavigate) {
@@ -142,7 +135,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
   const springConfig = {
     type: 'spring' as const,
     stiffness: 300,
-    damping: 32,
+    damping: 30,
     mass: 0.8,
   };
 
@@ -161,7 +154,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
           <div className="space-y-1.5 md:space-y-2 text-left">
             <div className="flex items-center gap-2">
               <span className="w-4 h-[1.5px] bg-[#C9892E] inline-block" />
-              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#242424] font-medium">
+              <span className="font-mono text-[11px] sm:text-[12px] uppercase tracking-[0.14em] text-[#242424] font-semibold">
                 THE LINEUP
               </span>
             </div>
@@ -192,7 +185,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
         {/* =========================================================================
             PRODUCT FOCUS CAROUSEL CONTAINER (Centered Active Card + Partial Side Cards)
             ========================================================================= */}
-        <div className="relative w-full h-[440px] xs:h-[460px] sm:h-[490px] md:h-[540px] flex items-center justify-center overflow-hidden touch-pan-y">
+        <div className="relative w-full h-[490px] xs:h-[510px] sm:h-[540px] md:h-[580px] flex items-center justify-center overflow-hidden touch-pan-y">
           {/* Left Circular Navigation Arrow */}
           <button
             type="button"
@@ -239,7 +232,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
               // Wrapped relative difference in range [-2, 2]
               let diff = index - activeIndex;
               while (diff > total / 2) diff -= total;
-              while (diff < -total / 2) diff += total;
+              while (diff <= -total / 2) diff += total;
 
               const isActive = diff === 0;
               const isPrev = diff === -1;
@@ -250,31 +243,34 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
               let targetX = 0;
               let targetScale = 1;
               let targetOpacity = 1;
-              let targetZIndex = 20;
-              let shadow = '0 25px 50px -12px rgba(36, 36, 36, 0.28)';
+              let targetZIndex = 25;
+              let shadow = '0 24px 48px -12px rgba(36, 36, 36, 0.22), 0 8px 16px -4px rgba(36, 36, 36, 0.08)';
 
               if (diff === 0) {
+                // Active Card: Center, elevated, forward depth
                 targetX = 0;
                 targetScale = 1;
                 targetOpacity = 1;
-                targetZIndex = 20;
-                shadow = '0 25px 50px -12px rgba(36, 36, 36, 0.28)';
+                targetZIndex = 25;
+                shadow = '0 24px 48px -12px rgba(36, 36, 36, 0.22), 0 8px 16px -4px rgba(36, 36, 36, 0.08)';
               } else if (diff === 1) {
-                targetX = isMobile ? 245 : 360;
-                targetScale = isMobile ? 0.72 : 0.76;
-                targetOpacity = isMobile ? 0.6 : 0.65;
+                // Next Card (Right side): partially peeking so the bottle is visible
+                targetX = isMobile ? 230 : 350;
+                targetScale = isMobile ? 0.78 : 0.82;
+                targetOpacity = isMobile ? 0.55 : 0.65;
                 targetZIndex = 10;
-                shadow = '0 10px 30px -10px rgba(36, 36, 36, 0.15)';
+                shadow = '0 8px 20px -6px rgba(36, 36, 36, 0.10)';
               } else if (diff === -1) {
-                targetX = isMobile ? -245 : -360;
-                targetScale = isMobile ? 0.72 : 0.76;
-                targetOpacity = isMobile ? 0.6 : 0.65;
+                // Prev Card (Left side): partially peeking so the bottle is visible
+                targetX = isMobile ? -230 : -350;
+                targetScale = isMobile ? 0.78 : 0.82;
+                targetOpacity = isMobile ? 0.55 : 0.65;
                 targetZIndex = 10;
-                shadow = '0 10px 30px -10px rgba(36, 36, 36, 0.15)';
+                shadow = '0 8px 20px -6px rgba(36, 36, 36, 0.10)';
               } else {
-                // diff === 2 or -2
-                targetX = diff > 0 ? (isMobile ? 500 : 750) : (isMobile ? -500 : -750);
-                targetScale = isMobile ? 0.5 : 0.55;
+                // Opposite Card (diff === 2 or -2): hidden behind
+                targetX = diff > 0 ? (isMobile ? 480 : 700) : (isMobile ? -480 : -700);
+                targetScale = 0.5;
                 targetOpacity = 0;
                 targetZIndex = 1;
                 shadow = 'none';
@@ -285,12 +281,12 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
                   key={product.id}
                   drag={isActive ? 'x' : false}
                   dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.2}
+                  dragElastic={0.22}
                   onDragEnd={(_, info) => {
-                    const swipeThreshold = 40;
-                    if (info.offset.x < -swipeThreshold || info.velocity.x < -250) {
+                    const swipeThreshold = 30;
+                    if (info.offset.x < -swipeThreshold || info.velocity.x < -180) {
                       handleNext();
-                    } else if (info.offset.x > swipeThreshold || info.velocity.x > 250) {
+                    } else if (info.offset.x > swipeThreshold || info.velocity.x > 180) {
                       handlePrev();
                     }
                   }}
@@ -309,58 +305,70 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
                     boxShadow: shadow,
                     willChange: 'transform, opacity',
                   }}
-                  className={`absolute w-[78vw] max-w-[310px] xs:max-w-[325px] sm:max-w-[350px] md:max-w-[380px] h-[390px] xs:h-[410px] sm:h-[450px] md:h-[490px] rounded-[20px] sm:rounded-[24px] overflow-hidden bg-[#FAF8F5] cursor-pointer ${
+                  className={`absolute w-[78vw] max-w-[310px] xs:max-w-[325px] sm:max-w-[360px] md:max-w-[380px] h-[450px] xs:h-[470px] sm:h-[500px] md:h-[530px] rounded-[24px] sm:rounded-[28px] overflow-hidden bg-[#FAF8F5] border border-[#E2DDD3] cursor-pointer ${
                     !isVisible ? 'pointer-events-none' : ''
                   }`}
                 >
-                  <div className="relative w-full h-full">
-                    {/* Full Bleed Image */}
-                    <img
-                      src={product.image}
-                      alt={product.alt}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-                      style={{
-                        objectPosition: product.objectPosition || 'center center',
-                      }}
-                    />
-
-                    {/* Dark Scrim Overlay for clear text legibility */}
+                  <div className="relative w-full h-full flex flex-col justify-between p-5 sm:p-6 md:p-7">
+                    {/* Subtle warm pedestal backdrop lighting */}
                     <div
-                      className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none"
+                      className="absolute -top-10 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#C9892E]/8 rounded-full blur-3xl pointer-events-none"
                       aria-hidden="true"
                     />
 
-                    {/* Bottom Card Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 md:p-7 flex flex-col gap-2 z-10">
-                      {/* Category & Badge */}
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10.5px] sm:text-[11.5px] uppercase tracking-[0.14em] text-white/85 font-medium">
-                          {product.category}
-                        </span>
-                        <span className="w-1 h-1 rounded-full bg-[#C9892E]" />
-                        <span className="font-sans text-[13.5px] sm:text-[14px] font-bold text-[#EADDC7]">
-                          ₹{product.price}
-                        </span>
+                    {/* Top Row: Category & Origin Pill Badge */}
+                    <div className="flex items-center justify-between gap-2 z-10">
+                      <span className="font-mono text-[10.5px] sm:text-[11px] uppercase tracking-[0.14em] text-[#8C827A] font-semibold truncate">
+                        {product.category}
+                      </span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#242424] text-[#FAF9F5] font-mono text-[9.5px] sm:text-[10px] font-bold tracking-wider uppercase shrink-0 shadow-xs">
+                        {product.badge}
+                      </span>
+                    </div>
+
+                    {/* HERO PRODUCT BOTTLE — Prominently FIRST on each slide */}
+                    <div className="relative flex-1 w-full min-h-[190px] xs:min-h-[210px] sm:min-h-[230px] md:min-h-[250px] flex items-center justify-center my-2 sm:my-3 select-none">
+                      <img
+                        src={product.image}
+                        alt={product.alt}
+                        loading="lazy"
+                        className="max-h-[180px] xs:max-h-[200px] sm:max-h-[230px] md:max-h-[250px] w-auto max-w-[85%] object-contain drop-shadow-[0_16px_22px_rgba(36,36,36,0.18)] transition-transform duration-500 hover:scale-105 select-none pointer-events-none"
+                      />
+                    </div>
+
+                    {/* Product Name & Details Follow Below the Bottle */}
+                    <div className="flex flex-col gap-1.5 sm:gap-2 z-10 pt-2 border-t border-[#EAE6DE]">
+                      {/* Name & Price Row */}
+                      <div className="flex items-baseline justify-between gap-2">
+                        <h3 className="font-serif text-[20px] xs:text-[22px] sm:text-[25px] font-semibold text-[#242424] leading-tight tracking-[-0.01em]">
+                          {product.name}
+                        </h3>
+                        <div className="text-right whitespace-nowrap shrink-0">
+                          <span className="text-[12px] font-medium text-[#242424] mr-0.5">₹</span>
+                          <span className="font-sans font-bold text-[19px] sm:text-[21px] text-[#242424] tracking-tight">
+                            {product.price}
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Product Name */}
-                      <h3 className="font-serif text-[22px] xs:text-[24px] sm:text-[28px] md:text-[30px] font-semibold text-white leading-tight tracking-[-0.01em]">
-                        {product.name}
-                      </h3>
+                      {/* Voice-Note Information Description */}
+                      <p className="font-sans text-[12px] sm:text-[12.5px] text-[#686863] leading-[1.45] line-clamp-2 text-left">
+                        {product.description}
+                      </p>
 
-                      {/* VIEW PRODUCT Button (Navigates directly to /shop) */}
-                      {isActive && (
-                        <div className="pt-2">
-                          <button
-                            type="button"
-                            onClick={handleViewProduct}
-                            className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-white hover:bg-[#FAF8F5] text-[#242424] font-sans text-[13px] sm:text-[14px] font-semibold tracking-[-0.01em] shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer w-fit inline-block"
-                          >
-                            View Product
-                          </button>
-                        </div>
-                      )}
+                      {/* View Product CTA / Available Sizes */}
+                      <div className="pt-2 flex items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          onClick={handleViewProduct}
+                          className="flex-1 py-2.5 sm:py-3 px-4 rounded-full bg-[#242424] hover:bg-[#C9892E] text-[#FAF9F5] font-sans text-[12.5px] sm:text-[13px] font-semibold tracking-wide transition-colors duration-200 cursor-pointer text-center shadow-xs"
+                        >
+                          View In Shop
+                        </button>
+                        <span className="font-mono text-[10.5px] sm:text-[11px] text-[#8C827A] whitespace-nowrap font-medium">
+                          400g • 1000g
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>

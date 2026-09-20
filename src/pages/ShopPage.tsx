@@ -13,10 +13,10 @@ interface ShopPageProps {
 export const ShopPage: React.FC<ShopPageProps> = ({ onAddToCart, onNavigate }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
-  // Full catalogue with all 6 products
+  // Full catalogue with all 4 authentic honey products
   const allProducts: Product[] = PRODUCTS;
 
-  const categories = ['All', 'Honey', 'Ghee'];
+  const categories = ['All', 'Honey'];
 
   const filteredProducts = activeCategory === 'All'
     ? allProducts
@@ -65,7 +65,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({ onAddToCart, onNavigate }) =
               transition={{ duration: 0.7, delay: 0.2 }}
               className="font-sans text-[16px] sm:text-[18px] md:text-[19px] text-[#686863] leading-[1.55]"
             >
-              Pure, unpasteurized high-altitude wild honeys and traditional cultured ghee crafted with the dedication of four generations of harvesting.
+              Pure, unpasteurized high-altitude wild honeys crafted with the dedication of four generations of harvesting.
             </motion.p>
 
             {/* Category Filter Pills */}

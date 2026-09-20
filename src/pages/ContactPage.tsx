@@ -150,7 +150,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
               Looking to supply retail stores, hotels, or corporate gifting?
             </h3>
             <p className="font-sans text-[15px] text-[#242424]/85 max-w-[640px] mx-auto leading-[1.6]">
-              We supply custom batches of laboratory-certified wild honey and artisanal cultured ghee in calibrated bulk pack sizes with specialized labeling options.
+              We supply custom batches of laboratory-certified wild honey in calibrated bulk pack sizes with specialized labeling options.
             </p>
             <div className="pt-2">
               <a

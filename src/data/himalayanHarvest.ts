@@ -12,7 +12,7 @@ export interface ProductVariant {
 export interface Product {
   id: string;
   name: string;
-  category: 'Honey' | 'Ghee' | string;
+  category: 'Honey' | string;
   description: string;
   subtitle?: string;
   image: string;
@@ -109,15 +109,13 @@ export const OFFERS: Offer[] = [
  * 2. Mountain Honey — 400g (₹449), 1000g (₹899)
  * 3. Kombu Honey — 400g (₹499), 1000g (₹999)
  * 4. Stingless Bee Honey — 400g (₹749), 1000g (₹1499)
- * 5. Gulkand Honey — 400g (₹699), 1000g (₹1299)
- * 6. Ghee — 400g (₹699), 1000g (₹1299)
  */
 export const MOUNTAIN_HONEY_PRODUCT: Product = {
   id: "mountain-honey",
   name: "Mountain Honey",
   category: "Honey",
   subtitle: "High-Altitude • Raw Harvest",
-  description: "Mountain honey harvested from high altitudes in a rich golden harvest.",
+  description: "Harvested from high-altitude flora and suitable for daily use. Customer describes it as traditionally valued for supporting natural digestion and healthy weight-management routines.",
   weight: "400g",
   price: 449,
   badge: "HARVEST SPECIAL",
@@ -137,8 +135,8 @@ export const PRODUCTS: Product[] = [
     id: "forest-honey",
     name: "Forest Honey",
     category: "Honey",
-    subtitle: "Rich • Floral • Natural",
-    description: "Natural wild forest honey harvested from native mountain flora.",
+    subtitle: "Raw • Unheated • Pollen-Preserved",
+    description: "Suitable for daily use, this raw forest honey is minimally processed, unheated, pollen-preserved, and cloth-filtered. Customer describes it as an ideal natural alternative to sugar in foods and snacks.",
     price: 399,
     weight: "400g",
     badge: "BEST SELLER",
@@ -152,11 +150,12 @@ export const PRODUCTS: Product[] = [
       { size: "1000g", price: 699 },
     ],
   },
+  MOUNTAIN_HONEY_PRODUCT,
   {
     id: "kombu-honey",
     name: "Kombu Honey",
     category: "Honey",
-    subtitle: "Rare • Comb • Natural",
+    subtitle: "Small Bee • Wild Comb • Pure",
     description: "Traditional small bee wild comb honey harvested through generations of harvesting practice.",
     price: 499,
     weight: "400g",
@@ -172,30 +171,11 @@ export const PRODUCTS: Product[] = [
     ],
   },
   {
-    id: "gulkand-honey",
-    name: "Gulkand Honey",
-    category: "Honey",
-    subtitle: "Rose Petal • Natural Blend",
-    description: "Pure natural honey blended with traditional gulkand prepared from aromatic rose petals.",
-    price: 699,
-    weight: "400g",
-    badge: "ARTISANAL",
-    offer: "₹699",
-    image: "/images/product_gulkand_nobg.png",
-    alt: "Gulkand Honey jar with rose petal preserve",
-    slug: "gulkand-honey",
-    available: true,
-    variants: [
-      { size: "400g", price: 699 },
-      { size: "1000g", price: 1299 },
-    ],
-  },
-  {
-    id: "kurinji-honey",
+    id: "stingless-bee-honey",
     name: "Stingless Bee Honey",
     category: "Honey",
-    subtitle: "Rare • Comb • High-Altitude",
-    description: "Rare high-altitude honey harvested from blooming wild mountain flora and natural stingless bee combs.",
+    subtitle: "Rare • Comb • High Nutritional Value",
+    description: "Customer describes this rare, premium honey as possessing high nutritional value and traditionally valued for time-honored medicinal use.",
     price: 749,
     weight: "400g",
     badge: "LIMITED HARVEST",
@@ -209,26 +189,6 @@ export const PRODUCTS: Product[] = [
       { size: "1000g", price: 1499 },
     ],
   },
-  {
-    id: "ghee",
-    name: "Ghee",
-    category: "Ghee",
-    subtitle: "Cultured • Traditional Artisanal",
-    description: "Traditional artisanal cultured ghee crafted using time-honored methods.",
-    price: 699,
-    weight: "400g",
-    badge: "TRADITIONAL",
-    offer: "ARTISANAL",
-    image: "/images/product_ghee_nobg.png",
-    alt: "Traditional artisanal cultured ghee jar",
-    slug: "ghee",
-    available: true,
-    variants: [
-      { size: "400g", price: 699 },
-      { size: "1000g", price: 1299 },
-    ],
-  },
-  MOUNTAIN_HONEY_PRODUCT,
 ];
 
 export const ALL_PRODUCTS: Product[] = PRODUCTS;
@@ -401,7 +361,7 @@ export const FAQS: FaqItem[] = [
     id: 'faq-2',
     number: '02',
     question: 'What sizes are available?',
-    answer: 'Our raw honey and cultured ghee are available in two calibrated glass jars: 400g (daily trial / introductory jar) and 1000g (1 kg bulk reserve jar). You can select your preferred size directly on any product card.',
+    answer: 'Our raw honey is available in two calibrated glass jars: 400g (daily trial / introductory jar) and 1000g (1 kg bulk reserve jar). You can select your preferred size directly on any product card.',
     category: 'product',
   },
   {
@@ -443,7 +403,7 @@ export const FAQS: FaqItem[] = [
     id: 'faq-8',
     number: '08',
     question: 'Can I return an opened honey bottle?',
-    answer: 'Because honey and ghee are consumable food items, opened bottles with broken tamper-evident seals cannot be returned in compliance with FSSAI health and safety standards.',
+    answer: 'Because honey is a consumable food item, opened bottles with broken tamper-evident seals cannot be returned in compliance with FSSAI health and safety standards.',
     category: 'quality',
   },
   {

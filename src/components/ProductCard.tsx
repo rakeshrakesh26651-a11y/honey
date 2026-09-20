@@ -44,7 +44,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, 
   };
 
   // Badge text matching BeeFresh pill style (e.g. Natural Harvest, Raw Reserve, etc.)
-  const badgeText = product.badge || (product.category === 'Ghee' ? 'Cultured Artisanal' : 'Pure Raw Honey');
+  const badgeText = product.badge || 'Pure Raw Honey';
 
   return (
     <div className="group flex flex-col justify-between w-full h-full bg-[#FAF9F5] rounded-[24px] sm:rounded-[28px] border border-[#D9D7D0] p-5 sm:p-6 shadow-[0_4px_24px_rgba(36, 36, 36,0.03)] hover:shadow-[0_12px_36px_rgba(36, 36, 36,0.07)] hover:border-[#C9892E]/40 transition-all duration-300">
