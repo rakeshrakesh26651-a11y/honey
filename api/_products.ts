@@ -15,54 +15,36 @@ export const SERVER_PRODUCT_CATALOG: Record<string, ProductCatalogEntry> = {
     id: 'forest-honey',
     name: 'Forest Honey',
     variants: {
-      '400g': 699,
-      '700g': 999,
-      '1000g': 1299,
-    },
-  },
-  'kombu-honey': {
-    id: 'kombu-honey',
-    name: 'Kombu Honey',
-    variants: {
-      '400g': 799,
-      '700g': 1199,
-      '1000g': 1599,
-    },
-  },
-  'gulkand-honey': {
-    id: 'gulkand-honey',
-    name: 'Gulkand Honey',
-    variants: {
-      '400g': 699,
-      '700g': 999,
-      '1000g': 1299,
-    },
-  },
-  'kurinji-honey': {
-    id: 'kurinji-honey',
-    name: 'Kurinji Honey',
-    variants: {
-      '400g': 799,
-      '700g': 1199,
-      '1000g': 1599,
-    },
-  },
-  'ghee': {
-    id: 'ghee',
-    name: 'Ghee',
-    variants: {
-      '400g': 699,
-      '700g': 999,
-      '1000g': 1299,
+      '400g': 399,
+      '1kg': 699,
+      '1000g': 699,
     },
   },
   'mountain-honey': {
     id: 'mountain-honey',
     name: 'Mountain Honey',
     variants: {
-      '400g': 699,
-      '700g': 999,
-      '1000g': 900,
+      '400g': 449,
+      '1kg': 899,
+      '1000g': 899,
+    },
+  },
+  'kombu-honey': {
+    id: 'kombu-honey',
+    name: 'Kombu Honey',
+    variants: {
+      '400g': 499,
+      '1kg': 999,
+      '1000g': 999,
+    },
+  },
+  'stingless-bee-honey': {
+    id: 'stingless-bee-honey',
+    name: 'Stingless Bee Honey',
+    variants: {
+      '400g': 749,
+      '1kg': 1499,
+      '1000g': 1499,
     },
   },
 };

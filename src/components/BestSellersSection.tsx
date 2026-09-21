@@ -109,9 +109,9 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
 
-  const handleViewProduct = (e: React.MouseEvent, slug?: string) => {
+  const handleViewProduct = (e: React.MouseEvent, _slug?: string) => {
     e.stopPropagation();
-    const dest = slug ? `/product/${slug}` : '/shop';
+    const dest = '/shop';
     if (onNavigate) {
       onNavigate(dest);
     } else if (typeof window !== 'undefined') {

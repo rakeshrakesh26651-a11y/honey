@@ -5,8 +5,43 @@
  */
 
 export interface ProductVariant {
-  size: '400g' | '1000g' | string;
+  size: '400g' | '1kg' | '1000g' | string;
+  weight: string;
   price: number;
+  image: string;
+  hasDistinctAsset: boolean;
+}
+
+export interface ProductCharacteristics {
+  aroma?: string;
+  tasteNote?: string;
+  sweetness?: string;
+  texture?: string;
+}
+
+export interface ProductAccordions {
+  description?: string[];
+  productDetails?: {
+    ingredients?: string;
+    packaging?: string;
+    storage?: string;
+    shelfLife?: string;
+  };
+  traditionalUse?: string[];
+  harvestingAndSource?: string[];
+  qualityLabReport?: {
+    note: string;
+    reportNumber: string;
+    reportDate: string;
+    facility: string;
+    standard: string;
+    testedSampleNote: string;
+    highlights: { parameter: string; result: string; requirement: string }[];
+  };
+  returnsAndExchange?: {
+    summary: string;
+    link: string;
+  };
 }
 
 export interface Product {
@@ -25,6 +60,9 @@ export interface Product {
   badge?: string;
   available: boolean;
   variants: ProductVariant[];
+  galleryImages?: string[];
+  characteristics?: ProductCharacteristics;
+  accordions?: ProductAccordions;
   whatsappMessage?: string;
 }
 
@@ -104,90 +142,333 @@ export const OFFERS: Offer[] = [
 ];
 
 /**
- * Product Collection with Calibrated Size Variants (400g & 1000g):
- * 1. Forest Honey — 400g (₹399), 1000g (₹699)
- * 2. Mountain Honey — 400g (₹449), 1000g (₹899)
- * 3. Kombu Honey — 400g (₹499), 1000g (₹999)
- * 4. Stingless Bee Honey — 400g (₹749), 1000g (₹1499)
+ * Product Collection with Calibrated Size Variants (400g & 1kg):
+ * 1. Forest Honey — 400g (₹399), 1kg (₹699)
+ * 2. Mountain Honey — 400g (₹449), 1kg (₹899)
+ * 3. Kombu Honey — 400g (₹499), 1kg (₹999)
+ * 4. Stingless Bee Honey — 400g (₹749), 1kg (₹1499)
+ *
+ * Real authentic 400g transparent bottle assets are mapped.
+ * The data architecture is structured with `hasDistinctAsset` ready for future 1kg assets.
  */
 export const MOUNTAIN_HONEY_PRODUCT: Product = {
   id: "mountain-honey",
   name: "Mountain Honey",
-  category: "Honey",
+  category: "High-Altitude Flora",
   subtitle: "High-Altitude • Raw Harvest",
   description: "Harvested from high-altitude flora and suitable for daily use. Customer describes it as traditionally valued for supporting natural digestion and healthy weight-management routines.",
   weight: "400g",
   price: 449,
   badge: "HARVEST SPECIAL",
-  offer: "₹449",
   image: "/images/product_mountain_nobg.png",
   alt: "Mountain Honey pure high-altitude harvest",
   slug: "mountain-honey",
   available: true,
   variants: [
-    { size: "400g", price: 449 },
-    { size: "1000g", price: 899 },
+    {
+      size: "400g",
+      weight: "400g",
+      price: 449,
+      image: "/images/product_mountain_nobg.png",
+      hasDistinctAsset: true,
+    },
+    {
+      size: "1kg",
+      weight: "1kg",
+      price: 899,
+      image: "/images/product_mountain_nobg.png",
+      hasDistinctAsset: false,
+    },
   ],
+  galleryImages: [
+    "/images/product_mountain_nobg.png",
+    "/images/hero_honey_jar.jpg",
+  ],
+  characteristics: {
+    aroma: "Crisp high-altitude botanical nectar",
+    tasteNote: "Clean, vibrant floral finish with gentle complexity",
+    sweetness: "Delicate, refreshing natural sweetness",
+    texture: "Silky amber liquid consistency",
+  },
+  accordions: {
+    description: [
+      "Harvested from wild flora growing across high mountain altitudes.",
+      "Suitable for daily use, this raw honey is unheated and minimally filtered to preserve natural bee pollen and enzymes.",
+      "Customer describes it as traditionally valued for supporting natural digestion and healthy weight-management routines."
+    ],
+    productDetails: {
+      ingredients: "100% Pure Raw Mountain Honey",
+      packaging: "Food-Grade Glass Jar",
+      storage: "Store at room temperature away from direct sunlight. Do not refrigerate.",
+    },
+    traditionalUse: [
+      "Commonly enjoyed with morning warm water or herbal teas.",
+      "Traditionally valued as an unheated, natural energy source during active days.",
+      "Customer-described as a wholesome staple for daily wellness routines."
+    ],
+    harvestingAndSource: [
+      "Gathered by 4th-generation harvesters from native mountain blooms.",
+      "Cloth-filtered without industrial heat processing to protect active enzymes."
+    ],
+    qualityLabReport: {
+      note: "Tamilnadu Test House laboratory testing documentation was conducted on a reference honey sample.",
+      reportNumber: "TNTH/M-0366/2026-27",
+      reportDate: "24.04.2026",
+      facility: "Tamilnadu Test House Private Limited",
+      standard: "IS 4941:1994 (Special Grade Requirements)",
+      testedSampleNote: "This verified laboratory report represents the tested honey sample submitted for standard compliance.",
+      highlights: [
+        { parameter: "Specific Gravity @ 27°C", result: "1.41", requirement: "Min 1.37" },
+        { parameter: "Moisture", result: "18.79%", requirement: "Max 20%" },
+        { parameter: "Total Reducing Sugar", result: "72.0%", requirement: "Min 70%" },
+        { parameter: "Sucrose", result: "BQL (LOQ: 0.1)", requirement: "Max 5.0%" },
+        { parameter: "Fructose-Glucose Ratio", result: "1.0", requirement: "Min 1.0" },
+        { parameter: "Total Ash", result: "0.02%", requirement: "Max 0.5%" },
+        { parameter: "Pollen Count", result: "28,132 per g", requirement: "Max 50,000" },
+      ]
+    },
+    returnsAndExchange: {
+      summary: "24-hour return request window upon parcel delivery for damaged, defective, or broken seals with parcel opening video/photo. Consumable food items with unbroken seals only.",
+      link: "/refund-policy"
+    }
+  }
 };
 
 export const PRODUCTS: Product[] = [
   {
     id: "forest-honey",
     name: "Forest Honey",
-    category: "Honey",
+    category: "Wild Mountain Flora",
     subtitle: "Raw • Unheated • Pollen-Preserved",
     description: "Suitable for daily use, this raw forest honey is minimally processed, unheated, pollen-preserved, and cloth-filtered. Customer describes it as an ideal natural alternative to sugar in foods and snacks.",
     price: 399,
     weight: "400g",
     badge: "BEST SELLER",
-    offer: "₹399",
     image: "/images/product_multifloral_nobg.png",
     alt: "Forest Honey pure natural harvest jar",
     slug: "forest-honey",
     available: true,
     variants: [
-      { size: "400g", price: 399 },
-      { size: "1000g", price: 699 },
+      {
+        size: "400g",
+        weight: "400g",
+        price: 399,
+        image: "/images/product_multifloral_nobg.png",
+        hasDistinctAsset: true,
+      },
+      {
+        size: "1kg",
+        weight: "1kg",
+        price: 699,
+        image: "/images/product_multifloral_nobg.png",
+        hasDistinctAsset: false,
+      },
     ],
+    galleryImages: [
+      "/images/product_multifloral_nobg.png",
+      "/images/forest_honey_best.jpg",
+      "/images/product_multifloral.jpg",
+    ],
+    characteristics: {
+      aroma: "Warm floral & wildflower nectar notes",
+      tasteNote: "Rich, mellow natural sweetness with subtle earthy undertone",
+      sweetness: "Balanced natural sweetness",
+      texture: "Smooth liquid, natural slow crystallization over time",
+    },
+    accordions: {
+      description: [
+        "Suitable for daily use, this raw forest honey is minimally processed, unheated, pollen-preserved, and cloth-filtered.",
+        "Customer describes it as an ideal natural alternative to sugar in foods and snacks, bringing rich native floral nectar directly from the peaks."
+      ],
+      productDetails: {
+        ingredients: "100% Pure Raw Forest Honey",
+        packaging: "Food-Grade Glass Jar",
+        storage: "Store at room temperature in a dry location. Natural crystallization is normal in raw honey.",
+      },
+      traditionalUse: [
+        "Commonly enjoyed as a daily natural sweetener in breakfast dishes, oats, and warm herbal beverages.",
+        "Traditionally valued as an unrefined, whole-food alternative to commercial table sugar."
+      ],
+      harvestingAndSource: [
+        "Harvested by 4th-generation honey harvesters from native forest flora.",
+        "Unheated and cloth-filtered to ensure pollen preservation and living enzyme integrity."
+      ],
+      qualityLabReport: {
+        note: "Tamilnadu Test House laboratory testing documentation was conducted on a reference honey sample.",
+        reportNumber: "TNTH/M-0366/2026-27",
+        reportDate: "24.04.2026",
+        facility: "Tamilnadu Test House Private Limited",
+        standard: "IS 4941:1994 (Special Grade Requirements)",
+        testedSampleNote: "This verified laboratory report represents the tested honey sample submitted for standard compliance.",
+        highlights: [
+          { parameter: "Specific Gravity @ 27°C", result: "1.41", requirement: "Min 1.37" },
+          { parameter: "Moisture", result: "18.79%", requirement: "Max 20%" },
+          { parameter: "Total Reducing Sugar", result: "72.0%", requirement: "Min 70%" },
+          { parameter: "Sucrose", result: "BQL (LOQ: 0.1)", requirement: "Max 5.0%" },
+          { parameter: "Fructose-Glucose Ratio", result: "1.0", requirement: "Min 1.0" },
+          { parameter: "Pollen Count", result: "28,132 per g", requirement: "Max 50,000" },
+        ]
+      },
+      returnsAndExchange: {
+        summary: "24-hour return request window upon parcel delivery for damaged, defective, or broken seals with parcel opening video/photo. Consumable food items with unbroken seals only.",
+        link: "/refund-policy"
+      }
+    }
   },
   MOUNTAIN_HONEY_PRODUCT,
   {
     id: "kombu-honey",
     name: "Kombu Honey",
-    category: "Honey",
+    category: "Small Bee Wild Comb",
     subtitle: "Small Bee • Wild Comb • Pure",
     description: "Traditional small bee wild comb honey harvested through generations of harvesting practice.",
     price: 499,
     weight: "400g",
     badge: "RARE",
-    offer: "₹499",
     image: "/images/product_wildflower_nobg.png",
     alt: "Kombu Honey pure mountain comb jar",
     slug: "kombu-honey",
     available: true,
     variants: [
-      { size: "400g", price: 499 },
-      { size: "1000g", price: 999 },
+      {
+        size: "400g",
+        weight: "400g",
+        price: 499,
+        image: "/images/product_wildflower_nobg.png",
+        hasDistinctAsset: true,
+      },
+      {
+        size: "1kg",
+        weight: "1kg",
+        price: 999,
+        image: "/images/product_wildflower_nobg.png",
+        hasDistinctAsset: false,
+      },
     ],
+    galleryImages: [
+      "/images/product_wildflower_nobg.png",
+      "/images/kombu_honey_best.jpg",
+      "/images/product_wildflower.jpg",
+    ],
+    characteristics: {
+      aroma: "Distinct wild comb & delicate herbal fragrance",
+      tasteNote: "Multifloral richness with pleasant subtle tart note",
+      sweetness: "Moderate, complex sweetness",
+      texture: "Dense, unheated raw comb consistency",
+    },
+    accordions: {
+      description: [
+        "Traditional small bee wild comb honey harvested through generations of harvesting practice.",
+        "Sourced in limited quantities from natural small bee hives nestled in rock crevices and wild mountain branches."
+      ],
+      productDetails: {
+        ingredients: "100% Pure Raw Kombu Comb Honey",
+        packaging: "Food-Grade Glass Jar",
+        storage: "Store in a cool, dry place. Seal tightly after each use.",
+      },
+      traditionalUse: [
+        "Traditionally prized in households for its rare botanical origin and distinctive profile.",
+        "Commonly enjoyed by the spoonful or infused in lukewarm herbal preparations."
+      ],
+      harvestingAndSource: [
+        "Gathered from wild comb harvesting sites using ancestral techniques.",
+        "Never subject to micro-filtration or artificial heating."
+      ],
+      qualityLabReport: {
+        note: "Tamilnadu Test House laboratory testing documentation was conducted on a reference honey sample.",
+        reportNumber: "TNTH/M-0366/2026-27",
+        reportDate: "24.04.2026",
+        facility: "Tamilnadu Test House Private Limited",
+        standard: "IS 4941:1994 (Special Grade Requirements)",
+        testedSampleNote: "This verified laboratory report represents the tested honey sample submitted for standard compliance.",
+        highlights: [
+          { parameter: "Specific Gravity @ 27°C", result: "1.41", requirement: "Min 1.37" },
+          { parameter: "Moisture", result: "18.79%", requirement: "Max 20%" },
+          { parameter: "Total Reducing Sugar", result: "72.0%", requirement: "Min 70%" },
+          { parameter: "Total Ash", result: "0.02%", requirement: "Max 0.5%" },
+        ]
+      },
+      returnsAndExchange: {
+        summary: "24-hour return request window upon parcel delivery for damaged, defective, or broken seals with parcel opening video/photo. Consumable food items with unbroken seals only.",
+        link: "/refund-policy"
+      }
+    }
   },
   {
     id: "stingless-bee-honey",
     name: "Stingless Bee Honey",
-    category: "Honey",
+    category: "Rare Mountain Comb",
     subtitle: "Rare • Comb • High Nutritional Value",
     description: "Customer describes this rare, premium honey as possessing high nutritional value and traditionally valued for time-honored medicinal use.",
     price: 749,
     weight: "400g",
     badge: "LIMITED HARVEST",
-    offer: "₹749",
     image: "/images/product_raw_reserve_nobg.png",
     alt: "Stingless Bee Honey rare high-altitude reserve jar",
     slug: "stingless-bee-honey",
     available: true,
     variants: [
-      { size: "400g", price: 749 },
-      { size: "1000g", price: 1499 },
+      {
+        size: "400g",
+        weight: "400g",
+        price: 749,
+        image: "/images/product_raw_reserve_nobg.png",
+        hasDistinctAsset: true,
+      },
+      {
+        size: "1kg",
+        weight: "1kg",
+        price: 1499,
+        image: "/images/product_raw_reserve_nobg.png",
+        hasDistinctAsset: false,
+      },
     ],
+    galleryImages: [
+      "/images/product_raw_reserve_nobg.png",
+      "/images/product_raw_reserve.jpg",
+    ],
+    characteristics: {
+      aroma: "Distinct botanical and rare flora scent",
+      tasteNote: "Unique sweet-sour, tangy nuance characteristic of stingless bees",
+      sweetness: "Tangy sweet, complex artisanal profile",
+      texture: "Naturally fluid, unprocessed viscosity",
+    },
+    accordions: {
+      description: [
+        "Customer describes this rare, premium honey as possessing high nutritional value and traditionally valued for time-honored medicinal use.",
+        "Produced by tiny stingless bees (Meliponini) foraging on deep forest medicinal herbs and forest canopies."
+      ],
+      productDetails: {
+        ingredients: "100% Pure Raw Stingless Bee Honey",
+        packaging: "Food-Grade Glass Jar",
+        storage: "Store at room temperature in a dark, dry cabinet. Do not expose to heat.",
+      },
+      traditionalUse: [
+        "Traditionally valued across generations for time-honored nutritional and wellness use.",
+        "Commonly enjoyed in small daily servings, prized for its natural tang and bio-active richness."
+      ],
+      harvestingAndSource: [
+        "Harvested in minute batches from wild stingless bee comb reserves.",
+        "Carefully collected and cloth-filtered to preserve its living characteristics."
+      ],
+      qualityLabReport: {
+        note: "Tamilnadu Test House laboratory testing documentation was conducted on a reference honey sample.",
+        reportNumber: "TNTH/M-0366/2026-27",
+        reportDate: "24.04.2026",
+        facility: "Tamilnadu Test House Private Limited",
+        standard: "IS 4941:1994 (Special Grade Requirements)",
+        testedSampleNote: "This verified laboratory report represents the tested honey sample submitted for standard compliance.",
+        highlights: [
+          { parameter: "Specific Gravity @ 27°C", result: "1.41", requirement: "Min 1.37" },
+          { parameter: "Moisture", result: "18.79%", requirement: "Max 20%" },
+          { parameter: "Total Reducing Sugar", result: "72.0%", requirement: "Min 70%" },
+        ]
+      },
+      returnsAndExchange: {
+        summary: "24-hour return request window upon parcel delivery for damaged, defective, or broken seals with parcel opening video/photo. Consumable food items with unbroken seals only.",
+        link: "/refund-policy"
+      }
+    }
   },
 ];
 

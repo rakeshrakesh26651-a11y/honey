@@ -94,11 +94,16 @@ export function App() {
 
   /**
    * Add to Cart handler:
-   * 1. Stores selected variant size (400g / 1000g)
+   * 1. Stores selected variant size (400g / 1kg)
    * 2. Different sizes of the same product remain separate line items
-   * 3. CRITICAL: Navigates directly to full /cart page (NO DRAWER)
+   * 3. Retains cart state, redirects only when explicitly requested
    */
-  const handleAddToCart = (product: Product, size: string = '400g', quantity: number = 1) => {
+  const handleAddToCart = (
+    product: Product,
+    size: string = '400g',
+    quantity: number = 1,
+    shouldRedirect: boolean = false
+  ) => {
     const itemId = `${product.id}-${size}`;
     const variantObj = product.variants?.find((v) => v.size === size);
     const unitPrice = variantObj ? variantObj.price : product.price;
@@ -124,8 +129,18 @@ export function App() {
       ];
     });
 
-    // Navigate directly to /cart full page
-    handleNavigate('/cart');
+    if (shouldRedirect) {
+      handleNavigate('/cart');
+    }
+  };
+
+  /**
+   * Buy Now handler:
+   * Adds product & selected variant/quantity to cart state and navigates straight to /checkout
+   */
+  const handleBuyNow = (product: Product, size: string = '400g', quantity: number = 1) => {
+    handleAddToCart(product, size, quantity, false);
+    handleNavigate('/checkout');
   };
 
   const handleUpdateQuantity = (itemId: string, quantity: number) => {
@@ -148,13 +163,27 @@ export function App() {
 
   // Render the appropriate main page based on current path
   const renderMainContent = () => {
-    // Dynamic Product Detail Route: /product/:slug
+    // Dynamic Product Detail Route: /shop/:slug
+    if (currentPath.startsWith('/shop/') && currentPath !== '/shop') {
+      const slug = currentPath.replace('/shop/', '').replace(/\/$/, '');
+      return (
+        <ProductDetailPage
+          slug={slug}
+          onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
+          onNavigate={handleNavigate}
+        />
+      );
+    }
+
+    // Dynamic Product Detail Backwards-Compatible Alias: /product/:slug
     if (currentPath.startsWith('/product/')) {
       const slug = currentPath.replace('/product/', '').replace(/\/$/, '');
       return (
         <ProductDetailPage
           slug={slug}
           onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
           onNavigate={handleNavigate}
         />
       );

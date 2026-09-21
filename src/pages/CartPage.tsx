@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../data/content';
 import { openWhatsAppOrder } from '../utils/whatsapp';
 import {
@@ -55,7 +55,18 @@ export const CartPage: React.FC<CartPageProps> = ({
   onClearCart,
   onNavigate,
 }) => {
-  const [step, setStep] = useState<CheckoutStep>('cart');
+  const [step, setStep] = useState<CheckoutStep>(() => {
+    if (typeof window !== 'undefined' && window.location.pathname === '/checkout') {
+      return 'checkout';
+    }
+    return 'cart';
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.pathname === '/checkout' && items.length > 0) {
+      setStep('checkout');
+    }
+  }, [items.length]);
   const [couponCode, setCouponCode] = useState<string>('');
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
   const [couponMessage, setCouponMessage] = useState<{ text: string; isError: boolean } | null>(null);
@@ -640,9 +651,9 @@ export const CartPage: React.FC<CartPageProps> = ({
                 <div className="divide-y divide-[#D9D7D0]/60">
                   {items.map((item) => {
                     const imageSrc =
-                      item.size === '1000g'
-                        ? '/images/product_mountain_nobg.png'
-                        : item.product.image || '/images/hero_honey_jar.jpg';
+                      item.product.variants?.find((v) => v.size === item.size)?.image ||
+                      item.product.image ||
+                      '/images/hero_honey_jar.jpg';
 
                     return (
                       <div
