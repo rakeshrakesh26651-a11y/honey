@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
+import { getFriendlyAuthErrorMessage } from '../../context/AuthContext';
 
 interface AdminAuthContextType {
   adminUser: User | null;
@@ -85,7 +86,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         await signOut(auth);
         setAdminUser(null);
         setIsAdmin(false);
-        const forbiddenError = 'Access Denied: This account does not possess administrative privileges ({ admin: true }).';
+        const forbiddenError = 'Access Denied: This account does not have administrative privileges.';
         setError(forbiddenError);
         throw new Error(forbiddenError);
       }
@@ -93,9 +94,12 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setAdminUser(user);
       setIsAdmin(true);
     } catch (err: any) {
-      const msg = err.message || 'Administrative login failed. Please verify credentials.';
-      setError(msg);
-      throw new Error(msg);
+      // Use friendly message mapping (same as customer login) unless it's the access-denied error we threw above
+      const friendlyMsg = err.message?.startsWith('Access Denied')
+        ? err.message
+        : getFriendlyAuthErrorMessage(err?.code || err?.message || '');
+      setError(friendlyMsg);
+      throw new Error(friendlyMsg);
     } finally {
       isBusyRef.current = false;
     }
