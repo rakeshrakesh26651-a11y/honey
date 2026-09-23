@@ -6,8 +6,21 @@ import {
   where,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { Product, ProductVariant } from '../data/himalayanHarvest';
+import { Product, ProductVariant, PRODUCTS } from '../data/himalayanHarvest';
 import { PRODUCTS_COLLECTION } from '../admin/services/productService';
+
+/**
+ * Converts the static catalog Product into the storefront shape.
+ * Used only when Firestore is unreachable (e.g. not yet provisioned in GCP).
+ * Once Firestore is live, real-time data overrides this automatically.
+ */
+function getStaticFallbackProducts(): Product[] {
+  return PRODUCTS.filter((p) => p.active !== false).map((p) => ({
+    ...p,
+    available: p.available ?? true,
+    active: p.active ?? true,
+  }));
+}
 
 /**
  * Transforms a Firestore ProductDocument directly into a typed storefront Product.
@@ -240,6 +253,13 @@ function startSubscription() {
             if (innerUnsub) innerUnsub();
             nextFallback();
           } else {
+            // All Firestore queries failed (e.g. Firestore API not enabled in GCP).
+            // Fall back to the static catalog so the storefront is never empty.
+            // When Firestore becomes available, a page reload will restore real-time data.
+            console.warn('[useProducts] All Firestore queries failed. Loading static catalog fallback.');
+            const fallback = getStaticFallbackProducts();
+            cachedAllProducts = fallback;
+            cachedActiveProducts = fallback;
             currentError = err;
             isLoading = false;
             isInitialized = true;
@@ -267,6 +287,10 @@ function startSubscription() {
     unsubscribeFirestore = trySubscribe(primaryQ, subscribeFallbackActive);
   } catch (err: any) {
     console.error('[useProducts] Failed to initialize subscription! Code:', err?.code, 'Message:', err?.message);
+    // Subscription setup itself threw — load static catalog so the page isn’t blank.
+    const fallback = getStaticFallbackProducts();
+    cachedAllProducts = fallback;
+    cachedActiveProducts = fallback;
     currentError = err;
     isLoading = false;
     isInitialized = true;
