@@ -193,8 +193,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  // Other authentic products for "MORE FROM OUR HARVEST" (active/available only)
-  const otherProducts = allProducts.filter((p) => p.id !== product.id && p.available !== false && (p as any).active !== false);
+  // Other authentic products for "MORE FROM OUR HARVEST" (active products, do not hide out-of-stock)
+  const otherProducts = allProducts.filter((p) => p.id !== product.id && (p as any).active !== false);
 
   return (
     <PageTransition>

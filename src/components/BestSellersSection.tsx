@@ -26,6 +26,7 @@ export interface BestSellerProduct {
 export function toBestSellerProduct(p: Product): BestSellerProduct {
   const v400 = p.variants?.find((v) => v.size.toLowerCase().includes('400')) || p.variants?.[0];
   const v1k = p.variants?.find((v) => v.size.toLowerCase().includes('1k') || v.size.toLowerCase().includes('1000')) || p.variants?.[1] || v400;
+  const isAllOut = p.available === false || (p.variants && p.variants.length > 0 && p.variants.every((v) => v.available === false || (v.stock !== undefined && v.stock <= 0)));
 
   return {
     id: p.id,
@@ -35,7 +36,7 @@ export function toBestSellerProduct(p: Product): BestSellerProduct {
     price400g: v400 ? v400.price : p.price,
     price1kg: v1k ? v1k.price : p.price,
     category: p.category ? p.category.toUpperCase() : 'WILD MOUNTAIN FLORA',
-    badge: p.badge || 'BEST SELLER',
+    badge: isAllOut ? 'OUT OF STOCK' : (p.badge || 'BEST SELLER'),
     alt: p.alt || `${p.name} pure natural harvest glass jar`,
     image: p.image || '/images/hero_honey_jar.jpg',
     subtitle: p.subtitle || '',
@@ -48,8 +49,8 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Active products strictly from Firestore
-  const activeProducts = liveProducts.filter((p) => p.available !== false && (p as any).active !== false);
+  // Active products strictly from Firestore (do NOT filter out 0-stock products)
+  const activeProducts = liveProducts.filter((p) => (p as any).active !== false);
   const displayProducts: BestSellerProduct[] = activeProducts.map(toBestSellerProduct);
 
   const total = Math.max(1, displayProducts.length);

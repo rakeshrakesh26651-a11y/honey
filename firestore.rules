@@ -22,8 +22,8 @@ service cloud.firestore {
     // 1. Products Collection
     // =========================================================================
     match /products/{productId} {
-      // Public customers can read active products without being admin; Admins can read all and write
-      allow read: if isAdmin() || resource.data.active == true || resource.data.available == true;
+      // Public product catalog is readable by all visitors; Admins can write
+      allow read: if true;
       allow write: if isAdmin();
     }
 

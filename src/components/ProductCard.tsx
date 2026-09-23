@@ -25,6 +25,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
   const currentPrice = currentVariant ? currentVariant.price : product.price;
   const currentImage = currentVariant?.image || product.image;
 
+  const isVariantOutOfStock = currentVariant
+    ? currentVariant.available === false || (currentVariant.stock !== undefined && currentVariant.stock <= 0)
+    : false;
+  const isAllOutOfStock =
+    product.available === false ||
+    (product.variants &&
+      product.variants.length > 0 &&
+      product.variants.every((v) => v.available === false || (v.stock !== undefined && v.stock <= 0)));
+
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();
     const targetUrl = `/shop/${product.slug}`;
@@ -45,7 +54,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
     >
       {/* Top Header: Badge if present */}
       <div className="flex items-center justify-between gap-2 mb-2">
-        {product.badge ? (
+        {isAllOutOfStock ? (
+          <span className="inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#8C8075]/15 text-[#5A4F46] border border-[#8C8075]/30 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold">
+            OUT OF STOCK
+          </span>
+        ) : product.badge ? (
           <span className="inline-flex items-center px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#242424] text-[#FAF9F5] text-[10px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold">
             {product.badge}
           </span>
@@ -104,6 +117,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
           <div className="flex items-center gap-1.5">
             {product.variants.map((v) => {
               const isSelected = selectedSize === v.size;
+              const isOut = v.available === false || (v.stock !== undefined && v.stock <= 0);
               return (
                 <button
                   key={v.size}
@@ -115,9 +129,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
                   }}
                   className={`px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono font-semibold transition-colors cursor-pointer ${
                     isSelected
-                      ? 'bg-[#242424] text-[#FAF9F5]'
+                      ? isOut
+                        ? 'bg-[#5A4F46] text-[#FAF9F5]'
+                        : 'bg-[#242424] text-[#FAF9F5]'
+                      : isOut
+                      ? 'bg-[#F4F1EA] text-[#8C8075] border border-[#D9D7D0] line-through'
                       : 'bg-white text-[#686863] border border-[#D9D7D0] hover:border-[#242424]'
                   }`}
+                  title={isOut ? `${v.size} is out of stock` : `${v.size} available`}
                 >
                   {v.size}
                 </button>
@@ -140,6 +159,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
             <span className="font-mono text-[10px] text-[#686863] ml-1">
               ({selectedSize})
             </span>
+            {isVariantOutOfStock && (
+              <span className="block font-mono text-[9.5px] uppercase tracking-wider text-[#9B3C2A] font-semibold">
+                Out of Stock
+              </span>
+            )}
           </div>
         </div>
 
@@ -148,7 +172,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
           onClick={handleCardClick}
           className="w-full py-2.5 sm:py-3 px-4 rounded-full bg-[#242424] hover:bg-[#C9892E] text-[#FAF9F5] font-sans text-[13px] sm:text-[14px] font-bold tracking-wide transition-colors duration-200 text-center flex items-center justify-center gap-2 cursor-pointer shadow-xs"
         >
-          <span>VIEW PRODUCT</span>
+          <span>{isAllOutOfStock ? 'OUT OF STOCK • VIEW' : isVariantOutOfStock ? 'SIZE OUT OF STOCK • VIEW' : 'VIEW PRODUCT'}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"

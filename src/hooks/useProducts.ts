@@ -4,7 +4,6 @@ import {
   onSnapshot,
   query,
   where,
-  or,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Product, ProductVariant } from '../data/himalayanHarvest';
@@ -77,8 +76,9 @@ export function mapFirestoreDocToProduct(docId: string, data: any): Product {
     ? Number(data.compareAtPrice)
     : undefined;
 
-  const isAvailable = Boolean(data.available ?? data.active ?? true);
-  const isActive = Boolean(data.active ?? data.available ?? true);
+  const hasInStockVariant = variants.length === 0 || variants.some((v) => v.available !== false && (v.stock === undefined || v.stock > 0));
+  const isAvailable = Boolean(data.available ?? true) && hasInStockVariant;
+  const isActive = (data as any).active !== false;
 
   // Authoritative characteristics from Firestore
   const characteristics = {
@@ -197,28 +197,21 @@ function startSubscription() {
       });
 
       cachedAllProducts = firestoreProducts;
+      // Active products are displayed on storefront.
+      // Out-of-stock products (0 stock or isAvailable === false) are NOT hidden; they show "Out of Stock".
+      // Only products explicitly marked inactive by admin (active === false) are excluded.
       cachedActiveProducts = firestoreProducts.filter(
-        (p) => p.available !== false && (p as any).active !== false
+        (p) => (p as any).active !== false
       );
       isInitialized = true;
       notifyListeners();
     };
 
-    // Primary query matches active == true OR available == true
-    // This allows public customers to read active catalog products seamlessly
-    let primaryQ: any;
-    try {
-      primaryQ = query(
-        productsRef,
-        or(where('active', '==', true), where('available', '==', true))
-      );
-    } catch {
-      primaryQ = query(productsRef, where('available', '==', true));
-    }
-
-    const fallbackAvailableQ = query(productsRef, where('available', '==', true));
+    // Primary query reads the full products collection directly
+    // Fallback queries support environments with active/available-only security rules
+    const primaryQ = query(productsRef);
     const fallbackActiveQ = query(productsRef, where('active', '==', true));
-    const fallbackAllQ = query(productsRef);
+    const fallbackAvailableQ = query(productsRef, where('available', '==', true));
 
     // Subscription runner with chained fallback for both empty snapshots and query errors
     const trySubscribe = (
@@ -262,22 +255,17 @@ function startSubscription() {
       };
     };
 
-    const subscribeFallbackAll = () => {
+    const subscribeFallbackAvailable = () => {
       if (unsubscribeFirestore) unsubscribeFirestore();
-      unsubscribeFirestore = trySubscribe(fallbackAllQ);
+      unsubscribeFirestore = trySubscribe(fallbackAvailableQ);
     };
 
     const subscribeFallbackActive = () => {
       if (unsubscribeFirestore) unsubscribeFirestore();
-      unsubscribeFirestore = trySubscribe(fallbackActiveQ, subscribeFallbackAll);
+      unsubscribeFirestore = trySubscribe(fallbackActiveQ, subscribeFallbackAvailable);
     };
 
-    const subscribeFallbackAvailable = () => {
-      if (unsubscribeFirestore) unsubscribeFirestore();
-      unsubscribeFirestore = trySubscribe(fallbackAvailableQ, subscribeFallbackActive);
-    };
-
-    unsubscribeFirestore = trySubscribe(primaryQ, subscribeFallbackAvailable);
+    unsubscribeFirestore = trySubscribe(primaryQ, subscribeFallbackActive);
   } catch (err: any) {
     console.error('[useProducts] Failed to initialize subscription! Code:', err?.code, 'Message:', err?.message);
     currentError = err;

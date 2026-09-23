@@ -4,7 +4,43 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/login",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/products",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/orders",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/reviews",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/coupons",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/shipping",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/settings",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!api/|api$).*)",
       "destination": "/index.html"
     }
   ],
