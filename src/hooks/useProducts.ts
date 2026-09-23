@@ -76,8 +76,13 @@ export function mapFirestoreDocToProduct(docId: string, data: any): Product {
     ? Number(data.compareAtPrice)
     : undefined;
 
-  const hasInStockVariant = variants.length === 0 || variants.some((v) => v.available !== false && (v.stock === undefined || v.stock > 0));
-  const isAvailable = Boolean(data.available ?? true) && hasInStockVariant;
+  const hasInStockVariant = variants.some((v) => v.available !== false && (v.stock === undefined || v.stock > 0));
+  // available reflects real-time stock state for UI rendering (Out of Stock badge etc.)
+  // Products with 0 stock are NOT hidden — they remain visible with an "Out of Stock" badge.
+  // Only admin-toggled active===false removes a product from the storefront.
+  const isAvailable = variants.length === 0
+    ? Boolean(data.available ?? true)
+    : hasInStockVariant;
   const isActive = (data as any).active !== false;
 
   // Authoritative characteristics from Firestore
@@ -225,12 +230,6 @@ function startSubscription() {
         qToTry,
         (snapshot: any) => {
           if (isCancelled) return;
-          if (snapshot.empty && nextFallback) {
-            isCancelled = true;
-            if (innerUnsub) innerUnsub();
-            nextFallback();
-            return;
-          }
           handleSnapshot(snapshot);
         },
         (err: any) => {

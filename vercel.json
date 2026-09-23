@@ -1,46 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/admin",
-      "destination": "/index.html"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     },
     {
-      "source": "/admin/login",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/products",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/orders",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/reviews",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/coupons",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/shipping",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/settings",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/admin/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/((?!api/|api$).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
