@@ -20,6 +20,7 @@ import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsAndConditions } from './pages/TermsAndConditions';
 import { RefundPolicy } from './pages/RefundPolicy';
 import { AccountPage } from './pages/AccountPage';
+import { AdminApp } from './admin/AdminApp';
 
 import { Product } from './data/content';
 
@@ -243,20 +244,9 @@ export function App() {
       return <RefundPolicy onNavigateHome={() => handleNavigate('/')} />;
     }
 
-    if (currentPath === '/login') {
-      return <AccountPage initialMode="login" onNavigate={handleNavigate} />;
-    }
-
-    if (currentPath === '/signup') {
-      return <AccountPage initialMode="signup" onNavigate={handleNavigate} />;
-    }
-
-    if (currentPath === '/forgot-password') {
-      return <AccountPage initialMode="forgot-password" onNavigate={handleNavigate} />;
-    }
-
-    if (currentPath === '/account') {
-      return <AccountPage initialMode="account" onNavigate={handleNavigate} />;
+    if (currentPath === '/login' || currentPath === '/signup' || currentPath === '/forgot-password' || currentPath === '/account') {
+      const mode = currentPath.replace('/', '') as 'login' | 'signup' | 'forgot-password' | 'account';
+      return <AccountPage key={currentPath} mode={mode} onNavigate={handleNavigate} />;
     }
 
     // Default or /home: Editorial Multi-Section Homepage
@@ -266,6 +256,16 @@ export function App() {
       />
     );
   };
+
+  // Dedicated Administrative Control Subsystem
+  if (currentPath.startsWith('/admin')) {
+    return (
+      <AdminApp
+        currentPath={currentPath}
+        onNavigate={handleNavigate}
+      />
+    );
+  }
 
   return (
     <motion.div

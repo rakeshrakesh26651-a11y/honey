@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatedHeading } from './motion/AnimatedHeading';
+import { useProducts } from '../hooks/useProducts';
+import { Product } from '../data/himalayanHarvest';
 
 interface BestSellersSectionProps {
   onNavigate?: (path: string) => void;
@@ -21,76 +23,42 @@ export interface BestSellerProduct {
   description: string;
 }
 
-/**
- * EXACTLY 4 PRODUCTS:
- * 1. Forest Honey — ₹399 / ₹699
- * 2. Mountain Honey — ₹449 / ₹899
- * 3. Kombu Honey — ₹499 / ₹999
- * 4. Stingless Bee Honey — ₹749 / ₹1499
- */
-export const BEST_SELLERS: BestSellerProduct[] = [
-  {
-    id: 'forest-honey',
-    name: 'Forest Honey',
-    slug: 'forest-honey',
-    price: 399,
-    price400g: 399,
-    price1kg: 699,
-    category: 'WILD MOUNTAIN FLORA',
-    badge: 'BEST SELLER',
-    alt: 'Forest Honey pure natural harvest glass jar',
-    image: '/images/product_multifloral_nobg.png',
-    subtitle: 'Raw • Unheated • Pollen-Preserved',
-    description: 'Minimally processed, unheated, and pollen-preserved from native flora. An ideal natural sweet for the whole family.',
-  },
-  {
-    id: 'mountain-honey',
-    name: 'Mountain Honey',
-    slug: 'mountain-honey',
-    price: 449,
-    price400g: 449,
-    price1kg: 899,
-    category: 'HIGH-ALTITUDE FLORA',
-    badge: 'HARVEST SPECIAL',
-    alt: 'Mountain Honey pure high-altitude harvest glass jar',
-    image: '/images/product_mountain_nobg.png',
-    subtitle: 'High-Altitude • Raw Harvest',
-    description: 'Harvested from high-altitude flora and suitable for daily use. Traditionally valued for natural vitality and daily wellness.',
-  },
-  {
-    id: 'kombu-honey',
-    name: 'Kombu Honey',
-    slug: 'kombu-honey',
-    price: 499,
-    price400g: 499,
-    price1kg: 999,
-    category: 'SMALL BEE WILD COMB',
-    badge: 'RARE HARVEST',
-    alt: 'Kombu Honey pure mountain comb glass jar',
-    image: '/images/product_wildflower_nobg.png',
-    subtitle: 'Small Bee • Wild Comb • Pure',
-    description: 'Traditional small bee wild comb honey harvested through generations of sustainable forest foraging.',
-  },
-  {
-    id: 'stingless-bee-honey',
-    name: 'Stingless Bee Honey',
-    slug: 'stingless-bee-honey',
-    price: 749,
-    price400g: 749,
-    price1kg: 1499,
-    category: 'RARE MOUNTAIN COMB',
-    badge: 'LIMITED HARVEST',
-    alt: 'Stingless Bee Honey rare high-altitude reserve glass jar',
-    image: '/images/product_raw_reserve_nobg.png',
-    subtitle: 'Rare • Comb • High Nutritional Value',
-    description: 'Prized for its high nutritional density and distinct tangy floral profile, harvested in small artisanal batches.',
-  },
-];
+export function toBestSellerProduct(p: Product): BestSellerProduct {
+  const v400 = p.variants?.find((v) => v.size.toLowerCase().includes('400')) || p.variants?.[0];
+  const v1k = p.variants?.find((v) => v.size.toLowerCase().includes('1k') || v.size.toLowerCase().includes('1000')) || p.variants?.[1] || v400;
+
+  return {
+    id: p.id,
+    name: p.name,
+    slug: p.slug,
+    price: p.price,
+    price400g: v400 ? v400.price : p.price,
+    price1kg: v1k ? v1k.price : p.price,
+    category: p.category ? p.category.toUpperCase() : 'WILD MOUNTAIN FLORA',
+    badge: p.badge || 'BEST SELLER',
+    alt: p.alt || `${p.name} pure natural harvest glass jar`,
+    image: p.image || '/images/hero_honey_jar.jpg',
+    subtitle: p.subtitle || '',
+    description: p.description || '',
+  };
+}
 
 export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNavigate }) => {
+  const { products: liveProducts, loading } = useProducts();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const total = BEST_SELLERS.length;
+
+  // Active products strictly from Firestore
+  const activeProducts = liveProducts.filter((p) => p.available !== false && (p as any).active !== false);
+  const displayProducts: BestSellerProduct[] = activeProducts.map(toBestSellerProduct);
+
+  const total = Math.max(1, displayProducts.length);
+
+  useEffect(() => {
+    if (activeIndex >= total) {
+      setActiveIndex(0);
+    }
+  }, [activeIndex, total]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -111,7 +79,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
 
   const handleViewProduct = (e: React.MouseEvent, _slug?: string) => {
     e.stopPropagation();
-    const dest = '/shop';
+    const dest = _slug ? `/shop/${_slug}` : '/shop';
     if (onNavigate) {
       onNavigate(dest);
     } else if (typeof window !== 'undefined') {
@@ -195,7 +163,24 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
         {/* =========================================================================
             PRODUCT FOCUS CAROUSEL CONTAINER (Centered Active Card + Partial Side Cards)
             ========================================================================= */}
-        <div className="relative w-full h-[470px] xs:h-[490px] sm:h-[530px] md:h-[560px] flex items-center justify-center overflow-hidden touch-pan-y">
+        {displayProducts.length === 0 ? (
+          <div className="relative w-full h-[320px] flex items-center justify-center">
+            {loading ? (
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 rounded-full border-2 border-[#C9892E] border-t-transparent animate-spin" />
+                <span className="font-mono text-[12px] uppercase tracking-wider text-[#686863]">
+                  Loading line-up...
+                </span>
+              </div>
+            ) : (
+              <p className="font-sans text-[15px] text-[#686863]">
+                No products are currently available in this lineup.
+              </p>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="relative w-full h-[470px] xs:h-[490px] sm:h-[530px] md:h-[560px] flex items-center justify-center overflow-hidden touch-pan-y">
           {/* Left Circular Navigation Arrow */}
           <button
             type="button"
@@ -238,7 +223,7 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
 
           {/* Cards Track with Drag / Swipe support */}
           <div className="relative w-full h-full flex items-center justify-center">
-            {BEST_SELLERS.map((product, index) => {
+            {displayProducts.map((product, index) => {
               // Wrapped relative difference in range [-2, 2]
               let diff = index - activeIndex;
               while (diff > total / 2) diff -= total;
@@ -348,16 +333,11 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
 
                     {/* Product Name & Details Follow Below the Bottle */}
                     <div className="flex flex-col gap-1.5 sm:gap-2 z-10 pt-2 border-t border-[#EAE6DE]">
-                      {/* Name & Dual Price Row: Forest Honey — ₹399 / ₹699 */}
+                      {/* Product Name */}
                       <div className="flex items-baseline justify-between gap-2">
                         <h3 className="font-serif text-[20px] xs:text-[22px] sm:text-[25px] font-semibold text-[#242424] leading-tight tracking-[-0.01em]">
                           {product.name}
                         </h3>
-                        <div className="text-right whitespace-nowrap shrink-0">
-                          <span className="font-sans font-bold text-[17px] sm:text-[19px] text-[#242424] tracking-tight">
-                            ₹{product.price400g} <span className="text-[#8C827A] font-normal text-[13px] sm:text-[14px]">/</span> ₹{product.price1kg}
-                          </span>
-                        </div>
                       </div>
 
                       {/* Product Description */}
@@ -384,27 +364,29 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
               );
             })}
           </div>
-        </div>
+            </div>
 
-        {/* Small Carousel Progress / Dot Indicator */}
-        <div className="flex items-center justify-center gap-2 mt-6 sm:mt-8">
-          {BEST_SELLERS.map((item, index) => {
-            const isCurrent = index === activeIndex;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Go to ${item.name}`}
-                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                  isCurrent
-                    ? 'w-7 bg-[#C9892E]'
-                    : 'w-2 bg-[#242424]/25 hover:bg-[#242424]/50'
-                }`}
-              />
-            );
-          })}
-        </div>
+            {/* Small Carousel Progress / Dot Indicator */}
+            <div className="flex items-center justify-center gap-2 mt-6 sm:mt-8">
+              {displayProducts.map((item, index) => {
+                const isCurrent = index === activeIndex;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setActiveIndex(index)}
+                    aria-label={`Go to ${item.name}`}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      isCurrent
+                        ? 'w-7 bg-[#C9892E]'
+                        : 'w-2 bg-[#242424]/25 hover:bg-[#242424]/50'
+                    }`}
+                  />
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

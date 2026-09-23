@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { TESTIMONIALS, Testimonial } from '../data/himalayanHarvest';
+import { Testimonial } from '../data/himalayanHarvest';
+import { useApprovedReviews } from '../hooks/useApprovedReviews';
 import { CustomerFeedbackGallery } from './CustomerFeedbackGallery';
 
 export const Testimonials: React.FC = () => {
+  const { reviews } = useApprovedReviews();
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [direction, setDirection] = useState<number>(1); // 1 = next, -1 = prev
 
@@ -11,8 +13,8 @@ export const Testimonials: React.FC = () => {
   const touchStartX = useRef<number | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  const totalReviews = TESTIMONIALS.length;
-  const activeReview: Testimonial = TESTIMONIALS[activeIndex] || TESTIMONIALS[0];
+  const totalReviews = reviews.length;
+  const activeReview: Testimonial = reviews[activeIndex] || reviews[0];
 
   // Navigation handlers
   const handlePrev = useCallback(() => {
@@ -316,7 +318,7 @@ export const Testimonials: React.FC = () => {
                   <div className="flex items-center gap-4 sm:gap-6">
                     {/* Active Pill-Style Progress Indicator */}
                     <div className="flex items-center gap-2" role="tablist" aria-label="Testimonial navigation">
-                      {TESTIMONIALS.map((t, i) => (
+                      {reviews.map((t, i) => (
                         <button
                           key={t.id}
                           type="button"
@@ -346,7 +348,7 @@ export const Testimonials: React.FC = () => {
 
         {/* Hidden semantic registry for accessibility & preloading */}
         <div className="sr-only" aria-hidden="true">
-          {TESTIMONIALS.map((t) => (
+          {reviews.map((t) => (
             <div key={t.id}>
               <h4>{t.author}</h4>
               <img src={t.image} alt={t.author} />

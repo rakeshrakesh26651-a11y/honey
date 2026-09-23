@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PRODUCTS, Product, WHATSAPP_NUMBER } from '../data/himalayanHarvest';
+import { Product, WHATSAPP_NUMBER } from '../data/himalayanHarvest';
+import { useProducts } from '../hooks/useProducts';
 import { PageTransition } from '../components/motion/PageTransition';
 import { ProductCard } from '../components/ProductCard';
+import { ShoppingCartIcon } from '../components/Icons';
 
 interface ProductDetailPageProps {
   slug: string;
@@ -17,19 +19,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   onBuyNow,
   onNavigate,
 }) => {
-  const allProducts: Product[] = PRODUCTS;
-  const product = allProducts.find((p) => p.slug === slug || p.id === slug) || PRODUCTS[0];
+  const { allProducts, getProductBySlug, loading } = useProducts();
+  const cleanTarget = (slug || '').toLowerCase().trim();
+  const product =
+    getProductBySlug(cleanTarget) ||
+    allProducts.find(
+      (p) =>
+        (p.slug || '').toLowerCase().trim() === cleanTarget ||
+        (p.id || '').toLowerCase().trim() === cleanTarget
+    );
 
-  // Selected size state: '400g' | '1kg'
-  const [selectedSize, setSelectedSize] = useState<string>(
-    product.variants && product.variants.length > 0 ? product.variants[0].size : '400g'
-  );
+  // Selected size state: defaults to first available variant size
+  const [selectedSize, setSelectedSize] = useState<string>('400g');
 
   // Active gallery image
-  const [activeImage, setActiveImage] = useState<string>(() => {
-    const variant = product.variants?.find((v) => v.size === selectedSize);
-    return variant?.image || product.image;
-  });
+  const [activeImage, setActiveImage] = useState<string>('/images/hero_honey_jar.jpg');
 
   const [quantity, setQuantity] = useState<number>(1);
   const [pincode, setPincode] = useState<string>('');
@@ -52,11 +56,77 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     returnsAndExchange: false,
   });
 
-  // When product or selected variant changes, keep active image synchronized
+  // Sync variant size and image whenever product loads or changes
   useEffect(() => {
-    const variant = product.variants?.find((v) => v.size === selectedSize);
-    setActiveImage(variant?.image || product.image);
+    if (product?.variants && product.variants.length > 0) {
+      const defaultVar = product.variants[0];
+      setSelectedSize(defaultVar.size);
+      setActiveImage(defaultVar.image || product.image || '/images/hero_honey_jar.jpg');
+    } else if (product) {
+      setActiveImage(product.image || '/images/hero_honey_jar.jpg');
+    }
+  }, [product?.id, product?.slug]);
+
+  // When selected variant changes, keep active image synchronized
+  useEffect(() => {
+    if (product?.variants && product.variants.length > 0) {
+      const variant = product.variants.find((v) => v.size === selectedSize);
+      if (variant?.image) {
+        setActiveImage(variant.image);
+      } else if (product.image) {
+        setActiveImage(product.image);
+      }
+    }
+  }, [selectedSize, product]);
+
+  // Ensure selectedSize remains valid if product variants are updated in Firestore
+  useEffect(() => {
+    if (product?.variants && product.variants.length > 0) {
+      const hasSize = product.variants.some((v) => v.size === selectedSize);
+      if (!hasSize) {
+        setSelectedSize(product.variants[0].size);
+      }
+    }
   }, [product, selectedSize]);
+
+  if (loading && !product) {
+    return (
+      <PageTransition>
+        <div className="w-full bg-[#F4F1EA] min-h-screen py-24 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 rounded-full border-2 border-[#C9892E] border-t-transparent animate-spin" />
+            <span className="font-mono text-[12px] uppercase tracking-wider text-[#686863]">
+              Loading harvest details...
+            </span>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
+
+  if (!product) {
+    return (
+      <PageTransition>
+        <div className="w-full bg-[#F4F1EA] min-h-screen py-24 flex items-center justify-center">
+          <div className="text-center max-w-[480px] px-4 space-y-4">
+            <h1 className="font-serif text-[28px] font-semibold text-[#242424]">
+              Product Not Found
+            </h1>
+            <p className="font-sans text-[14px] text-[#686863]">
+              The product you are looking for is currently unavailable or does not exist.
+            </p>
+            <button
+              type="button"
+              onClick={() => onNavigate('/shop')}
+              className="inline-flex items-center px-6 py-2.5 rounded-full bg-[#242424] text-[#FAF9F5] font-mono text-[12px] uppercase tracking-wider font-semibold hover:bg-[#C9892E] transition-colors cursor-pointer"
+            >
+              Back to Shop
+            </button>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
 
   // Derive current variant and price
   const currentVariant =
@@ -123,8 +193,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  // Other authentic products for "MORE FROM OUR HARVEST"
-  const otherProducts = allProducts.filter((p) => p.id !== product.id);
+  // Other authentic products for "MORE FROM OUR HARVEST" (active/available only)
+  const otherProducts = allProducts.filter((p) => p.id !== product.id && p.available !== false && (p as any).active !== false);
 
   return (
     <PageTransition>
@@ -309,6 +379,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <div className="grid grid-cols-2 gap-3">
                     {product.variants.map((variant) => {
                       const isSelected = selectedSize === variant.size;
+                      const isVariantOut = variant.available === false || (variant.stock !== undefined && variant.stock <= 0);
                       return (
                         <button
                           key={variant.size}
@@ -331,6 +402,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                             >
                               ₹{variant.price}
                             </span>
+                            {isVariantOut && (
+                              <span className="block font-mono text-[9px] uppercase tracking-wide text-rose-500 font-semibold mt-0.5">
+                                Out of stock
+                              </span>
+                            )}
                           </div>
 
                           <div className="w-9 h-9 rounded-[8px] bg-[#F4F1EA]/60 p-1 flex items-center justify-center flex-shrink-0">
@@ -378,36 +454,37 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </div>
 
                 {/* 3. PRIMARY ACTION BUTTONS: ADD TO CART & BUY NOW */}
-                <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                  <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className="flex-1 py-3.5 px-6 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#242424] font-sans text-[14px] sm:text-[15px] font-bold tracking-wide transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="w-4 h-4"
-                    >
-                      <circle cx="8" cy="21" r="1" />
-                      <circle cx="19" cy="21" r="1" />
-                      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                    </svg>
-                    <span>ADD TO CART • ₹{lineTotal}</span>
-                  </button>
+                <div className="flex flex-col gap-3 mb-6 w-full">
+                  {(() => {
+                    const isVariantAvailable = currentVariant ? (currentVariant.available !== false && (currentVariant.stock === undefined || currentVariant.stock > 0)) : true;
+                    const canPurchase = product.available && isVariantAvailable;
+                    return (
+                      <>
+                        <button
+                          type="button"
+                          disabled={!canPurchase}
+                          onClick={handleAddToCart}
+                          className={`w-full h-[58px] rounded-full bg-[#C9892E] hover:bg-[#B87B28] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9892E] text-[#242424] font-sans text-[15px] sm:text-[16px] font-bold tracking-wide transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2.5 border-none ${
+                            !canPurchase ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
+                        >
+                          <ShoppingCartIcon size={20} color="#242424" className="flex-shrink-0" />
+                          <span>{canPurchase ? 'ADD TO CART' : (!product.available ? 'CURRENTLY OUT OF STOCK' : 'SELECTED SIZE OUT OF STOCK')}</span>
+                        </button>
 
-                  <button
-                    type="button"
-                    onClick={handleBuyNow}
-                    className="flex-1 py-3.5 px-6 rounded-full bg-[#242424] hover:bg-[#383838] text-[#FAF9F5] font-sans text-[14px] sm:text-[15px] font-bold tracking-wide transition-all shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>BUY IT NOW</span>
-                  </button>
+                        <button
+                          type="button"
+                          disabled={!canPurchase}
+                          onClick={handleBuyNow}
+                          className={`w-full h-[58px] rounded-full bg-[#242424] hover:bg-[#383838] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#242424] text-[#FAF9F5] font-sans text-[15px] sm:text-[16px] font-bold tracking-wide transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 border-none ${
+                            !canPurchase ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
+                        >
+                          <span>{canPurchase ? 'BUY IT NOW' : 'OUT OF STOCK'}</span>
+                        </button>
+                      </>
+                    );
+                  })()}
                 </div>
 
                 {/* Secondary: Direct WhatsApp Order Option */}
@@ -691,14 +768,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                             <p><strong>Referenced Standard:</strong> {product.accordions.qualityLabReport.standard}</p>
                           </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-mono text-[12px]">
-                            {product.accordions.qualityLabReport.highlights.map((param, i) => (
-                              <div key={i} className="p-2.5 rounded-[8px] bg-white border border-[#D9D7D0] flex items-center justify-between">
-                                <span className="text-[#686863]">{param.parameter}:</span>
-                                <span className="font-bold text-[#242424]">{param.result}</span>
-                              </div>
-                            ))}
-                          </div>
+                          {Array.isArray(product.accordions.qualityLabReport.highlights) && product.accordions.qualityLabReport.highlights.length > 0 && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-mono text-[12px]">
+                              {product.accordions.qualityLabReport.highlights.map((param, i) => (
+                                <div key={i} className="p-2.5 rounded-[8px] bg-white border border-[#D9D7D0] flex items-center justify-between">
+                                  <span className="text-[#686863]">{param.parameter}:</span>
+                                  <span className="font-bold text-[#242424]">{param.result}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
 
                           <div className="pt-2">
                             <button

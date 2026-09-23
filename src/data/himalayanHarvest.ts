@@ -5,11 +5,17 @@
  */
 
 export interface ProductVariant {
+  id?: string;
+  sku?: string;
   size: '400g' | '1kg' | '1000g' | string;
   weight: string;
+  weightInGrams?: number;
   price: number;
+  compareAtPrice?: number;
   image: string;
   hasDistinctAsset: boolean;
+  stock?: number;
+  available?: boolean;
 }
 
 export interface ProductCharacteristics {
@@ -26,17 +32,19 @@ export interface ProductAccordions {
     packaging?: string;
     storage?: string;
     shelfLife?: string;
+    [key: string]: string | undefined;
   };
   traditionalUse?: string[];
   harvestingAndSource?: string[];
   qualityLabReport?: {
-    note: string;
-    reportNumber: string;
-    reportDate: string;
-    facility: string;
-    standard: string;
-    testedSampleNote: string;
-    highlights: { parameter: string; result: string; requirement: string }[];
+    note?: string;
+    reportNumber?: string;
+    reportDate?: string;
+    facility?: string;
+    standard?: string;
+    testedSampleNote?: string;
+    highlights?: { parameter: string; result: string; requirement: string }[];
+    [key: string]: any;
   };
   returnsAndExchange?: {
     summary: string;
@@ -55,15 +63,22 @@ export interface Product {
   slug: string;
   weight?: string;
   price: number;
+  basePrice?: number;
   salePrice?: number;
+  compareAtPrice?: number;
   offer?: string;
   badge?: string;
   available: boolean;
+  active?: boolean;
+  featured?: boolean;
+  displayOrder?: number;
   variants: ProductVariant[];
   galleryImages?: string[];
   characteristics?: ProductCharacteristics;
   accordions?: ProductAccordions;
   whatsappMessage?: string;
+  createdAt?: any;
+  updatedAt?: any;
 }
 
 export interface Offer {

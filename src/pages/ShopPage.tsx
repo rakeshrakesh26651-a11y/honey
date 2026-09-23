@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { PRODUCTS, Product } from '../data/himalayanHarvest';
+import { Product } from '../data/himalayanHarvest';
+import { useProducts } from '../hooks/useProducts';
 import { ProductCard } from '../components/ProductCard';
 import { PageTransition } from '../components/motion/PageTransition';
 
@@ -10,8 +11,7 @@ interface ShopPageProps {
 }
 
 export const ShopPage: React.FC<ShopPageProps> = ({ onAddToCart, onNavigate }) => {
-  // Exactly the 4 verified Himalayan Harvest Honey products
-  const products: Product[] = PRODUCTS;
+  const { products, loading } = useProducts();
 
   return (
     <PageTransition>
@@ -70,14 +70,31 @@ export const ShopPage: React.FC<ShopPageProps> = ({ onAddToCart, onNavigate }) =
               No horizontal overflow, generous padding
           */}
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6 md:gap-7 mb-16 sm:mb-20">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={onAddToCart}
-                onNavigate={onNavigate}
-              />
-            ))}
+            {products.length === 0 ? (
+              <div className="col-span-full py-16 text-center">
+                {loading ? (
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 rounded-full border-2 border-[#C9892E] border-t-transparent animate-spin" />
+                    <span className="font-mono text-[12px] uppercase tracking-wider text-[#686863]">
+                      Loading harvest collection...
+                    </span>
+                  </div>
+                ) : (
+                  <p className="font-sans text-[15px] text-[#686863]">
+                    No products are currently available in the catalogue.
+                  </p>
+                )}
+              </div>
+            ) : (
+              products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={onAddToCart}
+                  onNavigate={onNavigate}
+                />
+              ))
+            )}
           </div>
 
           {/* Heritage Trust Badges */}

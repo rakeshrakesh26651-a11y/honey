@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CartIcon } from './Icons';
+import { CartIcon, UserIcon } from './Icons';
 import { BrandLogo } from './BrandLogo';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   cartCount: number;
@@ -20,6 +21,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigate,
   currentPath = '/',
 }) => {
+  const { user, userProfile } = useAuth();
+
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     if (onNavigate) {
       e.preventDefault();
@@ -83,8 +86,27 @@ export const Header: React.FC<HeaderProps> = ({
           })}
         </nav>
 
-        {/* Right Group: Cart and Mobile Hamburger */}
+        {/* Right Group: Account Icon, Cart and Mobile Hamburger */}
         <div className="flex items-center space-x-2.5 sm:space-x-4 lg:space-x-6 flex-shrink-0">
+          {/* Customer Account / Login Icon */}
+          <button
+            onClick={() => {
+              if (onNavigate) {
+                onNavigate(user ? '/account' : '/login');
+              }
+            }}
+            className={`flex items-center space-x-1.5 sm:space-x-2 text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer flex-shrink-0 ${
+              currentPath === '/account' || currentPath === '/login' ? 'text-[#C9892E]' : ''
+            }`}
+            aria-label={user ? 'Customer Account' : 'Customer Login'}
+            title={user ? 'Account' : 'Login / Account'}
+          >
+            <UserIcon size={19} color="currentColor" />
+            <span className="hidden sm:inline font-sans text-[13.5px] sm:text-[15px] font-medium leading-none whitespace-nowrap">
+              {user ? (userProfile?.name ? userProfile.name.split(' ')[0] : 'Account') : 'Login'}
+            </span>
+          </button>
+
           <button
             onClick={onOpenCart}
             className="flex items-center space-x-1.5 sm:space-x-2 text-[#242424] hover:text-[#C9892E] transition-colors cursor-pointer flex-shrink-0"

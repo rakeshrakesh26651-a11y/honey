@@ -64,6 +64,25 @@ export const CartIcon: React.FC<IconProps> = ({ className = '', size = 20, color
   </svg>
 );
 
+export const ShoppingCartIcon: React.FC<IconProps> = ({ className = '', size = 20, color = 'currentColor' }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    stroke={color}
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="8" cy="21" r="1" />
+    <circle cx="19" cy="21" r="1" />
+    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+  </svg>
+);
+
 export const MenuIcon: React.FC<IconProps> = ({ className = '', size = 24, color = 'currentColor' }) => (
   <svg
     className={className}
@@ -365,4 +384,69 @@ export const WhatsAppIcon: React.FC<IconProps> = ({ className = '', size = 18, c
     />
   </svg>
 );
+
+export const UserIcon: React.FC<IconProps> = ({ className = '', size = 20, color = 'currentColor' }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle
+      cx="12"
+      cy="7"
+      r="4"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const LogoutIcon: React.FC<IconProps> = ({ className = '', size = 18, color = 'currentColor' }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    width={size}
+    height={size}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <polyline
+      points="16 17 21 12 16 7"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <line
+      x1="21"
+      y1="12"
+      x2="9"
+      y2="12"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 

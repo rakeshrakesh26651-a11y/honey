@@ -9,9 +9,12 @@
     "preview": "vite preview --port 3000",
     "test": "node scripts/verify-whatsapp-flow.mjs",
     "test:razorpay": "node scripts/verify-razorpay-integration.mjs",
-    "test:all": "node scripts/verify-whatsapp-flow.mjs && node scripts/verify-razorpay-integration.mjs"
+    "test:all": "node scripts/verify-whatsapp-flow.mjs && node scripts/verify-razorpay-integration.mjs",
+    "admin:claim": "node scripts/set-admin-claim.mjs"
   },
   "dependencies": {
+    "firebase": "^12.19.0",
+    "firebase-admin": "^14.4.0",
     "framer-motion": "^11.18.2",
     "lenis": "^1.1.18",
     "razorpay": "^2.9.8",

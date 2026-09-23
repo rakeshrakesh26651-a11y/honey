@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Product } from '../data/himalayanHarvest';
 
@@ -12,6 +12,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
   const [selectedSize, setSelectedSize] = useState<string>(
     product.variants && product.variants.length > 0 ? product.variants[0].size : '400g'
   );
+
+  useEffect(() => {
+    if (product.variants && product.variants.length > 0) {
+      if (!product.variants.some((v) => v.size === selectedSize)) {
+        setSelectedSize(product.variants[0].size);
+      }
+    }
+  }, [product, selectedSize]);
 
   const currentVariant = product.variants?.find((v) => v.size === selectedSize) || product.variants?.[0];
   const currentPrice = currentVariant ? currentVariant.price : product.price;

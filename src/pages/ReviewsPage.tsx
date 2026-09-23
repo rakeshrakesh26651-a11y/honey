@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TESTIMONIALS } from '../data/himalayanHarvest';
+import { useApprovedReviews } from '../hooks/useApprovedReviews';
 import { CustomerAvatar } from '../components/CustomerAvatar';
 import { AnimatedHeading } from '../components/motion/AnimatedHeading';
 import { TextRevealOnScroll } from '../components/motion/TextRevealOnScroll';
@@ -12,6 +12,7 @@ interface ReviewsPageProps {
 }
 
 export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onNavigate }) => {
+  const { reviews } = useApprovedReviews();
   return (
     <PageTransition>
       <div className="w-full bg-[#F4F1EA] min-h-screen py-10 md:py-18">
@@ -58,7 +59,7 @@ export const ReviewsPage: React.FC<ReviewsPageProps> = ({ onNavigate }) => {
 
           {/* Testimonial Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 mb-16">
-            {TESTIMONIALS.map((t) => (
+            {reviews.map((t) => (
               <div
                 key={t.id}
                 className="bg-[#FAF9F5] border border-[#D9D7D0] rounded-[22px] p-7 sm:p-8 flex flex-col justify-between shadow-[0_4px_20px_rgba(36, 36, 36,0.04)] hover:shadow-[0_12px_32px_rgba(36, 36, 36,0.08)] hover:border-[#C9892E]/60 transition-all duration-300"

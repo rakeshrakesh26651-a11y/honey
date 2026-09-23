@@ -1,0 +1,138 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // Core Authorization Helpers
+    // =========================================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Cryptographic Admin Check: Relies exclusively on Firebase Auth Custom Claims
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // =========================================================================
+    // 1. Products Collection
+    // =========================================================================
+    match /products/{productId} {
+      // Public customers can read active products without being admin; Admins can read all and write
+      allow read: if isAdmin() || resource.data.active == true || resource.data.available == true;
+      allow write: if isAdmin();
+    }
+
+    // =========================================================================
+    // 2. Orders Collection
+    // =========================================================================
+    match /orders/{orderId} {
+      // Customers read ONLY their own orders; Admins can read all orders
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.customer.uid == request.auth.uid);
+      
+      // CLIENT ORDER CREATION IS STRICTLY FORBIDDEN
+      // Orders can ONLY be created by the trusted backend server via Firebase Admin SDK
+      allow create: if false;
+      
+      // Only administrators can update fulfillment status, tracking, or order notes
+      allow update: if isAdmin();
+      
+      // Orders must never be deleted by clients
+      allow delete: if false;
+    }
+
+    // =========================================================================
+    // 3. Users / Customers Collection
+    // =========================================================================
+    match /users/{userId} {
+      // Users can view their own profile; Admins can view the customer directory
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // On creation:
+      // - Must be the document owner matching authenticated UID
+      // - Must use explicit allowed field set only
+      // - Client-provided uid must match authenticated UID
+      // - Client-provided email must match authenticated token email
+      // - Prohibits role, admin, metrics, totalSpent, totalOrders
+      allow create: if isOwner(userId) &&
+        request.resource.data.keys().hasOnly(['uid', 'name', 'email', 'phone', 'savedAddresses', 'createdAt', 'updatedAt']) &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.email == request.auth.token.email &&
+        !request.resource.data.keys().hasAny(['role', 'admin', 'metrics', 'totalSpent', 'totalOrders']);
+
+      // On update:
+      // - Must be the owner
+      // - Strictly restricted to whitelisted contact fields: name, phone, savedAddresses, updatedAt
+      // - Arbitrary fields, role, admin, metrics, totalSpent, totalOrders, uid, email, createdAt CANNOT be modified
+      allow update: if isOwner(userId) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'phone', 'savedAddresses', 'updatedAt'
+        ]);
+
+      allow delete: if false;
+    }
+
+    // =========================================================================
+    // 4. Inventory Collection (Admin Private)
+    // =========================================================================
+    match /inventory/{sku} {
+      // Stock counts (stockOnHand, stockReserved, stockAvailable) are NEVER exposed to clients
+      allow read, write: if isAdmin();
+    }
+
+    // =========================================================================
+    // 5. Reviews Collection
+    // =========================================================================
+    match /reviews/{reviewId} {
+      // Storefront can only read APPROVED reviews; Admins can read pending and rejected
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      
+      // Customers can submit reviews, but CANNOT self-approve or set moderation metadata
+      allow create: if isAuthenticated() &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.verifiedPurchase == false &&
+        request.resource.data.userId == request.auth.uid &&
+        !request.resource.data.keys().hasAny(['moderatedBy', 'moderatedAt']);
+
+      allow update, delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // 6. Coupons Collection (Admin Private)
+    // =========================================================================
+    match /coupons/{couponCode} {
+      // Coupon validation occurs strictly server-side; clients cannot read or dump coupons
+      allow read, write: if isAdmin();
+    }
+
+    // =========================================================================
+    // 7. Settings & Shipping Collections
+    // =========================================================================
+    match /settings/{docId} {
+      // Storefront reads public shipping rates & general brand settings; Admins can edit
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // =========================================================================
+    // 8. Audit Logs Collection
+    // =========================================================================
+    match /audit_logs/{logId} {
+      // Browser clients can NEVER write audit logs. Written strictly by server API handlers
+      allow write: if false;
+      allow read: if isAdmin();
+    }
+
+    // =========================================================================
+    // 9. Sequential Counters Collection
+    // =========================================================================
+    match /counters/{counterId} {
+      // Managed strictly by server-side atomic transactions for order numbering
+      allow read, write: if false;
+    }
+  }
+}

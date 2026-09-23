@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ProductCard } from './ProductCard';
-import { PRODUCTS, Product } from '../data/content';
+import { Product } from '../data/content';
+import { useProducts } from '../hooks/useProducts';
 import { AnimatedHeading } from './motion/AnimatedHeading';
 
 interface ProductSectionProps {
@@ -10,6 +11,7 @@ interface ProductSectionProps {
 }
 
 export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart, onNavigate }) => {
+  const { products, loading } = useProducts();
   const handleViewAll = (e: React.MouseEvent) => {
     e.preventDefault();
     if (onNavigate) {
@@ -61,23 +63,40 @@ export const ProductSection: React.FC<ProductSectionProps> = ({ onAddToCart, onN
           </div>
         </motion.div>
 
-        {/* 6-Product Presentation Grid: Desktop 3 cols, Tablet 2 cols, Mobile 1 col */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8"
-        >
-          {PRODUCTS.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={onAddToCart}
-              onNavigate={onNavigate}
-            />
-          ))}
-        </motion.div>
+        {/* Product Presentation Grid */}
+        {products.length === 0 ? (
+          <div className="py-16 text-center">
+            {loading ? (
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 rounded-full border-2 border-[#C9892E] border-t-transparent animate-spin" />
+                <span className="font-mono text-[12px] uppercase tracking-wider text-[#686863]">
+                  Loading harvest collection...
+                </span>
+              </div>
+            ) : (
+              <p className="font-sans text-[15px] text-[#686863]">
+                No products are currently available in the collection.
+              </p>
+            )}
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8"
+          >
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={onAddToCart}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   );

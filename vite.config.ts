@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
             'vendor-react': ['react', 'react-dom'],
             'vendor-motion': ['framer-motion'],
             'vendor-lenis': ['lenis'],
+            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
           },
         },
       },

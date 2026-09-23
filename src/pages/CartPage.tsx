@@ -7,6 +7,7 @@ import {
   createServerOrder,
   verifyServerPayment,
 } from '../utils/payment';
+import { useShippingSettings } from '../hooks/useShippingSettings';
 
 export interface CartItem {
   id: string; // unique item id: e.g. `${product.id}-${size}`
@@ -91,24 +92,17 @@ export const CartPage: React.FC<CartPageProps> = ({
     error?: string;
   }>({});
 
-  const isTamilNadu = (stateName?: string): boolean => {
-    if (!stateName) return false;
-    const normalized = stateName.trim().toLowerCase().replace(/[^a-z]/g, '');
-    return normalized === 'tamilnadu' || normalized === 'tn';
-  };
-
-  const getShippingFee = (orderSubtotal: number, stateName?: string): number => {
-    if (orderSubtotal >= 1000) return 0;
-    return isTamilNadu(stateName) ? 50 : 100;
-  };
+  const { settings: shippingSettings, calculateShippingFee } = useShippingSettings();
 
   const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
   const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const freeShippingThreshold = 1000;
+  const freeShippingThreshold = shippingSettings.freeShippingThreshold;
   const freeShippingRemaining = Math.max(0, freeShippingThreshold - subtotal);
-  const freeShippingPercent = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+  const freeShippingPercent = freeShippingThreshold > 0
+    ? Math.min(100, (subtotal / freeShippingThreshold) * 100)
+    : 100;
 
-  const shippingFee = getShippingFee(subtotal, customer.state);
+  const shippingFee = calculateShippingFee(subtotal, customer.state);
   const discountAmount = Math.round(subtotal * (couponDiscount / 100));
   const finalPayableTotal = Math.max(0, subtotal - discountAmount + shippingFee);
 

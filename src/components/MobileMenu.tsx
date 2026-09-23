@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -14,12 +15,17 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   onNavigate,
   currentPath = '/',
 }) => {
+  const { user, userProfile } = useAuth();
+
   const mainLinks = [
     { number: '01', label: 'Shop', href: '/shop' },
     { number: '02', label: 'Our Story', href: '/about' },
     { number: '03', label: 'Lab Report', href: '/lab-reports' },
     { number: '04', label: 'FAQ', href: '/faq' },
     { number: '05', label: 'Contact', href: '/contact' },
+    user
+      ? { number: '06', label: userProfile?.name ? `Account (${userProfile.name.split(' ')[0]})` : 'Account', href: '/account' }
+      : { number: '06', label: 'Sign In', href: '/login' },
   ];
 
   const policyLinks = [
