@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import { AdminCard, AdminButton, AdminInput, AdminIcons } from '../components/ui';
+import { BrandLogo } from '../../components/BrandLogo';
 
 interface AdminLoginPageProps {
   onNavigate: (path: string) => void;
@@ -58,14 +59,17 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
     <div className="min-h-screen bg-[#FAF8F5] text-[#2C241E] flex flex-col justify-between p-4 sm:p-6 md:p-8 selection:bg-[#FAF3E8] selection:text-[#9B6418]">
       {/* Top Header */}
       <div className="max-w-6xl w-full mx-auto flex items-center justify-between py-2">
-        <div className="space-y-0.5">
-          <span className="font-serif text-[14px] font-bold tracking-widest text-[#2C241E] uppercase block leading-tight">
-            Himalayan Harvest
+        <button
+          type="button"
+          onClick={() => onNavigate('/')}
+          className="cursor-pointer text-left flex items-center gap-3"
+          aria-label="Himalayan Harvest Honey Home"
+        >
+          <BrandLogo variant="admin-login" />
+          <span className="hidden sm:inline-block font-mono text-[9.5px] uppercase tracking-widest text-[#C9892E] font-bold border-l border-[#EBE6DD] pl-3 py-1">
+            Admin Portal
           </span>
-          <span className="font-mono text-[9.5px] uppercase tracking-widest text-[#C9892E] font-bold block">
-            Administrative Portal
-          </span>
-        </div>
+        </button>
 
         <button
           type="button"
@@ -85,9 +89,9 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onNavigate }) =>
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
           <AdminCard padding="lg" className="border-[#EBE6DD] shadow-[0_16px_48px_rgba(44,36,30,0.06)]">
-            <div className="text-center space-y-2 mb-7">
-              <div className="w-12 h-12 rounded-2xl bg-[#FAF3E8] border border-[#F0DFC4] text-[#C9892E] mx-auto flex items-center justify-center text-xl shadow-2xs">
-                <AdminIcons.ShieldCheck className="w-6 h-6" />
+            <div className="text-center space-y-3 mb-7">
+              <div className="flex justify-center mb-1">
+                <BrandLogo variant="admin-login-card" />
               </div>
               <h1 className="font-serif text-2xl font-semibold text-[#2C241E]">
                 Administrator Sign In

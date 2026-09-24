@@ -1,5 +1,6 @@
 import React from 'react';
 import { AdminIcons } from './ui/AdminIcons';
+import { BrandLogo } from '../../components/BrandLogo';
 
 interface NavItem {
   label: string;
@@ -86,21 +87,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         }`}
       >
         {/* Brand Header */}
-        <div className="p-6 border-b border-[#EBE6DD]">
+        <div className="p-5 border-b border-[#EBE6DD]">
           <div className="flex items-center justify-between">
             <button
               type="button"
               onClick={() => onNavigate('/admin')}
               className="text-left group cursor-pointer"
             >
-              <div className="space-y-0.5">
-                <span className="font-serif text-[15px] font-bold tracking-widest text-[#2C241E] uppercase block leading-tight group-hover:text-[#C9892E] transition-colors">
-                  Himalayan
-                </span>
-                <span className="font-serif text-[12.5px] tracking-[0.22em] text-[#73665C] uppercase block leading-tight">
-                  Harvest Honey
-                </span>
-              </div>
+              <BrandLogo variant="admin-sidebar" />
               <div className="flex items-center gap-1.5 mt-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C9892E]" />
                 <span className="font-mono text-[9px] uppercase tracking-widest text-[#C9892E] font-bold">

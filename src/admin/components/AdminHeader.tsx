@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import { AdminIcons } from './ui/AdminIcons';
+import { BrandLogo } from '../../components/BrandLogo';
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void;
@@ -52,7 +53,18 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
           <AdminIcons.Menu className="w-5 h-5" />
         </button>
 
-        <div className="space-y-0.5">
+        <div className="lg:hidden">
+          <button
+            type="button"
+            onClick={() => onNavigate('/admin')}
+            className="cursor-pointer flex items-center"
+            aria-label="Admin Dashboard"
+          >
+            <BrandLogo variant="admin-header" />
+          </button>
+        </div>
+
+        <div className="hidden lg:block space-y-0.5">
           <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#9E9287]">
             <span>{pageInfo.breadcrumb}</span>
           </div>
