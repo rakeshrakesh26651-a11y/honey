@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../data/content';
-import { openWhatsAppOrder } from '../utils/whatsapp';
+
 import {
   CustomerInfo,
   loadRazorpayScript,
@@ -413,12 +413,6 @@ export const CartPage: React.FC<CartPageProps> = ({
               className="w-full sm:w-auto inline-flex items-center justify-center h-[48px] px-8 rounded-full bg-[#C9892E] hover:bg-[#DDAA55] text-[#242424] font-sans text-[15px] font-bold tracking-wide transition-all shadow-sm cursor-pointer"
             >
               RETRY PAYMENT
-            </button>
-            <button
-              onClick={() => openWhatsAppOrder(items)}
-              className="w-full sm:w-auto inline-flex items-center justify-center h-[48px] px-7 rounded-full border border-[#D9D7D0] bg-white hover:bg-[#F4F1EA] text-[#242424] font-sans text-[15px] font-medium transition-all cursor-pointer"
-            >
-              ORDER VIA WHATSAPP
             </button>
           </div>
         </div>

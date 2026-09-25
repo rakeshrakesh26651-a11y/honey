@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Product, WHATSAPP_NUMBER } from '../data/himalayanHarvest';
+import { Product } from '../data/himalayanHarvest';
 import { useProducts } from '../hooks/useProducts';
 import { PageTransition } from '../components/motion/PageTransition';
 import { ProductCard } from '../components/ProductCard';
@@ -188,11 +188,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     }
   };
 
-  const handleWhatsAppOrder = () => {
-    const message = `Hello Himalayan Harvest Honey! 👋\n\nI would like to place an order:\n\nProduct: ${product.name}\nSize: ${selectedSize}\nQuantity: ${quantity}\nPrice: ₹${unitPrice}\nTotal: ₹${lineTotal}\n\nPlease confirm availability and dispatch details.\n\nThank you.`;
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
+
 
   // Other authentic products for "MORE FROM OUR HARVEST" (active products, do not hide out-of-stock)
   const otherProducts = allProducts.filter((p) => p.id !== product.id && (p as any).active !== false);
@@ -488,17 +484,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   })()}
                 </div>
 
-                {/* Secondary: Direct WhatsApp Order Option */}
-                <div className="mb-6">
-                  <button
-                    type="button"
-                    onClick={handleWhatsAppOrder}
-                    className="w-full py-2.5 px-4 rounded-full bg-white hover:bg-[#F4F1EA] text-[#242424] border border-[#D9D7D0] font-sans text-[13px] font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-green-500" />
-                    <span>Order directly via WhatsApp Desk</span>
-                  </button>
-                </div>
+
 
                 {/* 4. DELIVERY & PINCODE CHECKER */}
                 <div className="p-4 rounded-[16px] bg-white border border-[#D9D7D0] mb-6">
