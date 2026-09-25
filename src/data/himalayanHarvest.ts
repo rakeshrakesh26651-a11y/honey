@@ -197,7 +197,8 @@ export const MOUNTAIN_HONEY_PRODUCT: Product = {
   ],
   galleryImages: [
     "/images/product_mountain_nobg.png",
-    "/images/hero_honey_jar.jpg",
+    "/images/brand_vs_massmarket.jpg",
+    "/images/brand_dual_jars.jpg",
   ],
   characteristics: {
     aroma: "Crisp high-altitude botanical nectar",
@@ -281,8 +282,8 @@ export const PRODUCTS: Product[] = [
     ],
     galleryImages: [
       "/images/product_multifloral_nobg.png",
-      "/images/forest_honey_best.jpg",
-      "/images/product_multifloral.jpg",
+      "/images/brand_vs_massmarket.jpg",
+      "/images/brand_dual_jars.jpg",
     ],
     characteristics: {
       aroma: "Warm floral & wildflower nectar notes",
@@ -362,8 +363,8 @@ export const PRODUCTS: Product[] = [
     ],
     galleryImages: [
       "/images/product_wildflower_nobg.png",
-      "/images/kombu_honey_best.jpg",
-      "/images/product_wildflower.jpg",
+      "/images/brand_vs_massmarket.jpg",
+      "/images/brand_dual_jars.jpg",
     ],
     characteristics: {
       aroma: "Distinct wild comb & delicate herbal fragrance",
@@ -440,7 +441,8 @@ export const PRODUCTS: Product[] = [
     ],
     galleryImages: [
       "/images/product_raw_reserve_nobg.png",
-      "/images/product_raw_reserve.jpg",
+      "/images/brand_vs_massmarket.jpg",
+      "/images/brand_dual_jars.jpg",
     ],
     characteristics: {
       aroma: "Distinct botanical and rare flora scent",

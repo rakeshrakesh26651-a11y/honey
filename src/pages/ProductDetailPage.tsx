@@ -135,14 +135,26 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const unitPrice = currentVariant ? currentVariant.price : product.price;
   const lineTotal = unitPrice * quantity;
 
-  // Build list of all gallery images for this product
+  // Shared supporting images shown for every product
+  const SHARED_GALLERY_IMAGES = [
+    '/images/brand_vs_massmarket.jpg',
+    '/images/brand_dual_jars.jpg',
+  ];
+
+  // Primary image prioritizes current variant, then base product image
+  const primaryImage = currentVariant?.image || product.image || '/images/hero_honey_jar.jpg';
+
+  // Build authoritative list of existing 3 gallery images: primary jar + 2 supporting images
   const galleryList = Array.from(
     new Set([
-      currentVariant?.image || product.image,
+      primaryImage,
       ...(product.galleryImages || []),
-      product.image,
-    ])
-  ).filter(Boolean);
+      ...SHARED_GALLERY_IMAGES,
+    ].filter(Boolean))
+  ).slice(0, 3);
+
+  // Active display image: ensure fallback to first gallery image if activeImage isn't in list
+  const displayImage = galleryList.includes(activeImage) ? activeImage : (galleryList[0] || primaryImage);
 
   const toggleAccordion = (sectionKey: string) => {
     setOpenSections((prev) => ({
@@ -244,58 +256,61 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           {/* Product Detail Two-Column Showcase */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-[#FAF9F5] border border-[#D9D7D0] rounded-[24px] p-5 sm:p-8 md:p-10 mb-16 shadow-[0_4px_24px_rgba(36,36,36,0.03)]">
             {/* LEFT COLUMN: Gallery with large main image & thumbnails */}
-            <div className="lg:col-span-6 flex flex-col items-center">
-              {/* Main Product Showcase Box */}
-              <div className="relative w-full aspect-square max-h-[460px] sm:max-h-[520px] rounded-[18px] bg-white border border-[#D9D7D0] p-4 sm:p-8 flex items-center justify-center overflow-hidden shadow-xs">
-                {product.badge && (
-                  <div className="absolute top-3.5 left-3.5 z-10">
-                    <span className="inline-block px-3 py-1 rounded-full bg-[#242424] text-[#FAF9F5] font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-xs">
-                      {product.badge}
-                    </span>
+            <div className="lg:col-span-6 flex flex-col items-start w-full">
+              {/* Gallery Wrapper: Vertical Thumbnails on the LEFT + Large Main Image on the RIGHT */}
+              <div className="w-full flex flex-row items-start gap-3 sm:gap-4 md:gap-5">
+                {/* 3 Image Thumbnails: small square cards stacked vertically on the LEFT */}
+                {galleryList.length > 1 && (
+                  <div className="flex flex-col gap-2.5 sm:gap-3 shrink-0">
+                    {galleryList.map((imgSrc, idx) => {
+                      const isCurrent = displayImage === imgSrc;
+                      return (
+                        <button
+                          key={`${imgSrc}-${idx}`}
+                          type="button"
+                          onClick={() => setActiveImage(imgSrc)}
+                          className={`w-14 h-14 sm:w-16 sm:h-16 md:w-[72px] md:h-[72px] aspect-square rounded-[10px] sm:rounded-[12px] p-1.5 sm:p-2 bg-white transition-all cursor-pointer flex items-center justify-center overflow-hidden ${
+                            isCurrent
+                              ? 'border-2 border-[#242424] shadow-xs ring-1 ring-[#242424]/10'
+                              : 'border border-[#D9D7D0] hover:border-[#686863] opacity-80 hover:opacity-100'
+                          }`}
+                          aria-label={`View product image ${idx + 1}`}
+                        >
+                          <img
+                            src={imgSrc}
+                            alt={`${product.name} thumbnail ${idx + 1}`}
+                            className="w-full h-full object-contain"
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
 
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={activeImage}
-                    src={activeImage}
-                    alt={product.alt || `${product.name} raw harvest jar`}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.35, ease: 'easeOut' }}
-                    className="max-h-full max-w-full w-auto h-auto object-contain select-none drop-shadow-[0_16px_32px_rgba(36,36,36,0.12)]"
-                  />
-                </AnimatePresence>
-              </div>
+                {/* Large Main Product Image Box in center/left gallery area */}
+                <div className="relative flex-1 min-w-0 aspect-square max-h-[520px] sm:max-h-[560px] rounded-[18px] bg-white border border-[#D9D7D0] p-4 sm:p-6 md:p-8 flex items-center justify-center overflow-hidden shadow-xs">
+                  {product.badge && (
+                    <div className="absolute top-3.5 left-3.5 z-10">
+                      <span className="inline-block px-3 py-1 rounded-full bg-[#242424] text-[#FAF9F5] font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-xs">
+                        {product.badge}
+                      </span>
+                    </div>
+                  )}
 
-              {/* Thumbnails Strip */}
-              {galleryList.length > 1 && (
-                <div className="flex items-center gap-2.5 sm:gap-3 mt-4 overflow-x-auto max-w-full pb-1">
-                  {galleryList.map((imgSrc, idx) => {
-                    const isCurrent = activeImage === imgSrc;
-                    return (
-                      <button
-                        key={`${imgSrc}-${idx}`}
-                        type="button"
-                        onClick={() => setActiveImage(imgSrc)}
-                        className={`w-14 h-14 sm:w-16 sm:h-16 rounded-[12px] p-1.5 bg-white border transition-all cursor-pointer flex-shrink-0 flex items-center justify-center ${
-                          isCurrent
-                            ? 'border-[#C9892E] ring-2 ring-[#C9892E]/30 shadow-xs'
-                            : 'border-[#D9D7D0] opacity-70 hover:opacity-100'
-                        }`}
-                        aria-label={`Show view ${idx + 1}`}
-                      >
-                        <img
-                          src={imgSrc}
-                          alt={`${product.name} thumb ${idx + 1}`}
-                          className="max-h-full max-w-full object-contain"
-                        />
-                      </button>
-                    );
-                  })}
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={displayImage}
+                      src={displayImage}
+                      alt={product.alt || `${product.name} raw harvest jar`}
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.25, ease: 'easeOut' }}
+                      className="w-full h-full object-contain select-none drop-shadow-[0_16px_32px_rgba(36,36,36,0.12)]"
+                    />
+                  </AnimatePresence>
                 </div>
-              )}
+              </div>
 
               {/* Sourcing & Trust Strip */}
               <div className="w-full mt-6 pt-5 border-t border-[#D9D7D0] grid grid-cols-3 gap-2 text-center">
