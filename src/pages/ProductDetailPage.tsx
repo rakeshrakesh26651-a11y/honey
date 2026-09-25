@@ -4,6 +4,7 @@ import { Product, WHATSAPP_NUMBER } from '../data/himalayanHarvest';
 import { useProducts } from '../hooks/useProducts';
 import { PageTransition } from '../components/motion/PageTransition';
 import { ProductCard } from '../components/ProductCard';
+import { ProductReviewsSection } from '../components/ProductReviewsSection';
 import { ShoppingCartIcon } from '../components/Icons';
 
 interface ProductDetailPageProps {
@@ -832,6 +833,9 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
             </div>
           )}
+
+          {/* PRODUCT-SPECIFIC CUSTOMER REVIEWS */}
+          <ProductReviewsSection productId={product.id} productName={product.name} />
 
           {/* 7. MORE FROM OUR HARVEST (Related Products) */}
           <section className="mb-16">

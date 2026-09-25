@@ -878,16 +878,6 @@ export const CartPage: React.FC<CartPageProps> = ({
                 </button>
               )}
 
-              {/* SECONDARY WHATSAPP ACTION */}
-              <button
-                onClick={() => openWhatsAppOrder(items)}
-                className="w-full h-[46px] rounded-full border border-[#D9D7D0] bg-white hover:bg-[#F4F1EA] text-[#242424] font-sans text-[14px] font-medium transition-all flex items-center justify-center gap-2 cursor-pointer mb-5"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                </svg>
-                <span>OR ORDER VIA WHATSAPP</span>
-              </button>
 
               {/* TRUST BADGES IN SUMMARY CARD */}
               <div className="pt-4 border-t border-[#D9D7D0]/60 space-y-2 text-[12px] font-mono text-[#686863]">

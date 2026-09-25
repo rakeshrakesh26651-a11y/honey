@@ -237,6 +237,7 @@ export interface ReviewDocument {
   rating: number; // 1 to 5
   title: string;
   quote: string;
+  mediaUrls?: string[];
   status: ReviewStatus; // Always starts as 'pending' on client creation
   verifiedPurchase: boolean;
   moderatedAt?: Timestamp;
