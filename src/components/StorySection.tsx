@@ -2,6 +2,15 @@ import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 
+/** Returns mobile or thumb WebP path, falls back to original on error. */
+function getOptimizedSrc(src: string, variant: 'mobile' | 'thumb' = 'mobile'): string {
+  if (!src || src.startsWith('http')) return src;
+  const ext = src.match(/\.(jpe?g|png)$/i)?.[1];
+  if (!ext) return src;
+  const base = src.replace(/\.(jpe?g|png)$/i, '');
+  return `${base.replace('/images/', '/images/optimized/')}-${variant}.webp`;
+}
+
 interface StorySectionProps {
   onNavigate?: (path: string) => void;
 }
@@ -142,8 +151,10 @@ export const StorySection: React.FC<StorySectionProps> = ({ onNavigate }) => {
                 >
                   <motion.img
                     layout
-                    src={img.src}
+                    src={isFeatured ? getOptimizedSrc(img.src, 'mobile') : getOptimizedSrc(img.src, 'thumb')}
                     alt={img.alt}
+                    width={isFeatured ? 528 : 176}
+                    height={isFeatured ? 410 : 132}
                     loading={isFeatured ? 'eager' : 'lazy'}
                     transition={springTransition}
                     className={`w-full h-full object-cover ${
@@ -151,6 +162,7 @@ export const StorySection: React.FC<StorySectionProps> = ({ onNavigate }) => {
                         ? 'rounded-[16px] transition-transform duration-700 ease-out group-hover:scale-[1.02]'
                         : 'rounded-[12px]'
                     }`}
+                    onError={(e) => { (e.target as HTMLImageElement).src = img.src; }}
                   />
 
                   {/* Origin Tag on Featured Card */}

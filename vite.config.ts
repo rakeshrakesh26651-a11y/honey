@@ -45,13 +45,37 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'es2020',
       cssMinify: true,
+      sourcemap: false,
+      chunkSizeWarningLimit: 500,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom'],
-            'vendor-motion': ['framer-motion'],
-            'vendor-lenis': ['lenis'],
-            'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+          manualChunks: (id: string) => {
+            // Core React runtime
+            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+              return 'vendor-react';
+            }
+            // Framer Motion (heavy animation library)
+            if (id.includes('node_modules/framer-motion')) {
+              return 'vendor-motion';
+            }
+            // Lenis smooth scroll
+            if (id.includes('node_modules/lenis')) {
+              return 'vendor-lenis';
+            }
+            // Firebase SDK — split auth + firestore for treeshaking
+            if (id.includes('node_modules/firebase/auth')) {
+              return 'vendor-firebase-auth';
+            }
+            if (id.includes('node_modules/firebase/firestore')) {
+              return 'vendor-firebase-firestore';
+            }
+            if (id.includes('node_modules/firebase/')) {
+              return 'vendor-firebase';
+            }
+            // Heavy pages — each gets its own chunk
+            if (id.includes('/src/pages/CartPage')) return 'page-cart';
+            if (id.includes('/src/pages/ProductDetailPage')) return 'page-product';
+            if (id.includes('/src/pages/AccountPage')) return 'page-account';
           },
         },
       },

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { WhatsAppIcon } from './Icons';
 
@@ -21,13 +21,30 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
   const videoScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.08]);
   const videoY = useTransform(scrollYProgress, [0, 1], ['0%', '6%']);
 
+  const [isMobileDevice, setIsMobileDevice] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(max-width: 767px)').matches;
+    }
+    return false;
+  });
+
   useEffect(() => {
+    const check = () => setIsMobileDevice(window.matchMedia('(max-width: 767px)').matches);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    if (isMobileDevice) return;
     const video = videoRef.current;
     if (!video) return;
 
     video.muted = true;
     video.defaultMuted = true;
     video.playsInline = true;
+    video.preload = 'auto';
+    video.load();
 
     const startVideo = () => {
       if (video.paused) {
@@ -95,21 +112,24 @@ export const Hero: React.FC<HeroProps> = ({ onShopClick, onNavigate }) => {
         className="absolute inset-[-3%] w-[106%] h-[106%] pointer-events-none select-none"
         aria-hidden="true"
       >
+        {/* Background video — mobile devices skip autoplay & source to save 3.8MB download; poster serves as static image */}
         <video
           ref={videoRef}
-          autoPlay
+          autoPlay={!isMobileDevice}
           muted
           loop
           playsInline
-          preload="auto"
-          poster="/images/himalayan-honey-hero.jpg"
+          preload={isMobileDevice ? 'none' : 'auto'}
+          poster="/images/optimized/himalayan-honey-hero-mobile.webp"
           className="w-full h-full object-cover object-[72%_center] sm:object-[65%_center] lg:object-center pointer-events-none select-none"
           aria-hidden="true"
         >
-          <source
-            src="/videos/himalayan-honey-hero.mp4"
-            type="video/mp4"
-          />
+          {!isMobileDevice && (
+            <source
+              src="/videos/himalayan-honey-hero.mp4"
+              type="video/mp4"
+            />
+          )}
         </video>
       </motion.div>
 

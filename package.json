@@ -7,6 +7,7 @@
     "dev": "vite --port 3000 --host",
     "build": "tsc && vite build",
     "preview": "vite preview --port 3000",
+    "optimize:images": "node scripts/optimize-images.mjs",
     "test": "node scripts/verify-whatsapp-flow.mjs",
     "test:razorpay": "node scripts/verify-razorpay-integration.mjs",
     "test:all": "node scripts/verify-whatsapp-flow.mjs && node scripts/verify-razorpay-integration.mjs",
@@ -29,8 +30,12 @@
     "autoprefixer": "^10.4.20",
     "playwright": "^1.63.0",
     "postcss": "^8.4.49",
+    "sharp": "0.35.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.6.3",
     "vite": "^6.0.7"
+  },
+  "allowScripts": {
+    "sharp@0.35.5": true
   }
 }

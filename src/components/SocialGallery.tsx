@@ -4,6 +4,15 @@ import { AnimatedHeading } from './motion/AnimatedHeading';
 import { TextRevealOnScroll } from './motion/TextRevealOnScroll';
 import { InstagramIcon } from './Icons';
 
+/** Returns mobile WebP path, falls back to original on error. */
+function getOptimizedSrc(src: string): string {
+  if (!src || src.startsWith('http')) return src;
+  const ext = src.match(/\.(jpe?g|png)$/i)?.[1];
+  if (!ext) return src;
+  const base = src.replace(/\.(jpe?g|png)$/i, '');
+  return `${base.replace('/images/', '/images/optimized/')}-mobile.webp`;
+}
+
 interface AccordionItem {
   id: string;
   num: string;
@@ -171,12 +180,15 @@ export const SocialGallery: React.FC = () => {
                 >
                   {/* High-quality cover photo */}
                   <img
-                    src={item.src}
+                    src={getOptimizedSrc(item.src)}
                     alt={item.alt}
                     loading={index === 0 ? 'eager' : 'lazy'}
+                    width={620}
+                    height={620}
                     className={`absolute inset-0 w-full h-full object-cover object-center pointer-events-none transition-transform duration-700 ease-out ${
                       isExpanded ? 'scale-100' : 'group-hover:scale-[1.04]'
                     }`}
+                    onError={(e) => { (e.target as HTMLImageElement).src = item.src; }}
                   />
 
                   {/* Tint overlay */}

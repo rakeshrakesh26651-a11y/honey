@@ -158,12 +158,35 @@ export function mapFirestoreDocToProduct(docId: string, data: any): Product {
   };
 }
 
+function loadInitialProducts(): { all: Product[]; active: Product[] } {
+  try {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('hhh_products_cache_v1');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return {
+            all: parsed,
+            active: parsed.filter((p: any) => p.active !== false),
+          };
+        }
+      }
+    }
+  } catch {
+    // localStorage may be unavailable or restricted (e.g. incognito)
+  }
+  const fallback = getStaticFallbackProducts();
+  return { all: fallback, active: fallback };
+}
+
+const initialProducts = loadInitialProducts();
+
 // Module-level cache & subscription management
 // Guarantees all storefront components share a single real-time Firestore stream
-let cachedAllProducts: Product[] = [];
-let cachedActiveProducts: Product[] = [];
-let isInitialized = false;
-let isLoading = true;
+let cachedAllProducts: Product[] = initialProducts.all;
+let cachedActiveProducts: Product[] = initialProducts.active;
+let isInitialized = initialProducts.all.length > 0;
+let isLoading = initialProducts.all.length === 0;
 let currentError: Error | null = null;
 const listeners = new Set<() => void>();
 let unsubscribeFirestore: (() => void) | null = null;
@@ -189,8 +212,12 @@ function startSubscription() {
       currentError = null;
 
       if (snapshot.empty) {
-        cachedAllProducts = [];
-        cachedActiveProducts = [];
+        // If snapshot is empty, retain fallback or empty as appropriate
+        if (cachedAllProducts.length === 0) {
+          const fallback = getStaticFallbackProducts();
+          cachedAllProducts = fallback;
+          cachedActiveProducts = fallback;
+        }
         isInitialized = true;
         notifyListeners();
         return;
@@ -222,6 +249,13 @@ function startSubscription() {
         (p) => (p as any).active !== false
       );
       isInitialized = true;
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('hhh_products_cache_v1', JSON.stringify(firestoreProducts));
+        }
+      } catch {
+        // LocalStorage quota safe
+      }
       notifyListeners();
     };
 
@@ -331,7 +365,7 @@ export function useProducts() {
     products: cachedActiveProducts,
     /** All products including inactive/drafts for explicit lookup */
     allProducts: cachedAllProducts,
-    loading: isLoading && !isInitialized,
+    loading: (!isInitialized || isLoading) && cachedAllProducts.length === 0,
     error: currentError,
     getProductBySlug,
   };

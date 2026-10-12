@@ -7,6 +7,16 @@ import { ProductCard } from '../components/ProductCard';
 import { ProductReviewsSection } from '../components/ProductReviewsSection';
 import { ShoppingCartIcon } from '../components/Icons';
 
+/** Returns the optimized WebP path for a given image src. */
+function getOptimizedSrc(src: string, variant: 'full' | 'mobile' | 'thumb' = 'full'): string {
+  if (!src || src.startsWith('http') || src.startsWith('data:')) return src;
+  const ext = src.match(/\.(jpe?g|png)$/i)?.[1];
+  if (!ext) return src;
+  const base = src.replace(/\.(jpe?g|png)$/i, '');
+  const suffix = variant === 'full' ? '' : `-${variant}`;
+  return `${base.replace('/images/', '/images/optimized/')}${suffix}.webp`;
+}
+
 interface ProductDetailPageProps {
   slug: string;
   onAddToCart: (product: Product, size: string, quantity: number) => void;
@@ -264,6 +274,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <div className="flex flex-col gap-2.5 sm:gap-3 shrink-0">
                     {galleryList.map((imgSrc, idx) => {
                       const isCurrent = displayImage === imgSrc;
+                      const thumbSrc = getOptimizedSrc(imgSrc, 'thumb');
                       return (
                         <button
                           key={`${imgSrc}-${idx}`}
@@ -277,9 +288,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                           aria-label={`View product image ${idx + 1}`}
                         >
                           <img
-                            src={imgSrc}
+                            src={thumbSrc}
                             alt={`${product.name} thumbnail ${idx + 1}`}
+                            width={56}
+                            height={56}
+                            loading="lazy"
                             className="w-full h-full object-contain"
+                            onError={(e) => { (e.target as HTMLImageElement).src = imgSrc; }}
                           />
                         </button>
                       );
@@ -300,13 +315,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={displayImage}
-                      src={displayImage}
+                      src={getOptimizedSrc(displayImage, 'mobile')}
                       alt={product.alt || `${product.name} raw harvest jar`}
+                      width={520}
+                      height={520}
+                      fetchPriority="high"
+                      loading="eager"
                       initial={{ opacity: 0, scale: 0.98 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.98 }}
                       transition={{ duration: 0.25, ease: 'easeOut' }}
                       className="w-full h-full object-contain select-none drop-shadow-[0_16px_32px_rgba(36,36,36,0.12)]"
+                      onError={(e) => { (e.target as HTMLImageElement).src = displayImage; }}
                     />
                   </AnimatePresence>
                 </div>
@@ -392,6 +412,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     {product.variants.map((variant) => {
                       const isSelected = selectedSize === variant.size;
                       const isVariantOut = variant.available === false || (variant.stock !== undefined && variant.stock <= 0);
+                      const variantThumbSrc = getOptimizedSrc(variant.image || product.image, 'thumb');
                       return (
                         <button
                           key={variant.size}
@@ -423,9 +444,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                           <div className="w-9 h-9 rounded-[8px] bg-[#F4F1EA]/60 p-1 flex items-center justify-center flex-shrink-0">
                             <img
-                              src={variant.image || product.image}
+                              src={variantThumbSrc}
                               alt={variant.size}
+                              width={32}
+                              height={32}
+                              loading="lazy"
                               className="max-h-full max-w-full object-contain"
+                              onError={(e) => { (e.target as HTMLImageElement).src = variant.image || product.image; }}
                             />
                           </div>
                         </button>

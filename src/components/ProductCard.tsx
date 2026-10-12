@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Product } from '../data/himalayanHarvest';
 
+/** Returns mobile-optimized WebP path, falls back to original on error. */
+function getOptimizedSrc(src: string): string {
+  if (!src || src.startsWith('http') || src.startsWith('data:')) return src;
+  const ext = src.match(/\.(jpe?g|png)$/i)?.[1];
+  if (!ext) return src;
+  const base = src.replace(/\.(jpe?g|png)$/i, '');
+  return `${base.replace('/images/', '/images/optimized/')}-mobile.webp`;
+}
+
 interface ProductCardProps {
   product: Product;
   onAddToCart?: (product: Product, size: string, quantity: number) => void;
@@ -82,10 +91,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart: 
       >
         <motion.img
           key={currentImage}
-          src={currentImage}
+          src={getOptimizedSrc(currentImage)}
           alt={product.alt || `${product.name} bottle`}
+          width={280}
+          height={280}
           className="max-h-full max-w-full w-auto h-auto object-contain drop-shadow-[0_12px_24px_rgba(36,36,36,0.12)] select-none group-hover:scale-105 transition-transform duration-500 ease-out"
           loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).src = currentImage; }}
         />
       </a>
 

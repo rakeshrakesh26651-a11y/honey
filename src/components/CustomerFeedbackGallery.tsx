@@ -2,6 +2,15 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { CUSTOMER_FEEDBACK_ITEMS, CustomerFeedbackItem } from '../data/customerFeedback';
 
+/** Returns mobile WebP path, falls back to original on error. */
+function getOptimizedSrc(src: string): string {
+  if (!src || src.startsWith('http') || src.startsWith('data:')) return src;
+  const ext = src.match(/\.(jpe?g|png)$/i)?.[1];
+  if (!ext) return src;
+  const base = src.replace(/\.(jpe?g|png)$/i, '');
+  return `${base.replace('/images/', '/images/optimized/')}-mobile.webp`;
+}
+
 interface CustomerVoiceNote {
   id: string;
   src: string;
@@ -477,11 +486,14 @@ export const CustomerFeedbackGallery: React.FC<CustomerFeedbackGalleryProps> = (
                         >
                           {/* Genuine WhatsApp Screenshot image (contain mode preserves 100% tall screenshot) */}
                           <img
-                            src={item.image}
+                            src={getOptimizedSrc(item.image)}
                             alt={item.alt}
                             loading={isActive ? 'eager' : 'lazy'}
+                            width={400}
+                            height={600}
                             draggable={false}
                             className="w-full h-full object-contain pointer-events-none select-none rounded-[18px] sm:rounded-[22px]"
+                            onError={(e) => { (e.target as HTMLImageElement).src = item.image; }}
                           />
 
                           {/* Hover / Tap Hint Indicator (Active Card Only) */}
@@ -721,10 +733,11 @@ export const CustomerFeedbackGallery: React.FC<CustomerFeedbackGalleryProps> = (
                 className="max-h-[82vh] max-w-[92vw] flex items-center justify-center cursor-grab active:cursor-grabbing"
               >
                 <img
-                  src={items[lightboxIndex].image}
+                  src={getOptimizedSrc(items[lightboxIndex].image)}
                   alt={items[lightboxIndex].alt}
                   className="max-h-[80vh] max-w-[90vw] w-auto h-auto object-contain rounded-[18px] sm:rounded-[22px] shadow-2xl border border-white/15 select-none"
                   draggable={false}
+                  onError={(e) => { (e.target as HTMLImageElement).src = items[lightboxIndex].image; }}
                 />
               </motion.div>
 

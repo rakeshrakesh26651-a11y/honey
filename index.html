@@ -42,8 +42,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://framerusercontent.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-    <link rel="preload" as="image" href="/images/hero_honey_jar.jpg" fetchpriority="high" />
+    <!-- Preload hero image in WebP (mobile-first) -->
+    <link rel="preload" as="image" href="/images/optimized/hero_honey_jar-mobile.webp" fetchpriority="high" media="(max-width: 767px)" />
+    <link rel="preload" as="image" href="/images/optimized/hero_honey_jar.webp" fetchpriority="high" media="(min-width: 768px)" />
+    <!-- Preload hero poster for video (mobile uses poster, not video) -->
+    <link rel="preload" as="image" href="/images/optimized/himalayan-honey-hero-mobile.webp" fetchpriority="high" media="(max-width: 767px)" />
+    <!-- Space Mono: load non-blocking, swap to stylesheet after load -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" /></noscript>
 
     <!-- Schema.org JSON-LD Structured Data -->
     <script type="application/ld+json">

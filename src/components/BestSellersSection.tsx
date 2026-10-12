@@ -4,6 +4,15 @@ import { AnimatedHeading } from './motion/AnimatedHeading';
 import { useProducts } from '../hooks/useProducts';
 import { Product } from '../data/himalayanHarvest';
 
+/** Returns mobile-optimized WebP path, falls back to original on error. */
+function getOptimizedSrc(src: string): string {
+  if (!src || src.startsWith('http') || src.startsWith('data:')) return src;
+  const ext = src.match(/\.(jpe?g|png)$/i)?.[1];
+  if (!ext) return src;
+  const base = src.replace(/\.(jpe?g|png)$/i, '');
+  return `${base.replace('/images/', '/images/optimized/')}-mobile.webp`;
+}
+
 interface BestSellersSectionProps {
   onNavigate?: (path: string) => void;
 }
@@ -325,10 +334,13 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({ onNaviga
                     {/* HERO PRODUCT BOTTLE — Prominently FIRST on each slide */}
                     <div className="relative flex-1 w-full min-h-[190px] xs:min-h-[210px] sm:min-h-[230px] md:min-h-[250px] flex items-center justify-center my-2 sm:my-3 select-none">
                       <img
-                        src={product.image}
+                        src={getOptimizedSrc(product.image)}
                         alt={product.alt}
                         loading="lazy"
+                        width={250}
+                        height={250}
                         className="max-h-[180px] xs:max-h-[200px] sm:max-h-[230px] md:max-h-[250px] w-auto max-w-[85%] object-contain drop-shadow-[0_16px_22px_rgba(36,36,36,0.18)] transition-transform duration-500 hover:scale-105 select-none pointer-events-none"
+                        onError={(e) => { (e.target as HTMLImageElement).src = product.image; }}
                       />
                     </div>
 

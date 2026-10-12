@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Lenis from 'lenis';
 import { motion } from 'framer-motion';
 import { AnnouncementBar } from './components/AnnouncementBar';
@@ -6,23 +6,44 @@ import { Header } from './components/Header';
 import { MobileMenu } from './components/MobileMenu';
 import { Footer } from './components/Footer';
 
-// Dedicated Multi-Page Architecture
+// Eagerly loaded: Homepage sections (visible immediately)
 import { HomePage } from './pages/HomePage';
-import { ShopPage } from './pages/ShopPage';
-import { CartPage, CartItem } from './pages/CartPage';
-import { ProductDetailPage } from './pages/ProductDetailPage';
-import { AboutPage } from './pages/AboutPage';
-import { LabReportsPage } from './pages/LabReportsPage';
-import { ReviewsPage } from './pages/ReviewsPage';
-import { FaqPage } from './pages/FaqPage';
-import { ContactPage } from './pages/ContactPage';
-import { PrivacyPolicy } from './pages/PrivacyPolicy';
-import { TermsAndConditions } from './pages/TermsAndConditions';
-import { RefundPolicy } from './pages/RefundPolicy';
-import { AccountPage } from './pages/AccountPage';
-import { AdminApp } from './admin/AdminApp';
+
+// Lazy-loaded: Heavy pages only needed when navigated to
+const ShopPage = lazy(() => import('./pages/ShopPage').then(m => ({ default: m.ShopPage })));
+const CartPage = lazy(() => import('./pages/CartPage').then(m => ({ default: m.CartPage })));
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage').then(m => ({ default: m.ProductDetailPage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const LabReportsPage = lazy(() => import('./pages/LabReportsPage').then(m => ({ default: m.LabReportsPage })));
+const ReviewsPage = lazy(() => import('./pages/ReviewsPage').then(m => ({ default: m.ReviewsPage })));
+const FaqPage = lazy(() => import('./pages/FaqPage').then(m => ({ default: m.FaqPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions').then(m => ({ default: m.TermsAndConditions })));
+const RefundPolicy = lazy(() => import('./pages/RefundPolicy').then(m => ({ default: m.RefundPolicy })));
+const AccountPage = lazy(() => import('./pages/AccountPage').then(m => ({ default: m.AccountPage })));
+const AdminApp = lazy(() => import('./admin/AdminApp').then(m => ({ default: m.AdminApp })));
 
 import { Product } from './data/content';
+
+// CartItem interface defined here since CartPage is now lazy-loaded
+export interface CartItem {
+  id: string;
+  product: Product;
+  size: string;
+  unitPrice: number;
+  quantity: number;
+}
+
+// Minimal loading spinner for Suspense boundaries
+const PageSpinner = () => (
+  <div className="w-full min-h-[60vh] flex items-center justify-center bg-[#F4F1EA]">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-8 h-8 rounded-full border-2 border-[#C9892E] border-t-transparent animate-spin" />
+      <span className="font-mono text-[12px] uppercase tracking-wider text-[#686863]">Loading...</span>
+    </div>
+  </div>
+);
 
 export function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -43,8 +64,12 @@ export function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Initialize Lenis smooth scroll
+  // Initialize Lenis smooth scroll (desktop/mouse only — mobile has native momentum scroll)
   useEffect(() => {
+    // Skip on touch/mobile devices: native scroll is smoother and avoids rAF CPU overhead
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    if (isTouch) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -260,10 +285,12 @@ export function App() {
   // Dedicated Administrative Control Subsystem
   if (currentPath.startsWith('/admin')) {
     return (
-      <AdminApp
-        currentPath={currentPath}
-        onNavigate={handleNavigate}
-      />
+      <Suspense fallback={<PageSpinner />}>
+        <AdminApp
+          currentPath={currentPath}
+          onNavigate={handleNavigate}
+        />
+      </Suspense>
     );
   }
 
@@ -297,7 +324,9 @@ export function App() {
 
       {/* Main Page Content */}
       <main className="flex-1 w-full">
-        {renderMainContent()}
+        <Suspense fallback={<PageSpinner />}>
+          {renderMainContent()}
+        </Suspense>
       </main>
 
       {/* Footer with HIMALAYAN giant typography and links */}
